@@ -25,9 +25,7 @@ GLIBC=glibc-2.28
 NEWLIB=newlib-3.0.0
 GDB=gdb-8.2
 QEMU=qemu-3.1.0
-PATCHELF=patchelf-0.10pre298_e44c318
 CMAKE=cmake-3.12.4
-BUSYBOX=busybox-1.29.3
 EDK2=edk2-stable201811
 DOWNLOAD_URLS="ftp://ftp.gnu.org/gnu/make/make-4.2.tar.gz
 ftp://ftp.gnu.org/gnu/tar/tar-1.30.tar.gz
@@ -43,11 +41,9 @@ https://ftp.gnu.org/gnu/gcc/gcc-8.2.0/gcc-8.2.0.tar.gz
 https://ftp.gnu.org/gnu/libc/glibc-2.28.tar.gz
 https://ftp.gnu.org/gnu/gdb/gdb-8.2.tar.gz
 https://download.qemu.org/qemu-3.1.0.tar.xz
-https://hydra.nixos.org/build/51642075/download/3/patchelf-0.10pre298_e44c318.tar.gz
 https://cmake.org/files/v3.12/cmake-3.12.4.tar.gz
 ftp://sourceware.org/pub/newlib/newlib-3.0.0.tar.gz
-https://github.com/tianocore/edk2/archive/edk2-stable201811.tar.gz
-https://busybox.net/downloads/busybox-1.29.3.tar.bz2"
+https://github.com/tianocore/edk2/archive/edk2-stable201811.tar.gz"
 
 PATCHES_URLS="https://fedorahosted.org/releases/e/l/elfutils/0.157/elfutils-portability.patch
 https://fedorahosted.org/releases/e/l/elfutils/0.157/elfutils-robustify.patch"
