@@ -18,7 +18,6 @@ GMP=gmp-6.1.0
 MPFR=mpfr-3.1.4
 MPC=mpc-1.0.3
 ISL=isl-0.18
-CLOOG=cloog-0.18.1
 KERNEL=linux-4.19.13
 ELFUTILS=elfutils-0.157
 BINUTILS=binutils-2.31
@@ -35,7 +34,6 @@ ftp://gcc.gnu.org/pub/gcc/infrastructure/gmp-6.1.0.tar.bz2
 ftp://gcc.gnu.org/pub/gcc/infrastructure/mpfr-3.1.4.tar.bz2
 ftp://gcc.gnu.org/pub/gcc/infrastructure/mpc-1.0.3.tar.gz
 ftp://gcc.gnu.org/pub/gcc/infrastructure/isl-0.18.tar.bz2
-ftp://gcc.gnu.org/pub/gcc/infrastructure/cloog-0.18.1.tar.gz
 ftp://sourceware.org/pub/elfutils/0.157/elfutils-0.157.tar.bz2
 https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.19.13.tar.gz
 https://ftp.gnu.org/gnu/binutils/binutils-2.31.tar.gz
