@@ -330,17 +330,22 @@ prepare_archives(){
     #git archive
     #
     if [ ! -f ${WORKDIR}/downloads/${KERNEL}.tar.gz -a ! -f ${WORKDIR}/downloads/${KERNEL}.tar.xz ]; then
-	tmpdir=`mktemp -d`
-	pushd ${tmpdir}
-	git clone ${KERNEL_URL}
-	pushd `basename ${KERNEL_URL}`
-	git fetch
-	git archive --format=tar --prefix=${KERNEL}/ HEAD |\
+	if [ "x${KERNEL_URL}" != "x" ]; then
+	    tmpdir=`mktemp -d`
+	    pushd ${tmpdir}
+	    git clone ${KERNEL_URL}
+	    pushd `basename ${KERNEL_URL}`
+	    git fetch
+	    git archive --format=tar --prefix=${KERNEL}/ HEAD |\
 	    gzip > ${WORKDIR}/downloads/${KERNEL}.tar.gz
-	popd
-	popd
-	if [ -d ${tmpdir} ]; then
-	    rm -fr ${tmpdir}
+	    popd
+	    popd
+	    if [ -d ${tmpdir} ]; then
+		rm -fr ${tmpdir}
+	    fi
+	else
+	    echo "Neither ${KERNEL}.tar.gz or ${KERNEL}.tar.xz is not found."
+	    exit 1;
 	fi
     else
 	echo "${KERNEL}.tar.gz or ${KERNEL}.tar.xz already exists."
