@@ -48,7 +48,6 @@ main(){
 	while [ $# -gt 0 ];
 	do
 	    name=$1
-	    echo ${name}
 	    if [ ! -f ./env/${name}-env.sh ]; then
 		echo "env/${name}-env.sh not found, skipped"
 	    else
