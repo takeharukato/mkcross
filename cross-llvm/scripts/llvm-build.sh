@@ -519,6 +519,68 @@ do_build_llvm(){
 }
 
 ## begin note
+# 機能:llvmをclang++でコンパイルする
+# lldbが要求する標準C++ライブラリの機能をCentOS版libstdc++は満たさないため
+# 再コンパイルが必要
+## end note
+do_build_llvm_with_clangxx(){
+    local llvm_src
+
+    echo "@@@ Build LLVM with clang++ @@@"
+
+    if [ "x${FORCE_COPY_SOURCES}" != "x" ]; then
+	llvm_src=${SRCDIR}/llvm-current
+    else
+	llvm_src=${DOWNLOADDIR}/llvm-current
+    fi
+
+    if [ "x${FORCE_COPY_SOURCES}" != "x" ]; then
+	if [ -d ${SRCDIR}/llvm-current -o -e ${SRCDIR}/llvm-current ]; then
+	    rm -fr ${SRCDIR}/llvm-current 
+	fi
+	mkdir -p ${SRCDIR}
+
+	cp -a ${DOWNLOADDIR}/llvm-current ${SRCDIR}/llvm-current
+    fi
+
+    if [ -d ${BUILDDIR}/llvm-current ]; then
+	rm -fr ${BUILDDIR}/llvm-current
+    fi
+
+    mkdir -p ${BUILDDIR}/llvm-current
+
+    pushd  ${BUILDDIR}/llvm-current
+    cmake -G  "${LLVM_BUILD_TYPE}"                     \
+    	-DCMAKE_BUILD_TYPE=Release                     \
+    	-DCMAKE_INSTALL_PREFIX=${CROSS}                \
+	-DCMAKE_C_COMPILER="${CROSS}/bin/clang"        \
+	-DCMAKE_CXX_COMPILER="${CROSS}/bin/clang++"    \
+	${llvm_src}/llvm
+
+    if [ "x${NO_NINJA}" = "x" ]; then
+	ninja ${SMP_OPT}
+    else
+	gmake ${SMP_OPT}
+    fi
+    #
+    #pythonライブラリのパスの誤りを修正
+    #See: https://zhuanlan.zhihu.com/p/40793869
+    #
+    if [ -d lib64/${PYTHON_VER} -a ! -d lib/${PYTHON_VER} ]; then
+	echo "@@@ Copy python libs @@@"
+	cp -a lib64/${PYTHON_VER} lib
+    fi
+
+    if [ "x${NO_NINJA}" = "x" ]; then
+	ninja install
+    else
+	gmake install
+    fi
+
+    popd
+}
+
+## begin note
 # 機能:エミュレータを生成する
 ## end note
 do_build_emulator(){
@@ -595,6 +657,8 @@ main(){
     fi
 
     do_build_llvm
+
+    do_build_llvm_with_clangxx
 
     do_build_emulator
 
