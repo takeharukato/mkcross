@@ -683,9 +683,6 @@ do_cross_gcc_core(){
     #          ターゲット環境向けのコードを生成するコンパイラを構築する
     #--with-local-prefix=${CROSS}/${TARGET}
     #          gcc内部で使用するファイルを${CROSS}/${TARGET}に格納する
-    #${WITH_SYSROOT}
-    #          コンパイラの実行時にターゲットのルートファイルシステムを優先してヘッダや
-    #          ライブラリを探査する
     #--enable-languages=c
     #          カーネルヘッダの生成からCスタートアップルーチン(crt*.o)
     #          の生成までに必要なCコンパイラのみを生成 
@@ -748,7 +745,6 @@ do_cross_gcc_core(){
 	--prefix=${CROSS}                                    \
 	--target=${TARGET}                                   \
 	--with-local-prefix=${CROSS}/${TARGET}               \
-	"${WITH_SYSROOT}"                                    \
 	--enable-languages=c                                 \
 	--disable-bootstrap                                  \
 	--disable-werror                                     \
@@ -921,11 +917,11 @@ do_cross_gcc(){
 	--disable-shared                                     \
 	--disable-multilib                                   \
 	--with-newlib                                        \
-	--enable-tls                                         \
 	--disable-threads                                    \
-	--disable-decimal-float                              \
-	--disable-libmudflap                                 \
-	--disable-libssp                                     \
+	--disable-libatomic                                  \
+	--disable-libitm                                     \
+	--disable-libvtv                                     \
+	--disable-libcilkrts                                 \
 	--disable-libmpx                                     \
 	--disable-libgomp                                    \
 	--disable-libsanitizer                               \
@@ -933,6 +929,11 @@ do_cross_gcc(){
 	--with-mpfr=${CROSS}                                 \
 	--with-mpc=${CROSS}                                  \
 	--with-isl=${CROSS}                                  \
+	--enable-decimal-float                               \
+        --enable-libquadmath                                 \
+	--enable-libmudflap                                  \
+	--enable-libssp                                      \
+	--enable-tls                                         \
 	--disable-nls
     
     gmake ${SMP_OPT}
@@ -1173,15 +1174,15 @@ main(){
     do_cross_gdb
 
     case "${TARGET_CPU}" in
-	aarch64|x86_64)
-	    do_cross_uefi
-	    ;;
-	i[3456]86)
-	    echo "Skip building UEFI for ${TARGET_CPU} because some distribution does not support no-PIE."
-	    ;;
-	* ) 
-	    echo "Skip building UEFI for ${TARGET_CPU}"
-	    ;;
+    	aarch64|x86_64)
+    	    do_cross_uefi
+    	    ;;
+    	i[3456]86)
+    	    echo "Skip building UEFI for ${TARGET_CPU} because some distribution does not support no-PIE."
+    	    ;;
+    	* ) 
+    	    echo "Skip building UEFI for ${TARGET_CPU}"
+    	    ;;
     esac
     
     do_build_emulator
@@ -1191,12 +1192,12 @@ main(){
     create_symlink
 
     case "${TARGET_CPU}" in
-	aarch64)
-	    do_cross_compile_test
-	    ;;
-	* ) 
-	    echo "Skip Testing a cross compiler"
-	    ;;
+    	aarch64)
+    	    do_cross_compile_test
+    	    ;;
+    	* ) 
+    	    echo "Skip Testing a cross compiler"
+    	    ;;
     esac
     cleanup_temporary_directories
 }
