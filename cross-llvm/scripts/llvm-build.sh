@@ -230,7 +230,7 @@ prepare_devenv(){
     if [ "x${OSNAME}" = "xLinux" ]; then
 	sudo yum install -y  yum-priorities epel-release yum-utils
 	sudo yum install -y binutils subversion swig doxygen python-devel libedit-devel \
-			    libxml2-devel re2c
+			    libxml2-devel re2c graphviz
 	# QEmu
 	sudo yum install -y giflib-devel libpng-devel libtiff-devel gtk3-devel \
 	    ncurses-devel gnutls-devel nettle-devel libgcrypt-devel SDL2-devel \
@@ -493,6 +493,7 @@ do_build_llvm(){
     cmake -G  "${LLVM_BUILD_TYPE}"      \
     	-DCMAKE_BUILD_TYPE=Release      \
     	-DCMAKE_INSTALL_PREFIX=${CROSS} \
+	-DLLVM_ENABLE_LIBCXX=ON         \
 	${llvm_src}/llvm
 
     if [ "x${NO_NINJA}" = "x" ]; then
@@ -553,6 +554,7 @@ do_build_llvm_with_clangxx(){
     cmake -G  "${LLVM_BUILD_TYPE}"                     \
     	-DCMAKE_BUILD_TYPE=Release                     \
     	-DCMAKE_INSTALL_PREFIX=${CROSS}                \
+	-DLLVM_ENABLE_LIBCXX=ON                        \
 	-DCMAKE_C_COMPILER="${CROSS}/bin/clang"        \
 	-DCMAKE_CXX_COMPILER="${CROSS}/bin/clang++"    \
 	${llvm_src}/llvm
@@ -665,7 +667,7 @@ main(){
     do_strip_binaries
 
     if [ "x${NO_CLEAN_DIR}" = 'x' ]; then    
-	cleanup_temporary_directories
+    	cleanup_temporary_directories
     fi
 }
 
