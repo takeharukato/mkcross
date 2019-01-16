@@ -274,6 +274,35 @@ extract_archive() {
 }
 
 ## begin note
+# 機能: gitからedk2のソースを取得する
+## end note 
+fetch_edk2_src() {
+
+    echo "@@@ Fetch EDK2 sources @@@"
+
+    if [ -d ${DOWNLOADDIR}/work-${EDK2} ]; then
+	rm -fr ${DOWNLOADDIR}/work-${EDK2}
+    fi
+    mkdir -p ${DOWNLOADDIR}/work-${EDK2}
+
+    pushd  ${DOWNLOADDIR}/work-${EDK2}
+
+    git clone git@github.com:tianocore/edk2.git
+
+    pushd edk2
+    git submodule update --init --recursive
+    popd
+    mv edk2 ${EDK2}
+    tar zcf ${DOWNLOADDIR}/${EDK2}.tar.gz ${EDK2}
+    rm -fr  ${EDK2}
+    popd
+
+    if [ -d ${DOWNLOADDIR}/work-${EDK2} ]; then
+     	rm -fr ${DOWNLOADDIR}/work-${EDK2}
+    fi
+}
+
+## begin note
 # 機能:開発環境をそろえる
 ## end note
 prepare_devenv(){
@@ -2575,18 +2604,22 @@ do_cross_uefi(){
 
     echo "@@@ EDK2 UEFI @@@"
 
+    if [ ! -e ${DOWNLOADDIR}/${EDK2}.tar.gz ]; then
+	fetch_edk2_src
+    fi
+
     extract_archive ${EDK2}
 
     rm -fr ${CROSS}/uefi
     mkdir -p ${CROSS}/uefi
 
-    rm -fr ${BUILDDIR}/edk2-${EDK2}
+    rm -fr ${BUILDDIR}/${EDK2}
     mkdir -p ${BUILDDIR}
 
-    cp -a  ${SRCDIR}/edk2-${EDK2} ${BUILDDIR}/edk2-${EDK2}
-    pushd ${BUILDDIR}/edk2-${EDK2}
+    cp -a  ${SRCDIR}/${EDK2} ${BUILDDIR}/${EDK2}
+    pushd ${BUILDDIR}/${EDK2}
     gmake -C BaseTools
-    source ${BUILDDIR}/edk2-${EDK2}/edksetup.sh
+    source ${BUILDDIR}/${EDK2}/edksetup.sh
     case "${TARGET_CPU}" in
 	aarch64) 
 	    export GCC5_AARCH64_PREFIX=${TARGET}-
