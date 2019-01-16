@@ -301,26 +301,37 @@ prepare_devenv(){
 
     if [ "x${OSNAME}" = "xLinux" ]; then
 	sudo yum install -y  coreutils yum-priorities epel-release yum-utils
-	sudo yum groupinstall -y "Development tools"
 	# For UEFI
 	sudo yum install -y  nasm iasl acpica-tools
 	# QEmu
 	sudo yum install -y giflib-devel libpng-devel libtiff-devel gtk3-devel \
 	    ncurses-devel gnutls-devel nettle-devel libgcrypt-devel SDL2-devel \
 	    gtk-vnc-devel libguestfs-devel curl-devel brlapi-devel bluez-libs-devel \
-	    libusb-devel libcap-ng-devel libiscsi-devel libnfs-devel libcacard-devel \
-	    lzo-devel snappy-devel bzip2-devel libseccomp-devel libxml2-devel \
-	    libssh2-devel xfsprogs-devel ceph-devel mesa-libGL-devel mesa-libGLES-devel \
+	    libusb-devel libcap-devel libcap-ng-devel libiscsi-devel libnfs-devel \
+	    libcacard-devel lzo-devel snappy-devel bzip2-devel libseccomp-devel \
+	    libxml2-devel libssh2-devel xfsprogs-devel mesa-libGL-devel mesa-libGLES-devel \
             mesa-libGLU-devel mesa-libGLw-devel spice-server-devel libattr-devel \
 	    libaio-devel sparse-devel gtkglext-libs vte-devel libtasn1-devel \
 	    gperftools-devel virglrenderer device-mapper-multipath-devel \
-	    cyrus-sasl-devel libjpeg-turbo-devel xen-devel glusterfs-api-devel \
+	    cyrus-sasl-devel libjpeg-turbo-devel glusterfs-api-devel \
 	    libpmem-devel libudev-devel capstone-devel numactl-devel \
-	    librdmacm-devel libibverbs-devel libibumad-devel gcc-objc \
-	    iasl
+	    librdmacm-devel  libibverbs-devel libibumad-devel libvirt-devel \
+	    gcc-objc iasl
+	# Ceph for QEmu
+	sudo yum install -y ceph ceph-base ceph-common ceph-devel-compat ceph-fuse \
+	    ceph-libs-compat ceph-mds ceph-mon ceph-osd ceph-radosgw ceph-resource-agents \
+	    ceph-selinux ceph-test cephfs-java libcephfs1-devel libcephfs_jni1-devel \
+	    librados2-devel libradosstriper1-devel librbd1-devel librgw2-devel \
+	    python-ceph-compat python-cephfs python-rados python-rbd rbd-fuse \
+	    rbd-mirror rbd-nbd 
+	# Xen for QEmu
+	sudo yum -y centos-release-xen sudo passwd bzip2 patch nano which tar  \
+	    xz libvirt libvirt-daemon-xen
+
+	sudo yum groupinstall -y "Development tools"
 	# Multilib
 	sudo yum install -y  glibc-devel.i686 zlib-devel.i686 elfutils-devel.i686 \
-	    mpfr-devel.i686 libstdc++-devel.i686
+	    mpfr-devel.i686 libstdc++-devel.i686 binutils-devel.i686
 	sudo yum-builddep -y binutils gcc gdb qemu-kvm texinfo-tex texinfo
     fi
 }
