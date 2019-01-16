@@ -27,7 +27,11 @@ do_one_build(){
 		;;
 	esac
 	echo "Build ${name} for ELF ..."
-	bash ./scripts/build-elf.sh ./env/${name}-env.sh 2>&1 | tee ${name}-ELF-build.log
+	if [ "x${NO_ELF_TOOLS}" != "x" ]; then
+	    echo "Skipped..."
+	else
+	    bash ./scripts/build-elf.sh ./env/${name}-env.sh 2>&1 | tee ${name}-ELF-build.log
+	fi
     fi
 }
 
