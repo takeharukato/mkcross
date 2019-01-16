@@ -18,7 +18,11 @@ do_one_build(){
 		OSNAME=`uname`
 		if [ "x${OSNAME}" = "xLinux" ]; then
 		    echo "Build ${name} for linux ..."
-		    bash ./scripts/build.sh ./env/${name}-env.sh 2>&1 | tee ${name}-Linux-build.log
+		    if [ "x${NO_LINUX_TOOLS}" != "x" ]; then
+			echo "Skipped..."
+		    else
+			bash ./scripts/build.sh ./env/${name}-env.sh 2>&1 | tee ${name}-Linux-build.log
+		    fi
 		fi
 		;;
 	esac
