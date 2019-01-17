@@ -76,8 +76,8 @@
    * binutils (アセンブラ, リンカなど)
    * gcc (Cコンパイラ, C++コンパイラ, リンク時最適化ツール )
    * C標準ライブラリ
-   ** GNU libc ( Linux用クロスコンパイラの場合 )
-   ** Newlib   ( ELF用クロスコンパイラの場合 )
+    * GNU libc ( Linux用クロスコンパイラの場合 )
+    * Newlib   ( ELF用クロスコンパイラの場合 )
    * GNU Debugger 
    * QEMU エミュレータ (ユーザランド, システムシミュレータ) 
    * EDK2 UEFI ファームウエア (X64, AArch64ターゲットの場合)
