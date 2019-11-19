@@ -1,0 +1,18 @@
+diff -Nupr glibc-2.17-36-rhel7.orig/Makerules glibc-2.17-36-rhel7/Makerules
+--- glibc-2.17-36-rhel7.orig/Makerules	2014-03-26 15:12:14.000000000 +0900
++++ glibc-2.17-36-rhel7/Makerules	2014-03-28 01:21:11.072133635 +0900
+@@ -809,6 +809,14 @@ endef
+ installed-libcs := $(foreach o,$(filter-out .os,$(object-suffixes-for-libc)),\
+ 			     $(inst_libdir)/$(patsubst %,$(libtype$o),\
+ 						     $(libprefix)$(libc-name)))
++
++
++install-lib-all: $(inst_slibdir)/libc.so$(libc.so-version) \
++		$(inst_slibdir)/libc-$(version).so \
++		$(inst_libdir)/libc.so \
++		$(inst_libdir)/libc.a \
++		install-lib
++
+ install: $(installed-libcs)
+ $(installed-libcs): $(inst_libdir)/lib$(libprefix)%: lib $(+force)
+ 	$(make-target-directory)
