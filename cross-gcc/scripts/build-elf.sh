@@ -1005,7 +1005,7 @@ do_cross_gdb(){
     pushd  ${BUILDDIR}/${GDB}
 
     pushd  ${SRCDIR}/${GDB}
-    patch -p1 < ${WORKDIR}/patches/gdb/gdb-8.2-qemu-x86-64.patch
+    patch -p1 < ${WORKDIR}/patches/gdb/gdb-8.3-qemu-x86-64.patch
     popd
 
     #
