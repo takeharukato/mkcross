@@ -7,12 +7,12 @@ TARGET_CPU=i686
 QEMU_CPU=i386
 BUILD_UEFI=yes
 _LIB=lib
-
+TARGET_ELF=i686-pc-elf
 ###############################################################################
 #
 ###############################################################################
-GMAKE=make-4.2
-GTAR=tar-1.30
+GMAKE=make-4.2.1
+GTAR=tar-1.32
 GMP=gmp-6.1.0
 MPFR=mpfr-3.1.4
 MPC=mpc-1.0.3
@@ -21,14 +21,14 @@ KERNEL=linux-4.19.13
 ELFUTILS=elfutils-0.157
 BINUTILS=binutils-2.33.1
 GCC=gcc-9.2.0
-GLIBC=glibc-2.28
-NEWLIB=newlib-3.0.0
+GLIBC=glibc-2.30
+NEWLIB=newlib-3.1.0
 GDB=gdb-8.3
 QEMU=qemu-4.1.1
-CMAKE=cmake-3.12.4
+CMAKE=cmake-3.15.5
 EDK2=edk2-current
-DOWNLOAD_URLS="ftp://ftp.gnu.org/gnu/make/make-4.2.tar.gz
-ftp://ftp.gnu.org/gnu/tar/tar-1.30.tar.gz
+DOWNLOAD_URLS="ftp://ftp.gnu.org/gnu/make/make-4.2.1.tar.gz
+ftp://ftp.gnu.org/gnu/tar/tar-1.32.tar.gz
 ftp://gcc.gnu.org/pub/gcc/infrastructure/gmp-6.1.0.tar.bz2
 ftp://gcc.gnu.org/pub/gcc/infrastructure/mpfr-3.1.4.tar.bz2
 ftp://gcc.gnu.org/pub/gcc/infrastructure/mpc-1.0.3.tar.gz
@@ -37,11 +37,11 @@ ftp://sourceware.org/pub/elfutils/0.157/elfutils-0.157.tar.bz2
 https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.19.13.tar.gz
 https://ftp.gnu.org/gnu/binutils/binutils-2.33.1.tar.gz
 https://ftp.gnu.org/gnu/gcc/gcc-9.2.0/gcc-9.2.0.tar.gz
-https://ftp.gnu.org/gnu/libc/glibc-2.28.tar.gz
+https://ftp.gnu.org/gnu/libc/glibc-2.30.tar.gz
 https://ftp.gnu.org/gnu/gdb/gdb-8.3.tar.gz
 https://download.qemu.org/qemu-4.1.1.tar.xz
-https://cmake.org/files/v3.12/cmake-3.12.4.tar.gz
-ftp://sourceware.org/pub/newlib/newlib-3.0.0.tar.gz"
+https://cmake.org/files/v3.15/cmake-3.15.5.tar.gz
+ftp://sourceware.org/pub/newlib/newlib-3.1.0.tar.gz"
 
 EDK2_GIT_REPO="git@github.com:tianocore/edk2.git"
 

@@ -58,22 +58,4 @@ patches-*
 # quilt's files
 patches
 series
-
-#
-autoconf.h
-hal/hal
-include/hal
-rfs/
-*.iso
-vector.S
-kernel.asm
-kernel.sym
-apboot.asm
-apentry
-boot.log
-gen-cpuid-db
-#
-hal/x86-64/cpuid-intel-table.c
-hal/x86-64/apentry-asm.S
-asm-offset.s
-asm-offset.h
+*.log
