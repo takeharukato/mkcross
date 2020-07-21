@@ -1996,14 +1996,14 @@ EOF
     #
     #構築したライブラリのインストール
     #
-    BUILD_CC="${BUILD}-gcc"         \
-    CFLAGS="-O  -finline-functions" \
-    CC=${TARGET}-gcc                \
-    AR=${TARGET}-ar                 \
-    LD=${TARGET}-ld                 \
-    RANLIB=${TARGET}-ranlib         \
-    ${SUDO} make -i install_root=${SYSROOT} ${INSTALL_TARGET}
-
+    mkdir -pv ${SYSROOT}/usr/${_LIB}
+    rm -f     ${SYSROOT}/usr/${_LIB}/crt[1in].o
+    rm -f     ${SYSROOT}/usr/${_LIB}/libc.so
+    #
+    # スタートアップファイルをコピーする
+    #
+    cp csu/crt1.o csu/crti.o csu/crtn.o \
+	${SYSROOT}/usr/${_LIB}
     #
     #リンクを張り直す
     #
@@ -2757,7 +2757,7 @@ fi
     do_glibc_headers
     do_glibc_startup
     do_cross_gcc_core2
-    do_glibc_core
+#    do_glibc_core
     do_cross_gcc_core3
     do_cross_glibc
     do_cross_gcc
