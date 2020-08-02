@@ -13,7 +13,6 @@ unset CPU
 unset KERN_ARCH
 unset TARGET_CPU
 unset QEMU_CPU
-unset YUM_CMD
 
 #エラーメッセージの文字化けを避けるためにCロケールで動作させる
 LANG=C
@@ -229,71 +228,71 @@ extract_archive() {
 # 機能:開発環境をそろえる
 ## end note
 prepare_devenv(){
-    local YUM_CMD=yum
+    local DNF_CMD=/bin/dnf
+    local YUM_CMD=/bin/yum
 
     if [ "x${OSNAME}" = "xLinux" ]; then
 
-	if [ -e /bin/dnf ]; then
-
-	    YUM_CMD=/bin/dnf
-	    
-	    sudo dnf config-manager --set-enabled BaseOS
-	    sudo dnf config-manager --set-enabled AppStream
-	    sudo dnf config-manager --set-enabled PowerTools
-	    sudo dnf config-manager --set-enabled epel
-	    sudo dnf config-manager --set-enabled epel-modular
-	    sudo dnf config-manager --set-enabled extras
-	    sudo dnf install -y dnf-plugins-core \
+	if [ -e ${DNF_CMD} ]; then
+    
+	    sudo ${DNF_CMD} config-manager --set-enabled BaseOS
+	    sudo ${DNF_CMD} config-manager --set-enabled AppStream
+	    sudo ${DNF_CMD} config-manager --set-enabled PowerTools
+	    sudo ${DNF_CMD} config-manager --set-enabled epel
+	    sudo ${DNF_CMD} config-manager --set-enabled epel-modular
+	    sudo ${DNF_CMD} config-manager --set-enabled extras
+	    sudo ${DNF_CMD} install -y dnf-plugins-core \
 		 dnf-plugins-extras-repoclosure dnf-plugins-extras-repograph \
 		 dnf-plugins-extras-repomanage dnf-plugins-extras-debug \
 		 dnf-plugins-extras-debug 
 	else
-	    sudo yum install -y yum-priorities epel-release yum-utils	    	    
+	    DNF_CMD=/bin/yum
+	    sudo ${YUM_CMD} install -y yum-priorities epel-release yum-utils	    	    
 	fi
 
 	# Basic commands
-	sudo ${YUM_CMD} -y sudo passwd bzip2 patch nano which tar xz	
+	sudo ${DNF_CMD} install -y sudo passwd bzip2 patch nano which tar xz	
 
 	# Build tools
-	sudo ${YUM_CMD} groupinstall -y "Development tools"
+	sudo ${DNF_CMD} groupinstall -y "Development tools"
 
 	# Prerequisites header/commands for GCC
-	sudo ${YUM_CMD} install -y glibc-devel binutils gcc bash gawk \
+	sudo ${DNF_CMD} install -y glibc-devel binutils gcc bash gawk \
 	     gzip bzip2-devel make tar perl
-	sudo ${YUM_CMD} install -y m4 automake autoconf gettext gperf \
+	sudo ${DNF_CMD} install -y m4 automake autoconf gettext gperf \
 	     autogen guile texinfo texinfo-tex texlive texlive* \
 	     python3-sphinx git openssh diffutils patch
 
 	# Prerequisites library for GCC
-	sudo ${YUM_CMD} install -y glibc-devel zlib-devel elfutils-devel \
+	sudo ${DNF_CMD} install -y glibc-devel zlib-devel elfutils-devel \
 	     gmp-devel mpfr-devel libstdc++-devel binutils-devel libzstd-devel
 
 	# Multilib
-	sudo ${YUM_CMD} install -y glibc-devel.i686 zlib-devel.i686 elfutils-devel.i686 \
+	sudo ${DNF_CMD} install -y glibc-devel.i686 zlib-devel.i686 elfutils-devel.i686 \
 	     gmp-devel.i686 mpfr-devel.i686 libstdc++-devel.i686 binutils-devel.i686 \
 	     libzstd-devel.i686
 
 	# Prerequisites for LLVM
-	sudo ${YUM_CMD} install -y libedit-devel libxml2-devel cmake
+	sudo ${DNF_CMD} install -y libedit-devel libxml2-devel cmake
 
 	# Python
-	sudo ${YUM_CMD} install -y python3-devel python-devel swig
+	sudo ${DNF_CMD} install -y python3-devel swig
 	
 	# Version manager
-	sudo ${YUM_CMD} install -y git subversion 
+	sudo ${DNF_CMD} install -y git subversion 
 
 	# Document commands
-	sudo ${YUM_CMD} install -y re2c graphviz doxygen
-	sudo ${YUM_CMD} install -y docbook-utils docbook-style-xsl 
+	sudo ${DNF_CMD} install -y re2c graphviz doxygen
+	sudo ${DNF_CMD} install -y docbook-utils docbook-style-xsl 
 
 	# patchelf
-	sudo ${YUM_CMD} install -y patchelf
+	sudo ${DNF_CMD} install -y patchelf
 	
         # For UEFI
-	sudo ${YUM_CMD} install -y nasm iasl acpica-tools
+	sudo ${DNF_CMD} install -y nasm iasl acpica-tools
 
 	# QEmu
-	sudo ${YUM_CMD} install -y giflib-devel libpng-devel libtiff-devel gtk3-devel \
+	sudo ${DNF_CMD} install -y giflib-devel libpng-devel libtiff-devel gtk3-devel \
 	     ncurses-devel gnutls-devel nettle-devel libgcrypt-devel SDL2-devel \
 	     libguestfs-devel curl-devel brlapi-devel bluez-libs-devel \
 	     libusb-devel libcap-devel libcap-ng-devel libiscsi-devel libnfs-devel \
@@ -308,21 +307,33 @@ prepare_devenv(){
 	     iasl
 
 	# Ceph for QEmu
-	sudo ${YUM_CMD} install -y  libcephfs-devel librbd-devel \
+	sudo ${DNF_CMD} install -y  libcephfs-devel librbd-devel \
 	     librados2-devel libradosstriper1-devel librbd1-devel
 	
 	# KVM for QEmu
-	sudo ${YUM_CMD} -y qemu-kvm libvirt virt-install
+	sudo ${DNF_CMD} install -y qemu-kvm libvirt virt-install
 
-	# Build dep
-	sudo dnf builddep -y binutils gcc texinfo-tex texinfo cmake
-    else
+	if [  -e ${DNF_CMD} ]; then	
 
-	# Xen for QEmu
-	sudo ${YUM_CMD} -y qemu-kvm libvirt virt-install
+	    # For RHEL/CentOS8
+	    sudo ${DNF_CMD} install -y python3-devel
+	    # Build dep
+	    sudo ${DNF_CMD} builddep -y binutils gcc texinfo-tex texinfo cmake qemu-kvm
 
-	# Build dep	
-	sudo ${YUM_CMD}-builddep -y binutils gcc texinfo-tex texinfo cmake
+	else
+
+	    # For CentOS7
+	    
+	    # Python devel
+	    sudo ${DNF_CMD} install -y python-devel
+
+	    # Xen for QEmu
+	    sudo ${DNF_CMD} -y centos-release-xen
+	
+	    # Build dep	
+	    sudo yum-builddep -y binutils gcc texinfo-tex texinfo cmake qemu-kvm
+
+	fi
     fi
 }
 
