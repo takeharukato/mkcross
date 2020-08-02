@@ -306,41 +306,101 @@ fetch_edk2_src() {
 # 機能:開発環境をそろえる
 ## end note
 prepare_devenv(){
+    local YUM_CMD=yum
 
-    sudo yum install -y  coreutils yum-priorities epel-release yum-utils
-    # For UEFI
-    sudo yum install -y  nasm iasl acpica-tools
-    # QEmu
-    sudo yum install -y giflib-devel libpng-devel libtiff-devel gtk3-devel \
-	ncurses-devel gnutls-devel nettle-devel libgcrypt-devel SDL2-devel \
-	gtk-vnc-devel libguestfs-devel curl-devel brlapi-devel bluez-libs-devel \
-	libusb-devel libcap-devel libcap-ng-devel libiscsi-devel libnfs-devel \
-	libcacard-devel lzo-devel snappy-devel bzip2-devel libseccomp-devel \
-	libxml2-devel libssh2-devel xfsprogs-devel mesa-libGL-devel mesa-libGLES-devel \
-        mesa-libGLU-devel mesa-libGLw-devel spice-server-devel libattr-devel \
-	libaio-devel sparse-devel gtkglext-libs vte-devel libtasn1-devel \
-	gperftools-devel virglrenderer device-mapper-multipath-devel \
-	cyrus-sasl-devel libjpeg-turbo-devel glusterfs-api-devel \
-	libpmem-devel libudev-devel capstone-devel numactl-devel \
-	librdmacm-devel  libibverbs-devel libibumad-devel libvirt-devel \
-	gcc-objc iasl
-    # Ceph for QEmu
-    sudo yum install -y ceph ceph-base ceph-common ceph-devel-compat ceph-fuse \
-	ceph-libs-compat ceph-mds ceph-mon ceph-osd ceph-radosgw ceph-resource-agents \
-	ceph-selinux ceph-test cephfs-java libcephfs1-devel libcephfs_jni1-devel \
-	librados2-devel libradosstriper1-devel librbd1-devel librgw2-devel \
-	python-ceph-compat python-cephfs python-rados python-rbd rbd-fuse \
-	rbd-mirror rbd-nbd 
-    # Xen for QEmu
-    sudo yum -y centos-release-xen sudo passwd bzip2 patch nano which tar  \
-	xz libvirt libvirt-daemon-xen
-    sudo yum groupinstall -y "Development tools"
+    if [ "x${OSNAME}" = "xLinux" ]; then
 
-    # Multilib
-    sudo yum install -y  glibc-devel.i686 zlib-devel.i686 elfutils-devel.i686 \
-	mpfr-devel.i686 libstdc++-devel.i686 binutils-devel.i686
-    sudo yum-builddep -y binutils gcc gdb qemu-kvm texinfo-tex texinfo
-    sudo yum install -y  patchelf
+	if [ -e /bin/dnf ]; then
+
+	    YUM_CMD=/bin/dnf
+	    
+	    sudo dnf config-manager --set-enabled BaseOS
+	    sudo dnf config-manager --set-enabled AppStream
+	    sudo dnf config-manager --set-enabled PowerTools
+	    sudo dnf config-manager --set-enabled epel
+	    sudo dnf config-manager --set-enabled epel-modular
+	    sudo dnf config-manager --set-enabled extras
+	    sudo dnf install -y dnf-plugins-core dnf-plugins-extras-tracer \
+		 dnf-plugins-extras-repoclosure dnf-plugins-extras-repograph \
+		 dnf-plugins-extras-repomanage dnf-plugins-extras-debug \
+		 dnf-plugins-extras-debug 
+	else
+	    sudo yum install -y yum-priorities epel-release yum-utils	    	    
+	fi
+	
+	sudo ${YUM_CMD} install -y binutils subversion swig doxygen python3-devel \
+	     python-devel libedit-devel \
+	     libxml2-devel re2c graphviz swig 
+	# QEmu
+	sudo ${YUM_CMD} install -y giflib-devel libpng-devel libtiff-devel gtk3-devel \
+	     ncurses-devel gnutls-devel nettle-devel libgcrypt-devel SDL2-devel \
+	     libguestfs-devel curl-devel brlapi-devel bluez-libs-devel \
+	     libusb-devel libcap-devel libcap-ng-devel libiscsi-devel libnfs-devel \
+	     libcacard-devel lzo-devel snappy-devel bzip2-devel libseccomp-devel \
+	     libxml2-devel libssh2-devel xfsprogs-devel mesa-libGL-devel \
+	     mesa-libGLES-devel mesa-libGLU-devel mesa-libGLw-devel \
+	     spice-server-devel libattr-devel libaio-devel libtasn1-devel \
+	     gperftools-devel virglrenderer device-mapper-multipath-devel \
+	     cyrus-sasl-devel libjpeg-turbo-devel glusterfs-api-devel \
+	     libpmem-devel libudev-devel capstone-devel numactl-devel \
+	     librdmacm-devel  libibverbs-devel libibumad-devel libvirt-devel \
+	     iasl
+	# Ceph for QEmu
+	sudo ${YUM_CMD} install -y  libcephfs-devel librbd-devel \
+	     librados2-devel libradosstriper1-devel librbd1-devel
+	
+	# Xen for QEmu
+	sudo ${YUM_CMD} -y centos-release-xen sudo passwd bzip2 patch nano which tar  \
+	     xz libvirt libvirt-daemon-xen
+	sudo ${YUM_CMD} groupinstall -y "Development tools"
+	sudo ${YUM_CMD} install -y  glibc-devel.i686 zlib-devel.i686 elfutils-devel.i686 \
+	     mpfr-devel.i686 libstdc++-devel.i686 binutils-devel.i686
+	
+	# Build tools
+	sudo ${YUM_CMD} groupinstall -y "Development tools"
+	sudo ${YUM_CMD} install -y binutils subversion swig doxygen python3-devel \
+	     python-devel libedit-devel \
+	     libxml2-devel re2c graphviz swig 
+	sudo ${YUM_CMD} install -y  glibc-devel.i686 zlib-devel.i686 elfutils-devel.i686 \
+	     mpfr-devel.i686 libstdc++-devel.i686 binutils-devel.i686
+
+	# QEmu
+	sudo ${YUM_CMD} install -y giflib-devel libpng-devel libtiff-devel gtk3-devel \
+	     ncurses-devel gnutls-devel nettle-devel libgcrypt-devel SDL2-devel \
+	     libguestfs-devel curl-devel brlapi-devel bluez-libs-devel \
+	     libusb-devel libcap-devel libcap-ng-devel libiscsi-devel libnfs-devel \
+	     libcacard-devel lzo-devel snappy-devel bzip2-devel libseccomp-devel \
+	     libxml2-devel libssh2-devel xfsprogs-devel mesa-libGL-devel \
+	     mesa-libGLES-devel mesa-libGLU-devel mesa-libGLw-devel spice-server-devel \
+	     libattr-devel libaio-devel libtasn1-devel \
+	     gperftools-devel virglrenderer device-mapper-multipath-devel \
+	     cyrus-sasl-devel libjpeg-turbo-devel glusterfs-api-devel \
+	     libpmem-devel libudev-devel capstone-devel numactl-devel \
+	     librdmacm-devel  libibverbs-devel libibumad-devel libvirt-devel \
+	     iasl
+
+        # For UEFI
+	sudo ${YUM_CMD} install -y nasm iasl acpica-tools
+	
+	# Ceph for QEmu
+	sudo ${YUM_CMD} install -y  libcephfs-devel librbd-devel \
+	     librados2-devel libradosstriper1-devel librbd1-devel librgw2
+	
+	# Xen for QEmu
+	sudo ${YUM_CMD} -y centos-release-xen sudo passwd bzip2 patch nano which tar  \
+	     xz libvirt libvirt-daemon-xen
+
+	# Multilib
+	sudo ${YUM_CMD} install -y  glibc-devel.i686 zlib-devel.i686 elfutils-devel.i686 \
+	     mpfr-devel.i686 libstdc++-devel.i686 binutils-devel.i686
+	sudo ${YUM_CMD} install -y  patchelf
+
+	# Build dep
+	sudo dnf builddep -y binutils gcc texinfo-tex texinfo cmake
+    else
+	# Build dep	
+	sudo ${YUM_CMD}-builddep -y binutils gcc texinfo-tex texinfo cmake
+    fi
 }
 
 ## begin note
