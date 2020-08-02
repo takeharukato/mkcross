@@ -276,7 +276,7 @@ prepare_devenv(){
 	sudo ${DNF_CMD} install -y libedit-devel libxml2-devel cmake
 
 	# Python
-	sudo ${DNF_CMD} install -y python3-devel swig
+	sudo ${DNF_CMD} install -y python2-devel python3-devel swig
 	
 	# Version manager
 	sudo ${DNF_CMD} install -y git subversion 
@@ -325,7 +325,7 @@ prepare_devenv(){
 	    # For CentOS7
 	    
 	    # Python devel
-	    sudo ${DNF_CMD} install -y python-devel
+	    sudo ${DNF_CMD} install -y python-devel python3-devel
 
 	    # Xen for QEmu
 	    sudo ${DNF_CMD} -y centos-release-xen
@@ -431,7 +431,7 @@ do_build_z3(){
     #
     #z3の構築
     #
-    python scripts/mk_make.py \
+    python3 scripts/mk_make.py \
 	--prefix=${CROSS}
     pushd build
     gmake ${SMP_OPT} 
@@ -500,7 +500,7 @@ do_build_ninja(){
 	cp -a ${DOWNLOADDIR}/ninja ${BUILDDIR}/ninja
     fi
     pushd ${BUILDDIR}/ninja
-    ./configure.py --bootstrap
+    python2 ./configure.py --bootstrap
     mkdir -p ${CROSS}/bin
     sudo cp ninja ${CROSS}/bin
 
@@ -739,14 +739,21 @@ main(){
      	do_build_z3    
     fi
 
-    do_build_llvm
+    if [ "x${NO_LLVM}" = 'x' ]; then
 
-    do_build_llvm_with_clangxx
+	do_build_llvm
 
-    do_build_emulator
+	do_build_llvm_with_clangxx
+    fi
 
-    do_strip_binaries
+    if [ "x${NO_SIM}" = 'x' ]; then
+	do_build_emulator
+    fi
 
+    if [ "x${NO_STRIP}" = 'x' ]; then
+	do_strip_binaries
+    fi
+    
     if [ "x${NO_CLEAN_DIR}" = 'x' ]; then    
     	cleanup_temporary_directories
     fi
