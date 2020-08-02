@@ -312,49 +312,54 @@ prepare_devenv(){
 	    sudo dnf config-manager --set-enabled epel
 	    sudo dnf config-manager --set-enabled epel-modular
 	    sudo dnf config-manager --set-enabled extras
-	    sudo dnf install -y dnf-plugins-core dnf-plugins-extras-tracer \
+	    sudo dnf install -y dnf-plugins-core \
 		 dnf-plugins-extras-repoclosure dnf-plugins-extras-repograph \
 		 dnf-plugins-extras-repomanage dnf-plugins-extras-debug \
 		 dnf-plugins-extras-debug 
 	else
 	    sudo yum install -y yum-priorities epel-release yum-utils	    	    
 	fi
-	
-	sudo ${YUM_CMD} install -y binutils subversion swig doxygen python3-devel \
-	     python-devel libedit-devel \
-	     libxml2-devel re2c graphviz swig 
-	# QEmu
-	sudo ${YUM_CMD} install -y giflib-devel libpng-devel libtiff-devel gtk3-devel \
-	     ncurses-devel gnutls-devel nettle-devel libgcrypt-devel SDL2-devel \
-	     libguestfs-devel curl-devel brlapi-devel bluez-libs-devel \
-	     libusb-devel libcap-devel libcap-ng-devel libiscsi-devel libnfs-devel \
-	     libcacard-devel lzo-devel snappy-devel bzip2-devel libseccomp-devel \
-	     libxml2-devel libssh2-devel xfsprogs-devel mesa-libGL-devel \
-	     mesa-libGLES-devel mesa-libGLU-devel mesa-libGLw-devel \
-	     spice-server-devel libattr-devel libaio-devel libtasn1-devel \
-	     gperftools-devel virglrenderer device-mapper-multipath-devel \
-	     cyrus-sasl-devel libjpeg-turbo-devel glusterfs-api-devel \
-	     libpmem-devel libudev-devel capstone-devel numactl-devel \
-	     librdmacm-devel  libibverbs-devel libibumad-devel libvirt-devel \
-	     iasl
-	# Ceph for QEmu
-	sudo ${YUM_CMD} install -y  libcephfs-devel librbd-devel \
-	     librados2-devel libradosstriper1-devel librbd1-devel
-	
-	# Xen for QEmu
-	sudo ${YUM_CMD} -y centos-release-xen sudo passwd bzip2 patch nano which tar  \
-	     xz libvirt libvirt-daemon-xen
-	sudo ${YUM_CMD} groupinstall -y "Development tools"
-	sudo ${YUM_CMD} install -y  glibc-devel.i686 zlib-devel.i686 elfutils-devel.i686 \
-	     mpfr-devel.i686 libstdc++-devel.i686 binutils-devel.i686
-	
+
+	# Basic commands
+	sudo ${YUM_CMD} -y sudo passwd bzip2 patch nano which tar xz	
+
 	# Build tools
 	sudo ${YUM_CMD} groupinstall -y "Development tools"
-	sudo ${YUM_CMD} install -y binutils subversion swig doxygen python3-devel \
-	     python-devel libedit-devel \
-	     libxml2-devel re2c graphviz swig 
-	sudo ${YUM_CMD} install -y  glibc-devel.i686 zlib-devel.i686 elfutils-devel.i686 \
-	     mpfr-devel.i686 libstdc++-devel.i686 binutils-devel.i686
+
+	# Prerequisites header/commands for GCC
+	sudo ${YUM_CMD} install -y glibc-devel binutils gcc bash gawk \
+	     gzip bzip2-devel make tar perl
+	sudo ${YUM_CMD} install -y m4 automake autoconf gettext gperf \
+	     autogen guile texinfo texinfo-tex texlive texlive* \
+	     python3-sphinx git openssh diffutils patch
+
+	# Prerequisites library for GCC
+	sudo ${YUM_CMD} install -y glibc-devel zlib-devel elfutils-devel \
+	     gmp-devel mpfr-devel libstdc++-devel binutils-devel libzstd-devel
+
+	# Multilib
+	sudo ${YUM_CMD} install -y glibc-devel.i686 zlib-devel.i686 elfutils-devel.i686 \
+	     gmp-devel.i686 mpfr-devel.i686 libstdc++-devel.i686 binutils-devel.i686 \
+	     libzstd-devel.i686
+
+	# Prerequisites for LLVM
+	sudo ${YUM_CMD} install -y libedit-devel libxml2-devel cmake
+
+	# Python
+	sudo ${YUM_CMD} install -y python3-devel python-devel swig
+	
+	# Version manager
+	sudo ${YUM_CMD} install -y git subversion 
+
+	# Document commands
+	sudo ${YUM_CMD} install -y re2c graphviz doxygen
+	sudo ${YUM_CMD} install -y docbook-utils docbook-style-xsl 
+
+	# patchelf
+	sudo ${YUM_CMD} install -y patchelf
+	
+        # For UEFI
+	sudo ${YUM_CMD} install -y nasm iasl acpica-tools
 
 	# QEmu
 	sudo ${YUM_CMD} install -y giflib-devel libpng-devel libtiff-devel gtk3-devel \
@@ -371,25 +376,20 @@ prepare_devenv(){
 	     librdmacm-devel  libibverbs-devel libibumad-devel libvirt-devel \
 	     iasl
 
-        # For UEFI
-	sudo ${YUM_CMD} install -y nasm iasl acpica-tools
-	
 	# Ceph for QEmu
 	sudo ${YUM_CMD} install -y  libcephfs-devel librbd-devel \
-	     librados2-devel libradosstriper1-devel librbd1-devel librgw2
+	     librados2-devel libradosstriper1-devel librbd1-devel
 	
-	# Xen for QEmu
-	sudo ${YUM_CMD} -y centos-release-xen sudo passwd bzip2 patch nano which tar  \
-	     xz libvirt libvirt-daemon-xen
-
-	# Multilib
-	sudo ${YUM_CMD} install -y  glibc-devel.i686 zlib-devel.i686 elfutils-devel.i686 \
-	     mpfr-devel.i686 libstdc++-devel.i686 binutils-devel.i686
-	sudo ${YUM_CMD} install -y  patchelf
+	# KVM for QEmu
+	sudo ${YUM_CMD} -y qemu-kvm libvirt virt-install
 
 	# Build dep
 	sudo dnf builddep -y binutils gcc texinfo-tex texinfo cmake
     else
+
+	# Xen for QEmu
+	sudo ${YUM_CMD} -y qemu-kvm libvirt virt-install
+
 	# Build dep	
 	sudo ${YUM_CMD}-builddep -y binutils gcc texinfo-tex texinfo cmake
     fi
