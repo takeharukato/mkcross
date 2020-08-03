@@ -308,6 +308,7 @@ fetch_edk2_src() {
 prepare_devenv(){
     local DNF_CMD=/bin/dnf
     local YUM_CMD=/bin/yum
+    local YUM_BUILDDEP_CMD=yum-builddep
 
     if [ "x${OSNAME}" = "xLinux" ]; then
 
@@ -350,9 +351,6 @@ prepare_devenv(){
 	sudo ${DNF_CMD} install -y glibc-devel.i686 zlib-devel.i686 elfutils-devel.i686 \
 	     gmp-devel.i686 mpfr-devel.i686 libstdc++-devel.i686 binutils-devel.i686 \
 	     libzstd-devel.i686
-
-	# LLVM/clang for bootstrap
-	sudo ${DNF_CMD} install -y clang
 
 	# Prerequisites for LLVM
 	sudo ${DNF_CMD} install -y libedit-devel libxml2-devel cmake
@@ -400,6 +398,9 @@ prepare_devenv(){
 	    #
 	    # For CentOS8
 	    #
+
+	    # LLVM/clang for bootstrap
+	    sudo ${DNF_CMD} module -y install llvm-toolset:rhel8
 	    
 	    # Python2 devel
 	    sudo ${DNF_CMD} install -y python2-devel
@@ -413,14 +414,17 @@ prepare_devenv(){
 	    # For CentOS7
 	    #
 	    
+	    # LLVM/clang for bootstrap
+	    sudo ${YUM_CMD} install -y clang
+
 	    # Python2 devel
-	    sudo ${DNF_CMD} install -y python-devel
+	    sudo ${YUM_CMD} install -y python-devel
 
 	    # Xen for QEmu
-	    sudo ${DNF_CMD} -y centos-release-xen
+	    sudo ${YUM_CMD} -y centos-release-xen
 	
 	    # Build dep	
-	    sudo yum-builddep -y binutils gcc texinfo-tex texinfo cmake qemu-kvm
+	    sudo ${YUM_BUILDDEP_CMD} -y binutils gcc texinfo-tex texinfo cmake qemu-kvm
 
 	fi
     fi
