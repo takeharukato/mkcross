@@ -274,6 +274,9 @@ prepare_devenv(){
 	     gmp-devel.i686 mpfr-devel.i686 libstdc++-devel.i686 binutils-devel.i686 \
 	     libzstd-devel.i686
 
+	# Prerequisites CMake
+	sudo ${DNF_CMD} install -y openssl-devel
+	
 	# Prerequisites for LLVM
 	sudo ${DNF_CMD} install -y libedit-devel libxml2-devel cmake
 
@@ -309,26 +312,29 @@ prepare_devenv(){
 	     iasl
 
 	# Ceph for QEmu
-	sudo ${DNF_CMD} install -y  libcephfs-devel librbd-devel \
+	sudo ${DNF_CMD} install -y libcephfs-devel librbd-devel \
 	     librados2-devel libradosstriper1-devel librbd1-devel
 	
-	# KVM for QEmu
-	sudo ${DNF_CMD} install -y qemu-kvm libvirt virt-install
-
 	if [  -e ${DNF_CMD} ]; then	
 
 	    #
 	    # For CentOS8
 	    #
 
+	    # Go for LLVM bindings for Go lang
+	    sudo ${DNF_CMD} module -y install go-toolset:rhel8
+
 	    # LLVM/clang for bootstrap
 	    sudo ${DNF_CMD} module -y install llvm-toolset:rhel8
-	    
+
 	    # Python2 devel
 	    sudo ${DNF_CMD} install -y python2-devel
 
+	    # KVM for QEmu
+	    sudo ${DNF_CMD} module -y install virt
+
 	    # Build dep
-	    sudo ${DNF_CMD} builddep -y binutils gcc texinfo-tex texinfo cmake qemu-kvm
+	    sudo ${DNF_CMD} builddep -y binutils gcc texinfo-tex texinfo cmake qemu-kvm-common
 
 	else
 
@@ -336,11 +342,17 @@ prepare_devenv(){
 	    # For CentOS7
 	    #
 	    
+	    # Go for LLVM bindings for Go lang
+	    sudo ${YUM_CMD} install -y golang
+
 	    # LLVM/clang for bootstrap
 	    sudo ${YUM_CMD} install -y clang
 
 	    # Python2 devel
 	    sudo ${YUM_CMD} install -y python-devel
+
+	    # KVM for QEmu
+	    sudo ${YUM_CMD} install -y qemu-kvm libvirt virt-install
 
 	    # Xen for QEmu
 	    sudo ${YUM_CMD} -y centos-release-xen
