@@ -1,6 +1,27 @@
 #!/usr/bin/env bash
 
-do_one_build(){
+TARGETS=(riscv64 aarch64 x64 i686 armhw riscv32)
+
+do_one_elf_build(){
+    local name
+
+    if [ $# -ne 1 ]; then
+	echo "Error: do_one_elf_build [arch]"
+	exit 1
+    fi
+
+    name=$1
+    if [ -f env/${name}-env.sh ]; then
+	echo "Build ${name} for ELF ..."
+	if [ "x${NO_ELF_TOOLS}" != "x" ]; then
+	    echo "Skipped..."
+	else
+	    bash ./scripts/build-elf.sh ./env/${name}-env.sh 2>&1 | tee ${name}-ELF-build.log
+	fi
+    fi
+}
+
+do_one_linux_build(){
     local name
 
     if [ $# -ne 1 ]; then
@@ -26,23 +47,26 @@ do_one_build(){
 		fi
 		;;
 	esac
-	echo "Build ${name} for ELF ..."
-	if [ "x${NO_ELF_TOOLS}" != "x" ]; then
-	    echo "Skipped..."
-	else
-	    bash ./scripts/build-elf.sh ./env/${name}-env.sh 2>&1 | tee ${name}-ELF-build.log
-	fi
     fi
 }
-
-
 
 do_all_build(){
     local name
 
-    for name in aarch64 x64 i686 armhw riscv64 riscv32
+    #
+    # ELF tool chain
+    #
+    for name in ${TARGETS[@]}
     do
-	do_one_build ${name}
+	do_one_elf_build ${name}
+    done
+
+    #
+    # Linux tool chain
+    #
+    for name in ${TARGETS[@]}
+    do
+	do_one_linux_build ${name}
     done
 }
 
