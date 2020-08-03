@@ -380,7 +380,7 @@ prepare_devenv(){
 	     libguestfs-devel curl-devel brlapi-devel bluez-libs-devel \
 	     libusb-devel libcap-devel libcap-ng-devel libiscsi-devel libnfs-devel \
 	     libcacard-devel lzo-devel snappy-devel bzip2-devel libseccomp-devel \
-	     libxml2-devel libssh2-devel xfsprogs-devel mesa-libGL-devel \
+	     libxml2-devel libssh-devel libssh2-devel xfsprogs-devel mesa-libGL-devel \
 	     mesa-libGLES-devel mesa-libGLU-devel mesa-libGLw-devel spice-server-devel \
 	     libattr-devel libaio-devel libtasn1-devel \
 	     gperftools-devel virglrenderer device-mapper-multipath-devel \
@@ -2690,6 +2690,11 @@ do_build_emulator(){
      --enable-system                     \
      ${QEMU_CONFIG_USERLAND}             \
      --enable-tcg-interpreter            \
+     --enable-modules                    \
+     --enable-debug-tcg                  \
+     --enable-debug-info                 \
+     --enable-membarrier                 \
+     --disable-pie                       \
      --disable-werror
     
     make ${SMP_OPT} V=1
