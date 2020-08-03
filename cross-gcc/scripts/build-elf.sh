@@ -305,14 +305,17 @@ prepare_devenv(){
     if [ "x${OSNAME}" = "xLinux" ]; then
 
 	if [ -e ${DNF_CMD} ]; then
-    
+
 	    sudo ${DNF_CMD} config-manager --set-enabled BaseOS
 	    # clang needs AppStream
 	    sudo ${DNF_CMD} config-manager --set-enabled AppStream
 	    sudo ${DNF_CMD} config-manager --set-enabled PowerTools
+	    sudo ${DNF_CMD} config-manager --set-enabled extras
+
+            sudo ${DNF_CMD} install -y epel-release
 	    sudo ${DNF_CMD} config-manager --set-enabled epel
 	    sudo ${DNF_CMD} config-manager --set-enabled epel-modular
-	    sudo ${DNF_CMD} config-manager --set-enabled extras
+
 	    sudo ${DNF_CMD} install -y dnf-plugins-core \
 		 dnf-plugins-extras-repoclosure dnf-plugins-extras-repograph \
 		 dnf-plugins-extras-repomanage dnf-plugins-extras-debug \
