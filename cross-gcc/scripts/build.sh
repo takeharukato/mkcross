@@ -334,10 +334,7 @@ prepare_devenv(){
 	fi
 
 	# Basic commands
-	sudo ${DNF_CMD} install -y sudo passwd bzip2 patch nano which tar xz	
-
-	# Build tools
-	sudo ${DNF_CMD} groupinstall -y "Development tools"
+	sudo ${DNF_CMD} install -y sudo passwd bzip2 patch nano which tar xz wget
 
 	# Prerequisites header/commands for GCC
 	sudo ${DNF_CMD} install -y glibc-devel binutils gcc bash gawk \
