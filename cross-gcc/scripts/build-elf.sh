@@ -306,6 +306,7 @@ prepare_devenv(){
 	if [ -e ${DNF_CMD} ]; then
     
 	    sudo ${DNF_CMD} config-manager --set-enabled BaseOS
+	    # clang needs AppStream
 	    sudo ${DNF_CMD} config-manager --set-enabled AppStream
 	    sudo ${DNF_CMD} config-manager --set-enabled PowerTools
 	    sudo ${DNF_CMD} config-manager --set-enabled epel
@@ -341,6 +342,9 @@ prepare_devenv(){
 	sudo ${DNF_CMD} install -y glibc-devel.i686 zlib-devel.i686 elfutils-devel.i686 \
 	     gmp-devel.i686 mpfr-devel.i686 libstdc++-devel.i686 binutils-devel.i686 \
 	     libzstd-devel.i686
+
+	# LLVM/clang for bootstrap
+	sudo ${DNF_CMD} install -y clang
 
 	# Prerequisites for LLVM
 	sudo ${DNF_CMD} install -y libedit-devel libxml2-devel cmake
@@ -385,16 +389,23 @@ prepare_devenv(){
 
 	if [  -e ${DNF_CMD} ]; then	
 
-	    # For RHEL/CentOS8
-	    sudo ${DNF_CMD} install -y python3-devel
+	    #
+	    # For CentOS8
+	    #
+	    
+	    # Python2 devel
+	    sudo ${DNF_CMD} install -y python2-devel
+
 	    # Build dep
 	    sudo ${DNF_CMD} builddep -y binutils gcc texinfo-tex texinfo cmake qemu-kvm
 
 	else
 
+	    #
 	    # For CentOS7
+	    #
 	    
-	    # Python devel
+	    # Python2 devel
 	    sudo ${DNF_CMD} install -y python-devel
 
 	    # Xen for QEmu
