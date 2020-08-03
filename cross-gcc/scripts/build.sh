@@ -2694,6 +2694,8 @@ do_build_emulator(){
      --enable-debug-tcg                  \
      --enable-debug-info                 \
      --enable-membarrier                 \
+     --enable-gprof                      \
+     --enable-profiler                   \
      --disable-pie                       \
      --disable-werror
     
