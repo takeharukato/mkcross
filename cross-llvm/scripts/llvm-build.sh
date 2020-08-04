@@ -88,13 +88,9 @@ setup_variables(){
 	fi
 
 	QEMU_CONFIG_USERLAND="--enable-user --enable-linux-user"
-	QEMU_TARGETS="${QEMU_SOFTMMU_TARGETS},${QEMU_CPU}-linux-user"
     else
 	if [ "x${QEMU_CPU}" = "xx86_64" -o "x${QEMU_CPU}" = "xi386" ]; then
 	    QEMU_CONFIG_USERLAND="--enable-user --enable-bsd-user"
-	    QEMU_TARGETS="${QEMU_SOFTMMU_TARGETS},${QEMU_CPU}-bsd-user"
-	else
-	    QEMU_TARGETS="${QEMU_SOFTMMU_TARGETS}"	
 	fi
     fi
 
@@ -725,15 +721,17 @@ do_build_emulator(){
     cp -a  ${SRCDIR}/${QEMU} ${BUILDDIR}/${QEMU}
     pushd  ${BUILDDIR}/${QEMU}
 
+    mkdir build
+    pushd build
+
     CC="cc"                        \
     CXX="c++"                      \
     AR="ar"                        \
     LD="ld"                        \
     RANLIB="ranlib"                \
-    ./configure                          \
+    ../configure                          \
      --prefix=${CROSS}                   \
      --interp-prefix=${SYSROOT}          \
-     --target-list="${QEMU_TARGETS}"     \
      --enable-system                     \
      ${QEMU_CONFIG_USERLAND}             \
      --enable-tcg-interpreter            \
@@ -756,6 +754,8 @@ do_build_emulator(){
 	echo "Remove ${file}"
 	${SUDO} rm -f ${file}
     done
+    popd
+
     popd
 
     popd
@@ -797,9 +797,9 @@ main(){
 
     if [ "x${NO_LLVM}" = 'x' ]; then
 
-	do_build_llvm
+    	do_build_llvm
 
-	do_build_llvm_with_clangxx
+    	do_build_llvm_with_clangxx
     fi
 
     if [ "x${NO_SIM}" = 'x' ]; then

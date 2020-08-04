@@ -1220,12 +1220,15 @@ do_build_emulator(){
     cp -a  ${SRCDIR}/${QEMU} ${BUILDDIR}/${QEMU}
     pushd  ${BUILDDIR}/${QEMU}
 
+    mkdir build
+    pushd build
+
     CC="cc"                        \
     CXX="c++"                      \
     AR="ar"                        \
     LD="ld"                        \
     RANLIB="ranlib"                \
-    ./configure                          \
+    ../configure                          \
      --prefix=${CROSS}                   \
      --interp-prefix=${SYSROOT}          \
      --target-list="${QEMU_TARGETS}"     \
@@ -1251,6 +1254,8 @@ do_build_emulator(){
 	echo "Remove ${file}"
 	${SUDO} rm -f ${file}
     done
+    popd
+
     popd
 
     popd
