@@ -2,6 +2,10 @@
 
 TARGETS=(riscv64 aarch64 x64 i686 armhw riscv32)
 
+if [ "x${TARGET_CPUS}" == "x" ]; then
+    TARGETS=(`echo ${TARGET_CPUS}`)
+fi
+
 do_one_elf_build(){
     local name
 
