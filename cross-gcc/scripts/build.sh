@@ -14,6 +14,9 @@ unset KERN_ARCH
 unset TARGET_CPU
 unset QEMU_CPU
 unset HOSTCC
+unset KERN_MAJOR
+unset KERN_MINOR
+unset KERN_REV
 
 #エラーメッセージの文字化けを避けるためにCロケールで動作させる
 LANG=C
@@ -92,12 +95,25 @@ setup_variables(){
     else
 	PROGRAM_PREFIX="--program-prefix=${TARGET}-"
     fi
-    
+  
     if [ "x${QEMU_SOFTMMU_TARGETS}" = "x" ]; then
 	QEMU_SOFTMMU_TARGETS="${QEMU_CPU}-softmmu"
     fi
-    
+   
     if [ "x${OSNAME}" = "xLinux" ]; then
+
+	KERN_MAJOR=`uname -r|awk -F'-' '{print $1;}'|awk -F '.' '{print $1}'`
+	KERN_MINOR=`uname -r|awk -F'-' '{print $1;}'|awk -F '.' '{print $2}'`
+	KERN_REV=`uname -r|awk -F'-' '{print $1;}'|awk -F '.' '{print $3}'`
+	
+	echo "Host Linux kernel ${KERN_MAJOR}.${KERN_MINOR}.${KERN_REV}"
+	
+	if [ ${KERN_MAJOR} -ge 4 -a ${KERN_MINOR} -ge 3 ]; then
+	    QEMU_CONFIG_MEMBARRIER="--enable-membarrier"
+	else
+	    QEMU_CONFIG_MEMBARRIER=""
+	fi
+
 	QEMU_CONFIG_USERLAND="--enable-user --enable-linux-user"
 	QEMU_TARGETS="${QEMU_SOFTMMU_TARGETS},${QEMU_CPU}-linux-user"
     else
@@ -2693,7 +2709,7 @@ do_build_emulator(){
      --enable-modules                    \
      --enable-debug-tcg                  \
      --enable-debug-info                 \
-     --enable-membarrier                 \
+     ${QEMU_CONFIG_MEMBARRIER}           \
      --enable-gprof                      \
      --enable-profiler                   \
      --disable-pie                       \

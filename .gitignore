@@ -60,3 +60,4 @@ patches
 series
 *.log
 cross-gcc/tools
+downloads

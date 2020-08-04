@@ -13,6 +13,10 @@ unset CPU
 unset KERN_ARCH
 unset TARGET_CPU
 unset QEMU_CPU
+unset HOSTCC
+unset KERN_MAJOR
+unset KERN_MINOR
+unset KERN_REV
 
 #エラーメッセージの文字化けを避けるためにCロケールで動作させる
 LANG=C
@@ -94,6 +98,19 @@ setup_variables(){
     fi
     
     if [ "x${OSNAME}" = "xLinux" ]; then
+
+	KERN_MAJOR=`uname -r|awk -F'-' '{print $1;}'|awk -F '.' '{print $1}'`
+	KERN_MINOR=`uname -r|awk -F'-' '{print $1;}'|awk -F '.' '{print $2}'`
+	KERN_REV=`uname -r|awk -F'-' '{print $1;}'|awk -F '.' '{print $3}'`
+	
+	echo "Host Linux kernel ${KERN_MAJOR}.${KERN_MINOR}.${KERN_REV}"
+	
+	if [ ${KERN_MAJOR} -ge 4 -a ${KERN_MINOR} -ge 3 ]; then
+	    QEMU_CONFIG_MEMBARRIER="--enable-membarrier"
+	else
+	    QEMU_CONFIG_MEMBARRIER=""
+	fi
+
 	QEMU_CONFIG_USERLAND="--enable-user --enable-linux-user"
 	QEMU_TARGETS="${QEMU_SOFTMMU_TARGETS},${QEMU_CPU}-linux-user"
     else
@@ -1189,9 +1206,11 @@ do_cross_uefi(){
 }
 
 ## begin note
-# 機能: 実行環境エミュレータを生成する
+# 機能:実行環境エミュレータを生成する
 ## end note
 do_build_emulator(){
+    local glibcflags
+    local glibldflags
 
     echo "@@@ Emulator @@@"
 
@@ -1201,23 +1220,38 @@ do_build_emulator(){
     cp -a  ${SRCDIR}/${QEMU} ${BUILDDIR}/${QEMU}
     pushd  ${BUILDDIR}/${QEMU}
 
+    CC="cc"                        \
+    CXX="c++"                      \
+    AR="ar"                        \
+    LD="ld"                        \
+    RANLIB="ranlib"                \
     ./configure                          \
      --prefix=${CROSS}                   \
      --interp-prefix=${SYSROOT}          \
      --target-list="${QEMU_TARGETS}"     \
      --enable-system                     \
+     ${QEMU_CONFIG_USERLAND}             \
      --enable-tcg-interpreter            \
      --enable-modules                    \
      --enable-debug-tcg                  \
      --enable-debug-info                 \
-     --enable-membarrier                 \
+     ${QEMU_CONFIG_MEMBARRIER}           \
      --enable-gprof                      \
      --enable-profiler                   \
      --disable-pie                       \
      --disable-werror
-   
-    gmake ${SMP_OPT} V=1
-    ${SUDO} gmake V=1 install
+    
+    make ${SMP_OPT} V=1
+    ${SUDO} make V=1 install
+
+    echo "Remove .la files"
+    pushd ${CROSS}
+    find . -name '*.la'|while read file
+    do
+	echo "Remove ${file}"
+	${SUDO} rm -f ${file}
+    done
+    popd
 
     popd
 }

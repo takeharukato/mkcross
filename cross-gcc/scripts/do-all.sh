@@ -2,7 +2,7 @@
 
 TARGETS=(riscv64 aarch64 x64 i686 armhw riscv32)
 
-if [ "x${TARGET_CPUS}" == "x" ]; then
+if [ "x${TARGET_CPUS}" != "x" ]; then
     TARGETS=(`echo ${TARGET_CPUS}`)
 fi
 
