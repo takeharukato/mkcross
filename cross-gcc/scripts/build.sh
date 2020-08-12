@@ -355,8 +355,8 @@ prepare_devenv(){
 	# Prerequisites header/commands for GCC
 	sudo ${DNF_CMD} install -y glibc-devel binutils gcc bash gawk \
 	     gzip bzip2-devel make tar perl
-	sudo ${DNF_CMD} install -y m4 automake autoconf gettext gperf \
-	     autogen guile texinfo texinfo-tex texlive texlive* \
+	sudo ${DNF_CMD} install -y m4 automake autoconf gettext-devel libtool \
+	     libtool-ltdl-devel gperf autogen guile texinfo texinfo-tex texlive texlive* \
 	     python3-sphinx git openssh diffutils patch
 
 	# Prerequisites library for GCC
@@ -409,6 +409,11 @@ prepare_devenv(){
 	sudo ${DNF_CMD} install -y libcephfs-devel librbd-devel \
 	     librados2-devel libradosstriper1-devel librbd1-devel
 	
+	# for graphviz
+	sudo ${DNF_CMD} install -y freeglut-devel guile-devel lua-devel libgs-devel \
+	     gtk3-devel lasi-devel poppler-devel librsvg2-devel gd-devel libwebp-devel \
+	     libXaw-devel tcl-devel ruby-devel R ocaml php-devel qt5-devel
+
 	if [  -e ${DNF_CMD} ]; then	
 
 	    #
@@ -420,7 +425,8 @@ prepare_devenv(){
 
 	    # LLVM/clang for bootstrap
 	    sudo ${DNF_CMD} module -y install llvm-toolset:rhel8
-
+	    sudo ${DNF_CMD} install -y llvm-devel
+	    
 	    # Python2 devel
 	    sudo ${DNF_CMD} install -y python2-devel
 
@@ -428,7 +434,8 @@ prepare_devenv(){
 	    sudo ${DNF_CMD} module -y install virt
 
 	    # Build dep
-	    sudo ${DNF_CMD} builddep -y binutils gcc texinfo-tex texinfo cmake qemu-kvm-common
+	    sudo ${DNF_CMD} builddep -y binutils gcc texinfo-tex texinfo cmake \
+		 qemu-kvm-common graphviz
 
 	else
 
@@ -441,7 +448,8 @@ prepare_devenv(){
 
 	    # LLVM/clang for bootstrap
 	    sudo ${YUM_CMD} install -y clang
-
+	    sudo ${YUM_CMD} install -y llvm-devel
+	    
 	    # Python2 devel
 	    sudo ${YUM_CMD} install -y python-devel
 
@@ -452,7 +460,8 @@ prepare_devenv(){
 	    sudo ${YUM_CMD} -y centos-release-xen
 	
 	    # Build dep	
-	    sudo ${YUM_BUILDDEP_CMD} -y binutils gcc texinfo-tex texinfo cmake qemu-kvm
+	    sudo ${YUM_BUILDDEP_CMD} -y binutils gcc texinfo-tex texinfo cmake qemu-kvm \
+		 graphviz
 
 	fi
     fi

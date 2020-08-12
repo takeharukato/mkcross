@@ -277,8 +277,8 @@ prepare_devenv(){
 	# Prerequisites header/commands for GCC
 	sudo ${DNF_CMD} install -y glibc-devel binutils gcc bash gawk \
 	     gzip bzip2-devel make tar perl
-	sudo ${DNF_CMD} install -y m4 automake autoconf gettext gperf \
-	     autogen guile texinfo texinfo-tex texlive texlive* \
+	sudo ${DNF_CMD} install -y m4 automake autoconf gettext-devel libtool \
+	     libtool-ltdl-devel gperf autogen guile texinfo texinfo-tex texlive texlive* \
 	     python3-sphinx git openssh diffutils patch
 
 	# Prerequisites library for GCC
@@ -330,6 +330,11 @@ prepare_devenv(){
 	# Ceph for QEmu
 	sudo ${DNF_CMD} install -y libcephfs-devel librbd-devel \
 	     librados2-devel libradosstriper1-devel librbd1-devel
+
+	# for graphviz
+	sudo ${DNF_CMD} install -y freeglut-devel guile-devel lua-devel libgs-devel \
+	     gtk3-devel lasi-devel poppler-devel librsvg2-devel gd-devel libwebp-devel \
+	     libXaw-devel tcl-devel ruby-devel R ocaml php-devel qt5-devel
 	
 	if [  -e ${DNF_CMD} ]; then	
 
@@ -342,7 +347,8 @@ prepare_devenv(){
 
 	    # LLVM/clang for bootstrap
 	    sudo ${DNF_CMD} module -y install llvm-toolset:rhel8
-
+	    sudo ${DNF_CMD} install -y llvm-devel clang-devel
+	    
 	    # Python2 devel
 	    sudo ${DNF_CMD} install -y python2-devel
 
@@ -350,7 +356,8 @@ prepare_devenv(){
 	    sudo ${DNF_CMD} module -y install virt
 
 	    # Build dep
-	    sudo ${DNF_CMD} builddep -y binutils gcc texinfo-tex texinfo cmake qemu-kvm-common
+	    sudo ${DNF_CMD} builddep -y binutils gcc texinfo-tex texinfo cmake \
+		 qemu-kvm-common graphviz
 
 	else
 
@@ -363,7 +370,8 @@ prepare_devenv(){
 
 	    # LLVM/clang for bootstrap
 	    sudo ${YUM_CMD} install -y clang
-
+	    sudo ${YUM_CMD} install -y llvm-devel clang-devel
+	    
 	    # Python2 devel
 	    sudo ${YUM_CMD} install -y python-devel
 
@@ -374,8 +382,8 @@ prepare_devenv(){
 	    sudo ${YUM_CMD} -y centos-release-xen
 	
 	    # Build dep	
-	    sudo ${YUM_BUILDDEP_CMD} -y binutils gcc texinfo-tex texinfo cmake qemu-kvm
-
+	    sudo ${YUM_BUILDDEP_CMD} -y binutils gcc texinfo-tex texinfo cmake qemu-kvm \
+		 graphviz
 	fi
     fi
 }
@@ -585,7 +593,8 @@ fetch_llvm_src(){
 }
 
 ## begin note
-# 機能:llvmをコンパイルする
+# 機能:llvmをコンパイルするためのllvmを構築する
+#      doxygenのパーサにlibclangを使うため静的ライブラリを生成する
 ## end note
 do_build_llvm(){
     local llvm_src
@@ -614,10 +623,11 @@ do_build_llvm(){
     mkdir -p ${BUILDDIR}/llvm-current
 
     pushd  ${BUILDDIR}/llvm-current
-    cmake -G  "${LLVM_BUILD_TYPE}"      \
-    	-DCMAKE_BUILD_TYPE=Release      \
-    	-DCMAKE_INSTALL_PREFIX=${CROSS} \
-	-DLLVM_ENABLE_LIBCXX=ON         \
+    cmake -G  "${LLVM_BUILD_TYPE}"                \
+    	-DCMAKE_BUILD_TYPE=Release                \
+    	-DCMAKE_INSTALL_PREFIX=${BUILD_TOOLS_DIR} \
+	-DLLVM_ENABLE_LIBCXX=ON                   \
+	-DLIBCLANG_BUILD_STATIC=ON                \
 	${llvm_src}/llvm
 
     if [ "x${NO_NINJA}" = "x" ]; then
@@ -679,8 +689,9 @@ do_build_llvm_with_clangxx(){
     	-DCMAKE_BUILD_TYPE=Release                     \
     	-DCMAKE_INSTALL_PREFIX=${CROSS}                \
 	-DLLVM_ENABLE_LIBCXX=ON                        \
-	-DCMAKE_C_COMPILER="${CROSS}/bin/clang"        \
-	-DCMAKE_CXX_COMPILER="${CROSS}/bin/clang++"    \
+	-DLIBCLANG_BUILD_STATIC=ON                     \
+	-DCMAKE_C_COMPILER="${BUILD_TOOLS_DIR}/bin/clang"        \
+	-DCMAKE_CXX_COMPILER="${BUILD_TOOLS_DIR}/bin/clang++"    \
 	${llvm_src}/llvm
 
     if [ "x${NO_NINJA}" = "x" ]; then
@@ -704,6 +715,59 @@ do_build_llvm_with_clangxx(){
     fi
 
     popd
+}
+## begin note
+# 機能: グラフ描画ツール(graphviz)を生成する
+## end note
+do_build_graphviz(){
+
+    echo "@@@ graphviz @@@"
+
+    extract_archive ${GRAPHVIZ}
+
+    rm -fr  ${BUILDDIR}/${GRAPHVIZ}
+    cp -a  ${SRCDIR}/${GRAPHVIZ} ${BUILDDIR}/${GRAPHVIZ}
+
+    pushd  ${BUILDDIR}/${GRAPHVIZ}
+    ./autogen.sh NOCONFIG
+
+    mkdir build
+    pushd build
+    ../configure --prefix=${CROSS} --enable-static
+    make ${SMP_OPT}
+    ${SUDO} make install    
+    popd
+    
+    popd 
+}
+
+## begin note
+# 機能: doxygenを生成する
+## end note
+do_build_doxygen(){
+
+    echo "@@@ doxygen @@@"
+
+    extract_archive ${DOXYGEN}.src
+    
+    rm -fr  ${BUILDDIR}/${DOXYGEN}
+    cp -a  ${SRCDIR}/${DOXYGEN} ${BUILDDIR}/${DOXYGEN}
+
+    pushd  ${BUILDDIR}/${DOXYGEN}
+    mkdir build
+    pushd build
+    cmake -DCMAKE_BUILD_TYPE=Release         \
+	  "-DCMAKE_FIND_LIBRARY_SUFFIXES=.a" \
+	  -DCMAKE_C_COMPILER="${BUILD_TOOLS_DIR}/bin/clang"         \
+	  -DCMAKE_CXX_COMPILER="${BUILD_TOOLS_DIR}/bin/clang++"     \
+	  -Duse_libclang=YES                 \
+    	  -DCMAKE_INSTALL_PREFIX=${CROSS}    \
+	  ${BUILDDIR}/${DOXYGEN}
+    make ${SMP_OPT}
+    ${SUDO} make install    
+    popd
+    
+    popd 
 }
 
 ## begin note
@@ -778,36 +842,48 @@ main(){
     prepare_archives
 
     if [ "x${FETCH_LLVM}" != 'x' -o ! -d ${DOWNLOADDIR}/llvm-current ]; then    
-    	fetch_llvm_src
+     	fetch_llvm_src
     fi
-
+    
     if [ "x${NO_CMAKE}" = 'x' ]; then    
-     	do_build_cmake
+      	do_build_cmake
     fi
-
+    
     if [ "x${NO_NINJA}" = "x" ]; then
-    	do_build_ninja
+     	do_build_ninja
     else
-    	echo "Skip build ninja"
+     	echo "Skip build ninja"
     fi
-
+    
     if [ "x${NO_Z3}" = 'x' ]; then
-     	do_build_z3    
+      	do_build_z3    
     fi
-
+    
     if [ "x${NO_LLVM}" = 'x' ]; then
+	
+     	do_build_llvm
+	
+     	do_build_llvm_with_clangxx
+    fi
+    
+    if [ "x${NO_GRAPHVIZ}" = 'x' ]; then
+	
+     	do_build_graphviz
 
-    	do_build_llvm
-
-    	do_build_llvm_with_clangxx
     fi
 
+    if [ "x${NO_DOXYGEN}" = 'x' ]; then
+	
+	do_build_doxygen
+	
+    fi
+    
     if [ "x${NO_SIM}" = 'x' ]; then
-	do_build_emulator
+ 	do_build_emulator
     fi
-
+    
     if [ "x${NO_STRIP}" = 'x' ]; then
-	do_strip_binaries
+ 	do_strip_binaries
     fi
     
     if [ "x${NO_CLEAN_DIR}" = 'x' ]; then    
