@@ -724,12 +724,12 @@ do_build_emulator(){
     mkdir build
     pushd build
 
-    CC="cc"                        \
-    CXX="c++"                      \
-    AR="ar"                        \
-    LD="ld"                        \
-    RANLIB="ranlib"                \
-    ../configure                          \
+    CC="clang"                           \
+    CXX="clang++"                        \
+    AR="llvm-ar"                         \
+    LD="lld"                             \
+    RANLIB="llvm-ranlib"                 \
+    ../configure                         \
      --prefix=${CROSS}                   \
      --interp-prefix=${SYSROOT}          \
      --enable-system                     \
