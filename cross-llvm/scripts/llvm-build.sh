@@ -870,7 +870,6 @@ main(){
 	
      	do_build_llvm
 	
-     	do_build_llvm_with_clangxx
     fi
     
     if [ "x${NO_GRAPHVIZ}" = 'x' ]; then
@@ -885,6 +884,11 @@ main(){
 	
     fi
     
+    if [ "x${NO_LLVM}" = 'x' ]; then
+	
+     	do_build_llvm_with_clangxx
+    fi
+
     if [ "x${NO_SIM}" = 'x' ]; then
  	do_build_emulator
     fi
