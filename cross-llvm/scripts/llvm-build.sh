@@ -332,7 +332,7 @@ prepare_devenv(){
 	     librados2-devel libradosstriper1-devel librbd1-devel
 
 	# for graphviz
-	sudo ${DNF_CMD} install -y freeglut-devel guile-devel lua-devel libgs-devel \
+	sudo ${DNF_CMD} install -y freeglut-devel guile-devel lua-devel \
 	     gtk3-devel lasi-devel poppler-devel librsvg2-devel gd-devel libwebp-devel \
 	     libXaw-devel tcl-devel ruby-devel R ocaml php-devel qt5-devel
 	
@@ -354,6 +354,9 @@ prepare_devenv(){
 
 	    # KVM for QEmu
 	    sudo ${DNF_CMD} module -y install virt
+
+	    # for graphviz
+	    sudo ${DNF_CMD} install -y libgs-devel
 
 	    # Build dep
 	    sudo ${DNF_CMD} builddep -y binutils gcc texinfo-tex texinfo cmake \
@@ -380,6 +383,9 @@ prepare_devenv(){
 
 	    # Xen for QEmu
 	    sudo ${YUM_CMD} -y centos-release-xen
+
+	    # for graphviz
+	    sudo ${YUM_CMD} install -y --skip-broken libgs-devel
 	
 	    # Build dep	
 	    sudo ${YUM_BUILDDEP_CMD} -y binutils gcc texinfo-tex texinfo cmake qemu-kvm \
