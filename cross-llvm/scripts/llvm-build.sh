@@ -839,41 +839,41 @@ main(){
     	prepare_devenv
     fi
 
-#    cleanup_directories
+    cleanup_directories
 
-    # create_directories
+    create_directories
 
-    # prepare_archives
+    prepare_archives
 
-    # if [ "x${FETCH_LLVM}" != 'x' -o ! -d ${DOWNLOADDIR}/llvm-current ]; then    
-    #  	fetch_llvm_src
-    # fi
+    if [ "x${FETCH_LLVM}" != 'x' -o ! -d ${DOWNLOADDIR}/llvm-current ]; then    
+     	fetch_llvm_src
+    fi
     
-    # if [ "x${NO_CMAKE}" = 'x' ]; then    
-    #   	do_build_cmake
-    # fi
+    if [ "x${NO_CMAKE}" = 'x' ]; then    
+      	do_build_cmake
+    fi
     
-    # if [ "x${NO_NINJA}" = "x" ]; then
-    #  	do_build_ninja
-    # else
-    #  	echo "Skip build ninja"
-    # fi
+    if [ "x${NO_NINJA}" = "x" ]; then
+     	do_build_ninja
+    else
+     	echo "Skip build ninja"
+    fi
     
-    # if [ "x${NO_Z3}" = 'x' ]; then
-    #   	do_build_z3    
-    # fi
+    if [ "x${NO_Z3}" = 'x' ]; then
+      	do_build_z3    
+    fi
     
-    # if [ "x${NO_LLVM}" = 'x' ]; then
+    if [ "x${NO_LLVM}" = 'x' ]; then
 	
-    #  	do_build_llvm
+     	do_build_llvm
 	
-    # fi
+    fi
     
-    # if [ "x${NO_GRAPHVIZ}" = 'x' ]; then
+    if [ "x${NO_GRAPHVIZ}" = 'x' ]; then
 	
-    #  	do_build_graphviz
+     	do_build_graphviz
 
-    # fi
+    fi
 
     if [ "x${NO_DOXYGEN}" = 'x' ]; then
 	
