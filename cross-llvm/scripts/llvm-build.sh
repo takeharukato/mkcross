@@ -696,7 +696,6 @@ do_build_llvm_with_clangxx(){
     	-DCMAKE_INSTALL_PREFIX=${CROSS}                \
 	-DLLVM_ENABLE_LIBCXX=ON                        \
 	-DLIBCLANG_BUILD_STATIC=ON                     \
-	-DCMAKE_FIND_LIBRARY_SUFFIXES=".a;.so"         \
 	-DCMAKE_C_COMPILER="${BUILD_TOOLS_DIR}/bin/clang"        \
 	-DCMAKE_CXX_COMPILER="${BUILD_TOOLS_DIR}/bin/clang++"    \
 	${llvm_src}/llvm
@@ -764,13 +763,11 @@ do_build_doxygen(){
     mkdir build
     pushd build
     cmake -DCMAKE_BUILD_TYPE=Release         \
-	  "-DCMAKE_FIND_LIBRARY_SUFFIXES=.a;.so" \
 	  -DCMAKE_C_COMPILER="${BUILD_TOOLS_DIR}/bin/clang"         \
 	  -DCMAKE_CXX_COMPILER="${BUILD_TOOLS_DIR}/bin/clang++"     \
-	  -Duse_libclang=YES                 \
     	  -DCMAKE_INSTALL_PREFIX=${CROSS}    \
 	  ${BUILDDIR}/${DOXYGEN}
-    make ${SMP_OPT}
+    make ${SMP_OPT} V=1
     ${SUDO} make install    
     popd
     
@@ -842,48 +839,48 @@ main(){
     	prepare_devenv
     fi
 
-    cleanup_directories
+#    cleanup_directories
 
-    create_directories
+    # create_directories
 
-    prepare_archives
+    # prepare_archives
 
-    if [ "x${FETCH_LLVM}" != 'x' -o ! -d ${DOWNLOADDIR}/llvm-current ]; then    
-     	fetch_llvm_src
-    fi
+    # if [ "x${FETCH_LLVM}" != 'x' -o ! -d ${DOWNLOADDIR}/llvm-current ]; then    
+    #  	fetch_llvm_src
+    # fi
     
-    if [ "x${NO_CMAKE}" = 'x' ]; then    
-      	do_build_cmake
-    fi
+    # if [ "x${NO_CMAKE}" = 'x' ]; then    
+    #   	do_build_cmake
+    # fi
     
-    if [ "x${NO_NINJA}" = "x" ]; then
-     	do_build_ninja
-    else
-     	echo "Skip build ninja"
-    fi
+    # if [ "x${NO_NINJA}" = "x" ]; then
+    #  	do_build_ninja
+    # else
+    #  	echo "Skip build ninja"
+    # fi
     
-    if [ "x${NO_Z3}" = 'x' ]; then
-      	do_build_z3    
-    fi
+    # if [ "x${NO_Z3}" = 'x' ]; then
+    #   	do_build_z3    
+    # fi
     
-    if [ "x${NO_LLVM}" = 'x' ]; then
+    # if [ "x${NO_LLVM}" = 'x' ]; then
 	
-     	do_build_llvm
+    #  	do_build_llvm
 	
-    fi
+    # fi
     
-    if [ "x${NO_GRAPHVIZ}" = 'x' ]; then
+    # if [ "x${NO_GRAPHVIZ}" = 'x' ]; then
 	
-     	do_build_graphviz
+    #  	do_build_graphviz
 
-    fi
+    # fi
 
     if [ "x${NO_DOXYGEN}" = 'x' ]; then
 	
 	do_build_doxygen
 	
     fi
-    
+
     if [ "x${NO_LLVM}" = 'x' ]; then
 	
      	do_build_llvm_with_clangxx
