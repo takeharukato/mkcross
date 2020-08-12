@@ -135,7 +135,7 @@ setup_variables(){
     OLD_PATH=${PATH}
     DEFAULT_PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/bin:/sbin
     PATH=${BUILD_TOOLS_DIR}/bin:${CROSS}/bin:${DEFAULT_PATH}
-    LD_LIBRARY_PATH=${CROSS}/lib
+    LD_LIBRARY_PATH=${CROSS}/lib:${BUILD_TOOLS_DIR}/lib
 
     export PATH
     export LD_LIBRARY_PATH
@@ -696,6 +696,7 @@ do_build_llvm_with_clangxx(){
     	-DCMAKE_INSTALL_PREFIX=${CROSS}                \
 	-DLLVM_ENABLE_LIBCXX=ON                        \
 	-DLIBCLANG_BUILD_STATIC=ON                     \
+	-DCMAKE_FIND_LIBRARY_SUFFIXES=".a;.so"         \
 	-DCMAKE_C_COMPILER="${BUILD_TOOLS_DIR}/bin/clang"        \
 	-DCMAKE_CXX_COMPILER="${BUILD_TOOLS_DIR}/bin/clang++"    \
 	${llvm_src}/llvm
@@ -763,7 +764,7 @@ do_build_doxygen(){
     mkdir build
     pushd build
     cmake -DCMAKE_BUILD_TYPE=Release         \
-	  "-DCMAKE_FIND_LIBRARY_SUFFIXES=.a" \
+	  "-DCMAKE_FIND_LIBRARY_SUFFIXES=.a;.so" \
 	  -DCMAKE_C_COMPILER="${BUILD_TOOLS_DIR}/bin/clang"         \
 	  -DCMAKE_CXX_COMPILER="${BUILD_TOOLS_DIR}/bin/clang++"     \
 	  -Duse_libclang=YES                 \
