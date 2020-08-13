@@ -2722,7 +2722,6 @@ do_build_emulator(){
      --enable-debug-tcg                  \
      --enable-debug-info                 \
      ${QEMU_CONFIG_MEMBARRIER}           \
-     --enable-gprof                      \
      --enable-profiler                   \
      --disable-pie                       \
      --disable-werror
