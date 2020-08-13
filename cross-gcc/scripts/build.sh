@@ -354,7 +354,7 @@ prepare_devenv(){
 
 	# Prerequisites header/commands for GCC
 	sudo ${DNF_CMD} install -y glibc-devel binutils gcc bash gawk \
-	     gzip bzip2-devel make tar perl
+	     gzip bzip2-devel make tar perl libmpc-devel
 	sudo ${DNF_CMD} install -y m4 automake autoconf gettext-devel libtool \
 	     libtool-ltdl-devel gperf autogen guile texinfo texinfo-tex texlive texlive* \
 	     python3-sphinx git openssh diffutils patch
