@@ -631,9 +631,8 @@ do_build_llvm(){
     pushd  ${BUILDDIR}/llvm-current
     cmake -G  "${LLVM_BUILD_TYPE}"                \
     	-DCMAKE_BUILD_TYPE=Release                \
-    	-DCMAKE_INSTALL_PREFIX=${BUILD_TOOLS_DIR} \
+    	-DCMAKE_INSTALL_PREFIX=${CROSS}           \
 	-DLLVM_ENABLE_LIBCXX=ON                   \
-	-DLIBCLANG_BUILD_STATIC=ON                \
 	${llvm_src}/llvm
 
     if [ "x${NO_NINJA}" = "x" ]; then
@@ -761,10 +760,19 @@ do_build_doxygen(){
     pushd  ${BUILDDIR}/${DOXYGEN}
     mkdir build
     pushd build
+    export LLVM_DIR=${CROSS}/lib/cmake
     cmake -DCMAKE_BUILD_TYPE=Release         \
     	  -DCMAKE_INSTALL_PREFIX=${CROSS}    \
+          -Duse_libclang=YES                 \
 	  ${BUILDDIR}/${DOXYGEN}
     make ${SMP_OPT} VERBOSE=1
+    unset LLVM_DIR
+    #
+    #libclangのリンク誤りを訂正
+    #
+    pushd src
+    c++ -rdynamic CMakeFiles/doxygen.dir/main.cpp.o -o ../bin/doxygen  -Wl,-rpath,${CROSS}/lib: ../lib/libdoxymain.a ../lib/libdoxycfg.a ../lib/libqtools.a ../lib/libmd5.a ../lib/liblodepng.a ../lib/libmscgen.a ../lib/libdoxygen_version.a ../lib/libvhdlparser.a -lpthread ${CROSS}/lib/libclang.so.10 ${CROSS}/lib/libclang-cpp.so.10svn 
+    popd
     ${SUDO} make install    
     popd
     
