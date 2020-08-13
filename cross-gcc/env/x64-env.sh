@@ -19,7 +19,7 @@ ISL=isl-0.18
 KERNEL=linux-4.19.13
 ELFUTILS=elfutils-0.157
 BINUTILS=binutils-2.34
-GCC=gcc-10.1.0
+GCC=gcc-10.2.0
 GLIBC=glibc-2.30
 NEWLIB=newlib-3.1.0
 GDB=gdb-8.3
@@ -35,7 +35,7 @@ ftp://gcc.gnu.org/pub/gcc/infrastructure/isl-0.18.tar.bz2
 ftp://sourceware.org/pub/elfutils/0.157/elfutils-0.157.tar.bz2
 https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.19.13.tar.gz
 https://ftp.gnu.org/gnu/binutils/binutils-2.34.tar.gz
-https://ftp.gnu.org/gnu/gcc/gcc-10.1.0/gcc-10.1.0.tar.gz
+https://ftp.gnu.org/gnu/gcc/gcc-10.2.0/gcc-10.2.0.tar.gz
 https://ftp.gnu.org/gnu/libc/glibc-2.30.tar.gz
 https://ftp.gnu.org/gnu/gdb/gdb-8.3.tar.gz
 https://download.qemu.org/qemu-5.0.0.tar.xz
