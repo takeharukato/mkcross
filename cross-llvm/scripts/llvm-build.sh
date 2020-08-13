@@ -637,9 +637,9 @@ do_build_llvm(){
 	${llvm_src}/llvm
 
     if [ "x${NO_NINJA}" = "x" ]; then
-	ninja ${SMP_OPT}
+	ninja ${SMP_OPT} -v
     else
-	gmake ${SMP_OPT}
+	gmake ${SMP_OPT} VERBOSE=1
     fi
     #
     #pythonライブラリのパスの誤りを修正
@@ -695,7 +695,6 @@ do_build_llvm_with_clangxx(){
     	-DCMAKE_BUILD_TYPE=Release                     \
     	-DCMAKE_INSTALL_PREFIX=${CROSS}                \
 	-DLLVM_ENABLE_LIBCXX=ON                        \
-	-DLIBCLANG_BUILD_STATIC=ON                     \
 	-DCMAKE_C_COMPILER="${BUILD_TOOLS_DIR}/bin/clang"        \
 	-DCMAKE_CXX_COMPILER="${BUILD_TOOLS_DIR}/bin/clang++"    \
 	${llvm_src}/llvm
@@ -763,11 +762,9 @@ do_build_doxygen(){
     mkdir build
     pushd build
     cmake -DCMAKE_BUILD_TYPE=Release         \
-	  -DCMAKE_C_COMPILER="${BUILD_TOOLS_DIR}/bin/clang"         \
-	  -DCMAKE_CXX_COMPILER="${BUILD_TOOLS_DIR}/bin/clang++"     \
     	  -DCMAKE_INSTALL_PREFIX=${CROSS}    \
 	  ${BUILDDIR}/${DOXYGEN}
-    make ${SMP_OPT} V=1
+    make ${SMP_OPT} VERBOSE=1
     ${SUDO} make install    
     popd
     
@@ -875,15 +872,15 @@ main(){
 
     fi
 
+    if [ "x${NO_LLVM}" = 'x' ]; then
+	
+     	do_build_llvm_with_clangxx
+    fi
+
     if [ "x${NO_DOXYGEN}" = 'x' ]; then
 	
 	do_build_doxygen
 	
-    fi
-
-    if [ "x${NO_LLVM}" = 'x' ]; then
-	
-     	do_build_llvm_with_clangxx
     fi
 
     if [ "x${NO_SIM}" = 'x' ]; then
