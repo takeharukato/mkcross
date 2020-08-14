@@ -22,7 +22,7 @@ BINUTILS=binutils-2.34
 GCC=gcc-10.2.0
 GLIBC=glibc-2.32
 NEWLIB=newlib-3.1.0
-GDB=gdb-8.3
+GDB=gdb-9.2
 QEMU=qemu-5.0.0
 CMAKE=cmake-3.15.5
 EDK2=edk2-current
@@ -37,7 +37,7 @@ https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.19.13.tar.gz
 https://ftp.gnu.org/gnu/binutils/binutils-2.34.tar.gz
 https://ftp.gnu.org/gnu/gcc/gcc-10.2.0/gcc-10.2.0.tar.gz
 https://ftp.gnu.org/gnu/libc/glibc-2.32.tar.gz
-https://ftp.gnu.org/gnu/gdb/gdb-8.3.tar.gz
+https://ftp.gnu.org/gnu/gdb/gdb-9.2.tar.gz
 https://download.qemu.org/qemu-5.0.0.tar.xz
 https://cmake.org/files/v3.15/cmake-3.15.5.tar.gz
 ftp://sourceware.org/pub/newlib/newlib-3.1.0.tar.gz"
