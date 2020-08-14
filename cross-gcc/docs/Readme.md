@@ -34,7 +34,15 @@
       ラや各種ツールを生成します。 
     * do-all.sh     上記の全てのアーキテクチャ向けのクロス環境生成処理
       を順番に実行します。 
-
+    * gen-cross-env.sh クロスコンパイラへのパスを設定するスクリプトを
+    生成します。カレントディレクトリに `CPU名-ツールチェインタイプ-env.sh`
+	という名前のシェルスクリプトが生成されます。各スクリプトをBシェルの
+	sourceコマンドで読み込むことで, 環境変数`PATH`や`CROSS_COMPILE`が設定
+    されます。変更前のパスは環境変数`OLD\_PATH`に保存されます。
+	また, `${HOME}/Modules`というディレクトリが存在する場合は, `${HOME}/Modules`
+	に`CPU名-ツールチェインタイプ-GCC`という名前でEnvironment Modules用の環境
+    設定ファイルが生成されます。
+	
 4. data/gud.el      emacsでLLVMを使用するためのemacs lispファイルです
                      (Grand Unified Debugger mode)。
                      load-path内にあるディレクトリに配置し, .emacs
