@@ -571,30 +571,11 @@ fetch_llvm_src(){
 
     echo "@@@ Fetch sources @@@"
 
-    if [ -d ${DOWNLOADDIR}/llvm-current ]; then
-	rm -fr ${DOWNLOADDIR}/llvm-current
+    if [ -d ${DOWNLOADDIR}/llvm-project ]; then
+	rm -fr ${DOWNLOADDIR}/llvm-project
     fi
-    mkdir -p ${DOWNLOADDIR}/llvm-current
-
-    pushd  ${DOWNLOADDIR}/llvm-current
-    # #
-    # #See
-    # #https://www.hiroom2.com/2016/05/28/centos-7-%E3%83%AA%E3%83%9D%E3%82%B8%E3%83%88%E3%83%AA%E3%81%AEllvm-clang%E3%82%92%E3%83%93%E3%83%AB%E3%83%89%E3%81%97%E3%81%A6%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E3%81%99%E3%82%8B/ 
-    # #
-    svn co http://llvm.org/svn/llvm-project/llvm/trunk llvm
-    cd llvm/tools
-    svn co http://llvm.org/svn/llvm-project/cfe/trunk clang
-    svn co http://llvm.org/svn/llvm-project/lld/trunk lld
-    svn co http://llvm.org/svn/llvm-project/lldb/trunk lldb
-    git clone http://llvm.org/git/polly.git polly
-    cd clang/tools
-    svn co http://llvm.org/svn/llvm-project/clang-tools-extra/trunk extra
-    cd ../../../projects
-    svn co http://llvm.org/svn/llvm-project/libcxx/trunk    libcxx
-    svn co http://llvm.org/svn/llvm-project/libcxxabi/trunk libcxxabi
-    svn co http://llvm.org/svn/llvm-project/compiler-rt/trunk compiler-rt
-    svn co http://llvm.org/svn/llvm-project/openmp/trunk openmp
-    cd ../..
+    pushd  ${DOWNLOADDIR}
+    git clone https://github.com/llvm/llvm-project.git    
     popd
 }
 
@@ -608,30 +589,30 @@ do_build_llvm(){
     echo "@@@ Build LLVM @@@"
 
     if [ "x${FORCE_COPY_SOURCES}" != "x" ]; then
-	llvm_src=${SRCDIR}/llvm-current
+	llvm_src=${SRCDIR}/llvm-project
     else
-	llvm_src=${DOWNLOADDIR}/llvm-current
+	llvm_src=${DOWNLOADDIR}/llvm-project
     fi
 
     if [ "x${FORCE_COPY_SOURCES}" != "x" ]; then
-	if [ -d ${SRCDIR}/llvm-current -o -e ${SRCDIR}/llvm-current ]; then
-	    rm -fr ${SRCDIR}/llvm-current 
+	if [ -d ${SRCDIR}/llvm-project -o -e ${SRCDIR}/llvm-project ]; then
+	    rm -fr ${SRCDIR}/llvm-project 
 	fi
 	mkdir -p ${SRCDIR}
 
-	cp -a ${DOWNLOADDIR}/llvm-current ${SRCDIR}/llvm-current
+	cp -a ${DOWNLOADDIR}/llvm-project ${SRCDIR}/llvm-project
     fi
 
-    if [ -d ${BUILDDIR}/llvm-current ]; then
-	rm -fr ${BUILDDIR}/llvm-current
+    if [ -d ${BUILDDIR}/llvm-build ]; then
+	rm -fr ${BUILDDIR}/llvm-build
     fi
 
-    mkdir -p ${BUILDDIR}/llvm-current
+    mkdir -p ${BUILDDIR}/llvm-build
 
-    pushd  ${BUILDDIR}/llvm-current
+    pushd  ${BUILDDIR}/llvm-build
     cmake -G  "${LLVM_BUILD_TYPE}"                \
     	-DCMAKE_BUILD_TYPE=Release                \
-    	-DCMAKE_INSTALL_PREFIX=${CROSS}           \
+    	-DCMAKE_INSTALL_PREFIX=${BUILD_TOOLS_DIR} \
 	-DLLVM_ENABLE_LIBCXX=ON                   \
 	${llvm_src}/llvm
 
@@ -669,34 +650,34 @@ do_build_llvm_with_clangxx(){
     echo "@@@ Build LLVM with clang++ @@@"
 
     if [ "x${FORCE_COPY_SOURCES}" != "x" ]; then
-	llvm_src=${SRCDIR}/llvm-current
+	llvm_src=${SRCDIR}/llvm-project
     else
-	llvm_src=${DOWNLOADDIR}/llvm-current
+	llvm_src=${DOWNLOADDIR}/llvm-project
     fi
 
     if [ "x${FORCE_COPY_SOURCES}" != "x" ]; then
-	if [ -d ${SRCDIR}/llvm-current -o -e ${SRCDIR}/llvm-current ]; then
-	    rm -fr ${SRCDIR}/llvm-current 
+	if [ -d ${SRCDIR}/llvm-project -o -e ${SRCDIR}/llvm-project ]; then
+	    rm -fr ${SRCDIR}/llvm-project 
 	fi
 	mkdir -p ${SRCDIR}
 
-	cp -a ${DOWNLOADDIR}/llvm-current ${SRCDIR}/llvm-current
+	cp -a ${DOWNLOADDIR}/llvm-project ${SRCDIR}/llvm-project
     fi
 
-    if [ -d ${BUILDDIR}/llvm-current ]; then
-	rm -fr ${BUILDDIR}/llvm-current
+    if [ -d ${BUILDDIR}/llvm-build ]; then
+	rm -fr ${BUILDDIR}/llvm-build
     fi
 
-    mkdir -p ${BUILDDIR}/llvm-current
+    mkdir -p ${BUILDDIR}/llvm-build
 
-    pushd  ${BUILDDIR}/llvm-current
+    pushd ${BUILDDIR}/llvm-build
     cmake -G  "${LLVM_BUILD_TYPE}"                     \
     	-DCMAKE_BUILD_TYPE=Release                     \
-    	-DCMAKE_INSTALL_PREFIX=${CROSS}                \
+    	-DCMAKE_INSTALL_PREFIX="${CROSS}"              \
 	-DLLVM_ENABLE_LIBCXX=ON                        \
 	-DCMAKE_C_COMPILER="${BUILD_TOOLS_DIR}/bin/clang"        \
 	-DCMAKE_CXX_COMPILER="${BUILD_TOOLS_DIR}/bin/clang++"    \
-	${llvm_src}/llvm
+	"${llvm_src}/llvm"
 
     if [ "x${NO_NINJA}" = "x" ]; then
 	ninja ${SMP_OPT}
@@ -849,7 +830,7 @@ main(){
 
     prepare_archives
 
-    if [ "x${FETCH_LLVM}" != 'x' -o ! -d ${DOWNLOADDIR}/llvm-current ]; then    
+    if [ "x${NO_FETCH_LLVM}" != 'x' -o ! -d ${DOWNLOADDIR}/llvm-project ]; then    
      	fetch_llvm_src
     fi
     
