@@ -26,6 +26,20 @@ if [ $# -ne 1 ]; then
     exit 1
 fi
 
+# LLVM_ENABLE_PROJECTSのフルリストは,
+# clang;clang-tools-extra;compiler-rt;debuginfo-tests;libc;libclc;libcxx;libcxxabi;
+# libunwind;lld;lldb;openmp;parallel-libs;polly;pstl
+# ( https://llvm.org/docs/CMake.html 参照)
+# 以下はコンパイルエラーになるため除外
+# - libc
+# - libclc
+# lldbは, swigの版数が古いことでコンパイルできていない可能性があり要確認
+# llvm/src/llvm-project/lldb/bindings/python/python-typemaps.swig:
+#  484: Error: Syntax error in input(3).
+# 以下は用途不明, コンパイル時間短縮のため除外
+# - debuginfo-tests
+LLVM_PROJECTS="clang;clang-tools-extra;compiler-rt;libcxx;libcxxabi;libunwind;lld;openmp;parallel-libs;polly;pstl"
+
 #
 #環境ファイル読み込み
 #
@@ -612,12 +626,13 @@ do_build_llvm(){
     pushd  ${BUILDDIR}/llvm-build
     cmake -G  "${LLVM_BUILD_TYPE}"                \
     	-DCMAKE_BUILD_TYPE=Release                \
-    	-DCMAKE_INSTALL_PREFIX=${BUILD_TOOLS_DIR} \
+    	-DCMAKE_INSTALL_PREFIX=${CROSS}           \
 	-DLLVM_ENABLE_LIBCXX=ON                   \
+	-DLLVM_ENABLE_PROJECTS="${LLVM_PROJECTS}" \
 	${llvm_src}/llvm
 
     if [ "x${NO_NINJA}" = "x" ]; then
-	ninja ${SMP_OPT} -v
+	ninja -v
     else
 	gmake ${SMP_OPT} VERBOSE=1
     fi
@@ -671,16 +686,18 @@ do_build_llvm_with_clangxx(){
     mkdir -p ${BUILDDIR}/llvm-build
 
     pushd ${BUILDDIR}/llvm-build
+
     cmake -G  "${LLVM_BUILD_TYPE}"                     \
     	-DCMAKE_BUILD_TYPE=Release                     \
     	-DCMAKE_INSTALL_PREFIX="${CROSS}"              \
 	-DLLVM_ENABLE_LIBCXX=ON                        \
-	-DCMAKE_C_COMPILER="${BUILD_TOOLS_DIR}/bin/clang"        \
-	-DCMAKE_CXX_COMPILER="${BUILD_TOOLS_DIR}/bin/clang++"    \
+	-DLLVM_ENABLE_PROJECTS="${LLVM_PROJECTS}"      \
+	-DCMAKE_C_COMPILER="${CROSS}/bin/clang"        \
+	-DCMAKE_CXX_COMPILER="${CROSS}/bin/clang++"    \
 	"${llvm_src}/llvm"
 
     if [ "x${NO_NINJA}" = "x" ]; then
-	ninja ${SMP_OPT}
+	ninja
     else
 	gmake ${SMP_OPT}
     fi
