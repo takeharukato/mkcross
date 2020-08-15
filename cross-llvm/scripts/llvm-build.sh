@@ -261,7 +261,7 @@ prepare_devenv(){
 
     if [ "x${OSNAME}" = "xLinux" ]; then
 
-	if [ -e ${DNF_CMD} ]; then
+	if [ -e /bin/dnf ]; then
     
 	    sudo ${DNF_CMD} config-manager --set-enabled BaseOS
 	    # clang needs AppStream
@@ -350,7 +350,7 @@ prepare_devenv(){
 	     gtk3-devel lasi-devel poppler-devel librsvg2-devel gd-devel libwebp-devel \
 	     libXaw-devel tcl-devel ruby-devel R ocaml php-devel qt5-devel
 	
-	if [  -e ${DNF_CMD} ]; then	
+	if [  -e /bin/dnf ]; then	
 
 	    #
 	    # For CentOS8
