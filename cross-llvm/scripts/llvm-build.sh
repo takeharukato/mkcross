@@ -32,10 +32,10 @@ fi
 # ( https://llvm.org/docs/CMake.html 参照)
 # 以下はコンパイルエラーになるため除外
 # - libc
-if [ "x${NO_FLANG}" != 'x' ]; then
+if [ "x${USE_FLANG}" != 'x' ]; then
     LLVM_PROJECTS="clang;clang-tools-extra;compiler-rt;debuginfo-tests;libclc;libcxx;libcxxabi;libunwind;lld;lldb;mlir;openmp;parallel-libs;polly;pstl;flang"
 else
-    LLVM_PROJECTS="clang;clang-tools-extra;compiler-rt;debuginfo-tests;libclc;libcxx;libcxxabi;libunwind;lld;lldb;openmp;parallel-libs;polly;pstl"
+    LLVM_PROJECTS="clang;clang-tools-extra;compiler-rt;debuginfo-tests;libclc;libcxx;libcxxabi;libunwind;lld;lldb;mlir;openmp;parallel-libs;polly;pstl"
 fi
 #
 #環境ファイル読み込み
@@ -306,6 +306,9 @@ prepare_devenv(){
 	
 	# Prerequisites for LLVM
 	sudo ${DNF_CMD} install -y libedit-devel libxml2-devel cmake
+
+	# Prerequisites for SWIG
+	sudo ${DNF_CMD} install -y boost-devel
 
 	# Python
 	sudo ${DNF_CMD} install -y python3-devel swig

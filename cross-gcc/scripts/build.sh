@@ -374,6 +374,9 @@ prepare_devenv(){
 	# Prerequisites for LLVM
 	sudo ${DNF_CMD} install -y libedit-devel libxml2-devel cmake
 
+	# Prerequisites for SWIG
+	sudo ${DNF_CMD} install -y boost-devel
+
 	# Python
 	sudo ${DNF_CMD} install -y python3-devel swig
 	
