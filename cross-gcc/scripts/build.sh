@@ -1124,8 +1124,6 @@ do_build_gcc_for_build(){
     done
     popd
 
-    popd
-
     #
     #ホストのgccとの混乱を避けるため以下を削除
     #
