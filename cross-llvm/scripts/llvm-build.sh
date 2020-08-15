@@ -1301,15 +1301,19 @@ main(){
 
     prepare_archives
 
-    do_build_binutils_for_build
-    do_build_gmp
-    do_build_mpfr
-    do_build_mpc
-    do_build_isl
-    do_build_elfutils
-    do_build_gcc_for_build
+    if [ "x${NO_BUILD_TOOLS}" = 'x' ]; then    
+	do_build_binutils_for_build
+	do_build_gmp
+	do_build_mpfr
+	do_build_mpc
+	do_build_isl
+	do_build_elfutils
+	do_build_gcc_for_build
+    fi
 
-    do_build_swig_for_build
+    if [ "x${NO_SWIG}" = 'x' ]; then    
+	do_build_swig_for_build
+    fi
     
     if [ "x${FORCE_FETCH_LLVM}" != 'x' -o ! -d ${DOWNLOADDIR}/llvm-project ]; then    
       	fetch_llvm_src
@@ -1335,7 +1339,7 @@ main(){
 	
     fi
     
-    if [ "x${NO_LLVM}" = 'x' -o "x${USE_HOST_CC}" = 'x' ]; then
+    if [ "x${NO_LLVM}" = 'x' ]; then
 	
       	do_build_llvm_with_clangxx
     fi
