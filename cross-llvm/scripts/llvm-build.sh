@@ -146,7 +146,7 @@ setup_variables(){
     OLD_PATH=${PATH}
     DEFAULT_PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/bin:/sbin
     PATH=${BUILD_TOOLS_DIR}/bin:${CROSS}/bin:${DEFAULT_PATH}
-    LD_LIBRARY_PATH=${CROSS}/lib:${BUILD_TOOLS_DIR}/lib
+    LD_LIBRARY_PATH=${CROSS}/lib64:${CROSS}/lib:${BUILD_TOOLS_DIR}/lib64:${BUILD_TOOLS_DIR}/lib
 
     export PATH
     export LD_LIBRARY_PATH
