@@ -1311,7 +1311,7 @@ main(){
 
     do_build_swig_for_build
     
-    if [ "x${NO_FETCH_LLVM}" = 'x' -o ! -d ${DOWNLOADDIR}/llvm-project ]; then    
+    if [ "x${FORCE_FETCH_LLVM}" != 'x' -o ! -d ${DOWNLOADDIR}/llvm-project ]; then    
       	fetch_llvm_src
     fi
     
