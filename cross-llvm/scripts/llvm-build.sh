@@ -1140,6 +1140,14 @@ do_build_llvm(){
 	-DLLVM_ENABLE_LIBCXX=ON                   \
 	-DCMAKE_C_COMPILER=${BUILD}-gcc           \
 	-DCMAKE_CXX_COMPILER=${BUILD}-g++         \
+	-DCMAKE_AS=${BUILD}-as                    \
+	-DCMAKE_LINKER=${BUILD}-ld                \
+	-DCMAKE_AR=${BUILD}-ar                    \
+	-DCMAKE_RANLIB=${BUILD}-ranlib            \
+	-DCMAKE_NM=${BUILD}-nm                    \
+	-DCMAKE_OBJCOPY=${BUILD}-objcopy          \
+	-DCMAKE_OBJDUMP=${BUILD}-objdump          \
+	-DCMAKE_STRIP=${BUILD}-strip              \
 	-DLLVM_ENABLE_PROJECTS="${LLVM_PROJECTS}" \
 	${llvm_src}/llvm
 
@@ -1206,6 +1214,14 @@ do_build_llvm_with_clangxx(){
 	-DLLVM_ENABLE_PROJECTS="${LLVM_PROJECTS}"      \
 	-DCMAKE_C_COMPILER="${CROSS}/bin/clang"        \
 	-DCMAKE_CXX_COMPILER="${CROSS}/bin/clang++"    \
+	-DCMAKE_AS="${CROSS}/bin/llvm-as"              \
+	-DCMAKE_LINKER="${CROSS}/bin/lld"              \
+	-DCMAKE_AR="${CROSS}/bin/llvm-ar"              \
+	-DCMAKE_RANLIB="${CROSS}/bin/llvm-ranlib"      \
+	-DCMAKE_NM="${CROSS}/bin/llvm-nm"              \
+	-DCMAKE_OBJCOPY="${CROSS}/bin/llvm-objcopy"    \
+	-DCMAKE_OBJDUMP="${CROSS}/bin/llvm-objdump"    \
+	-DCMAKE_STRIP="${CROSS}/bin/llvm-strip"        \
 	"${llvm_src}/llvm"
 
     if [ "x${NO_NINJA}" = "x" ]; then
