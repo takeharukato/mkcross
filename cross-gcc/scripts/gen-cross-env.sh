@@ -118,8 +118,8 @@ unset GDB_COMMAND
 
 TOOLCHAIN_PREFIX=\${HOME}/${cross_dir}
 
-if [ -f ${HOME}/env/default-path.sh ]; then
-   source ${HOME}/env/default-path.sh
+if [ -f \${HOME}/env/default-path.sh ]; then
+   source \${HOME}/env/default-path.sh
 else
    if [ "x\${OLD_PATH}" != "x" ]; then
       PATH="\${OLD_PATH}"
@@ -177,8 +177,8 @@ proc ModulesHelp { } {
 module-whatis   "${cpu} gcc toolchain for ${type} binary Setting"
 
 # for Tcl script only
-set ${cpu}_${type}_gcc_path "${HOME}/${cross_dir}/bin"
-set ${cpu}_${type}_gcc_ld_library_path "${HOME}/${cross_dir}/lib64:${HOME}/${cross_dir}/lib"
+set ${cpu}_${type}_gcc_path "\$env(HOME)/${cross_dir}/bin"
+set ${cpu}_${type}_gcc_ld_library_path "\$env(HOME)/${cross_dir}/lib64:\$env(HOME)/${cross_dir}/lib"
 
 
 # append pathes
