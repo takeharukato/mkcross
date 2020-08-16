@@ -1215,7 +1215,7 @@ do_build_llvm_with_clangxx(){
 	-DCMAKE_C_COMPILER="${CROSS}/bin/clang"        \
 	-DCMAKE_CXX_COMPILER="${CROSS}/bin/clang++"    \
 	-DCMAKE_AS="${CROSS}/bin/llvm-as"              \
-	-DCMAKE_LINKER="${CROSS}/bin/lld"              \
+	-DCMAKE_LINKER="${CROSS}/bin/ld.lld"           \
 	-DCMAKE_AR="${CROSS}/bin/llvm-ar"              \
 	-DCMAKE_RANLIB="${CROSS}/bin/llvm-ranlib"      \
 	-DCMAKE_NM="${CROSS}/bin/llvm-nm"              \
@@ -1267,9 +1267,13 @@ do_build_emulator(){
 
     CC="clang"                           \
     CXX="clang++"                        \
+    LD="ld.lld"                          \
     AR="llvm-ar"                         \
-    LD="lld"                             \
     RANLIB="llvm-ranlib"                 \
+    NM="llvm-nm"                         \
+    OBJCOPY="llvm-objcopy"               \
+    OBJDUMP="llvm-objdump"               \
+    STRIP="llvm-strip"                   \
     ../configure                         \
      --prefix=${CROSS}                   \
      --interp-prefix=${SYSROOT}          \
