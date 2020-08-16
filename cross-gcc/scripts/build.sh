@@ -186,7 +186,7 @@ setup_variables(){
     OLD_PATH=${PATH}
     DEFAULT_PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/bin:/sbin
     PATH=${BUILD_TOOLS_DIR}/bin:${CROSS}/bin:${DEFAULT_PATH}
-    LD_LIBRARY_PATH=${CROSS}/lib
+    LD_LIBRARY_PATH=${CROSS}/lib64:${CROSS}/lib:${BUILD_TOOLS_DIR}/lib64:${BUILD_TOOLS_DIR}/lib
 
     export PATH
     export LD_LIBRARY_PATH
@@ -949,6 +949,8 @@ do_build_elfutils(){
     #--disable-werror
     #         警告をエラーと見なさない
     # --disable-shared
+    # --enable-libebl-subdir=""
+    #         CPU固有のlib_elライブラリをlib直下に配置する(LD_LIBRARY_PATHで認識するため)
     # --enable-static
     #         共有ライブラリを作らずgcc/glibcに対して静的リンクでlibelfをリンクさせる
     #         (LD_LIBRARY_PATH環境変数を設定せずに使用するために必要)
@@ -962,6 +964,7 @@ do_build_elfutils(){
         --enable-extended-format          \
 	--disable-werror                  \
 	--disable-shared                  \
+        --enable-libebl-subdir=""         \
         --enable-static
     
     make ${SMP_OPT} 

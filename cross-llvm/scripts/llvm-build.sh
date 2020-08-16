@@ -784,9 +784,11 @@ do_build_elfutils(){
     #          64bitのELFフォーマットの解析を有効にする
     # --enable-extended-format
     #          ELF拡張フォーマットに対応する
-    #--disable-werror
+    # --disable-werror
     #         警告をエラーと見なさない
     # --disable-shared
+    # --enable-libebl-subdir=""
+    #         CPU固有のlib_elライブラリをlib直下に配置する(LD_LIBRARY_PATHで認識するため)
     # --enable-static
     #         共有ライブラリを作らずgcc/glibcに対して静的リンクでlibelfをリンクさせる
     #         (LD_LIBRARY_PATH環境変数を設定せずに使用するために必要)
@@ -800,6 +802,7 @@ do_build_elfutils(){
         --enable-extended-format          \
 	--disable-werror                  \
 	--disable-shared                  \
+        --enable-libebl-subdir=""         \
         --enable-static
     
     make ${SMP_OPT} 
