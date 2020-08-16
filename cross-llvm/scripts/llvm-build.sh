@@ -1212,6 +1212,7 @@ do_build_llvm_with_clangxx(){
     	-DCMAKE_INSTALL_PREFIX="${CROSS}"              \
 	-DLLVM_ENABLE_LIBCXX=ON                        \
 	-DLLVM_ENABLE_PROJECTS="${LLVM_PROJECTS}"      \
+	-DLLVM_USE_LINKER="${CROSS}/bin/ld.lld"        \
 	-DCMAKE_C_COMPILER="${CROSS}/bin/clang"        \
 	-DCMAKE_CXX_COMPILER="${CROSS}/bin/clang++"    \
 	-DCMAKE_AS="${CROSS}/bin/llvm-as"              \
