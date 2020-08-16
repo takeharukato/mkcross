@@ -910,100 +910,6 @@ do_build_isl(){
 }
 
 ## begin note
-# 機能: gcc/glibcのコンパイルに必要なlibelf(バックトレース解析処理などに使用)を生成する
-## end note
-do_build_elfutils(){
-
-    echo "@@@ CompanionLibrary:elfutils @@@"
-
-    extract_archive ${ELFUTILS}
-
-    #
-    #--disable-werrorを追加するためにRHELのパッチを適用
-    #
-    echo "Apply elfutils patches from RHEL"
-    pushd ${SRCDIR}/${ELFUTILS}
-    patch -p1 < ../../patches/elfutils/elfutils-portability.patch
-    patch -p1 < ../../patches/elfutils/elfutils-robustify.patch
-    popd
-
-    mkdir -p ${BUILDDIR}/${ELFUTILS}
-    pushd  ${BUILDDIR}/${ELFUTILS}
-
-    #
-    # configureの設定
-    #
-    # --prefix=${CROSS}        
-    #          ${CROSS}配下にインストールする
-    # --program-prefix="${TARGET}-
-    #          システムにインストールされているbinutilsと区別するために, 
-    #          プログラムのプレフィクスに${TARGET}-をつける。
-    # --enable-cxx
-    #          gccがC++で書かれているため, c++向けのライブラリを構築する
-    # --enable-compat
-    #          互換機能を有効にする(現在のlibelfでは無視される)
-    # --enable-elf64
-    #          64bitのELFフォーマットの解析を有効にする
-    # --enable-extended-format
-    #          ELF拡張フォーマットに対応する
-    #--disable-werror
-    #         警告をエラーと見なさない
-    # --disable-shared
-    # --enable-libebl-subdir=""
-    #         CPU固有のlib_elライブラリをlib直下に配置する(LD_LIBRARY_PATHで認識するため)
-    # --enable-static
-    #         共有ライブラリを作らずgcc/glibcに対して静的リンクでlibelfをリンクさせる
-    #         (LD_LIBRARY_PATH環境変数を設定せずに使用するために必要)
-    #
-    ${SRCDIR}/${ELFUTILS}/configure       \
-	--prefix=${CROSS}                 \
-	--program-prefix="${TARGET}-"     \
-	--enable-cxx                      \
-        --enable-compat                   \
-        --enable-elf64                    \
-        --enable-extended-format          \
-	--disable-werror                  \
-	--disable-shared                  \
-        --enable-libebl-subdir=""         \
-        --enable-static
-    
-    make ${SMP_OPT} 
-    ${SUDO} make install
-
-    echo "Remove .la files"
-    pushd ${CROSS}
-    find . -name '*.la'|while read file
-    do
-	echo "Remove ${file}"
-	${SUDO} rm -f ${file}
-    done
-    popd
-
-    #
-    #gccから共有ライブラリ版のlibelfがリンクされないように
-    #共有ライブラリを削除する
-    #
-    if [ -d ${CROSS}/lib ]; then
-	echo "Remove shared elf libraries"
-	pushd ${CROSS}/lib
-	rm -f libasm*.so*
-	rm -f libdw*.so*
-	rm -f libelf*.so*
-	popd
-    fi
-
-    if [ -d ${CROSS}/lib64 ]; then
-	echo "Remove shared elf 64bit libraries"
-	pushd ${CROSS}/lib64
-	rm -f libasm*.so*
-	rm -f libdw*.so*
-	rm -f libelf*.so*
-	popd
-    fi
-    popd
-}
-
-## begin note
 # 機能: ビルド環境向けのgccを生成する(binutils/gcc/glibcの構築に必要なC/C++までを生成)
 ## end note
 do_build_gcc_for_build(){
@@ -1077,8 +983,6 @@ do_build_gcc_for_build(){
     #          mpcをインストールしたディレクトリを指定
     #--with-isl=${CROSS} 
     #          islをインストールしたディレクトリを指定
-    #--with-libelf=${CROSS}
-    #          libelfをインストールしたディレクトリを指定
     #--program-prefix="${BUILD}-"
     #          ターゲット用のコンパイラやシステムにインストールされている
     #          コンパイラと区別するために, プログラムのプレフィクスに
@@ -1111,7 +1015,6 @@ do_build_gcc_for_build(){
 	--with-mpfr=${CROSS}                                 \
 	--with-mpc=${CROSS}                                  \
 	--with-isl=${CROSS}                                  \
-	--with-libelf=${CROSS}                               \
 	--program-prefix="${BUILD}-"                         \
 	"${LINK_STATIC_LIBSTDCXX}"                           \
 	--with-long-double-128 				     \
@@ -1333,8 +1236,6 @@ do_cross_gcc_core1(){
     #          mpcをインストールしたディレクトリを指定
     #--with-isl=${CROSS} 
     #          islをインストールしたディレクトリを指定
-    #--with-libelf=${CROSS}
-    #          libelfをインストールしたディレクトリを指定
     #--disable-nls
     #         コンパイル時間を短縮するためNative Language Supportを無効化する
     #
@@ -1374,7 +1275,6 @@ do_cross_gcc_core1(){
 	--with-mpfr=${CROSS}                                 \
 	--with-mpc=${CROSS}                                  \
 	--with-isl=${CROSS}                                  \
-	--with-libelf=${CROSS}                               \
 	--disable-nls
     
     #
@@ -1883,8 +1783,6 @@ do_cross_gcc_core2(){
     #          mpcをインストールしたディレクトリを指定
     #--with-isl=${CROSS} 
     #          islをインストールしたディレクトリを指定
-    #--with-libelf=${CROSS}
-    #          libelfをインストールしたディレクトリを指定
     #--disable-nls
     #         コンパイル時間を短縮するためNative Language Supportを無効化する
     #
@@ -1922,7 +1820,6 @@ do_cross_gcc_core2(){
 	--with-mpfr=${CROSS}                                 \
 	--with-mpc=${CROSS}                                  \
 	--with-isl=${CROSS}                                  \
-	--with-libelf=${CROSS}                               \
 	--disable-nls
 
     #
@@ -2242,8 +2139,6 @@ do_cross_gcc_core3(){
     # --disable-libsanitizer
     #           libsanitizerを無効にする
     #    (gcc-4.9のlibsanitizerはバグのためコンパイルできないため)
-    # --with-libelf=${CROSS}
-    #          libelfをインストールしたディレクトリを指定
     # ${WITH_SYSROOT}
     #          コンパイラの実行時にターゲット用のルートファイルシステムを優先してヘッダや
     #          ライブラリを探査する
@@ -2289,7 +2184,6 @@ do_cross_gcc_core3(){
 	--with-mpfr=${CROSS}                                 \
 	--with-mpc=${CROSS}                                  \
 	--with-isl=${CROSS}                                  \
-	--with-libelf=${CROSS}                               \
 	"${WITH_SYSROOT}"                                    \
 	"${LINK_STATIC_LIBSTDCXX}"                           \
 	--with-long-double-128                               \
@@ -2402,8 +2296,6 @@ do_cross_gcc(){
     # --disable-libsanitizer
     #           libsanitizerを無効にする
     #    (gcc-4.9のlibsanitizerはバグのためコンパイルできないため)
-    # --with-libelf=${CROSS}
-    #          libelfをインストールしたディレクトリを指定
     # ${WITH_SYSROOT}
     #          コンパイラの実行時にターゲット用のルートファイルシステムを優先してヘッダや
     #          ライブラリを探査する
@@ -2441,7 +2333,6 @@ do_cross_gcc(){
 	--with-mpfr=${CROSS}                                 \
 	--with-mpc=${CROSS}                                  \
 	--with-isl=${CROSS}                                  \
-	--with-libelf=${CROSS}                               \
 	"${WITH_SYSROOT}"                                    \
 	"${LINK_STATIC_LIBSTDCXX}"                           \
 	--with-long-double-128                               \
@@ -2887,7 +2778,6 @@ fi
     do_build_mpfr
     do_build_mpc
     do_build_isl
-    do_build_elfutils
     do_build_gcc_for_build
 
     do_cross_binutils
