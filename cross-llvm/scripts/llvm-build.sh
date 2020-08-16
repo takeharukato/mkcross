@@ -30,8 +30,21 @@ fi
 # clang;clang-tools-extra;compiler-rt;debuginfo-tests;libc;libclc;libcxx;libcxxabi;
 # libunwind;lld;lldb;openmp;parallel-libs;polly;pstl
 # ( https://llvm.org/docs/CMake.html 参照)
+#
+# 上記に, Multi-Level Intermediate Representation (MLIR) を追加。
+#
 # 以下はコンパイルエラーになるため除外
 # - libc
+# - flang
+# flangは, clang++でコンパイルした場合に, fortranランタイムコンパイル時に削除された
+# コピーコンストラクタを呼び出している旨エラーが出る
+# -- エラーの内容
+#/usr/local/llvm-12_0_0/bin/../include/c++/v1/variant:599:16:
+#  error: call to implicitly-deleted copy constructor of
+#   'Fortran::runtime::io::IoErrorHandler'
+#        return __invoke_constexpr(
+# -- エラーの内容
+#
 if [ "x${USE_FLANG}" != 'x' ]; then
     LLVM_PROJECTS="clang;clang-tools-extra;compiler-rt;debuginfo-tests;libclc;libcxx;libcxxabi;libunwind;lld;lldb;mlir;openmp;parallel-libs;polly;pstl;flang"
 else
