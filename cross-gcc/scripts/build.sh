@@ -2762,9 +2762,10 @@ main(){
 
     show_info
 
-if [ "x${NO_DEVENV}" = 'x' ]; then
-    prepare_devenv
-fi
+    if [ "x${NO_DEVENV}" = 'x' ]; then
+	prepare_devenv
+    fi
+    
     prepare_archives
 
     cleanup_directories
