@@ -748,100 +748,6 @@ do_build_isl(){
 }
 
 ## begin note
-# 機能: gcc/glibcのコンパイルに必要なlibelf(バックトレース解析処理などに使用)を生成する
-## end note
-do_build_elfutils(){
-
-    echo "@@@ CompanionLibrary:elfutils @@@"
-
-    extract_archive ${ELFUTILS}
-
-    #
-    #--disable-werrorを追加するためにRHELのパッチを適用
-    #
-    echo "Apply elfutils patches from RHEL"
-    pushd ${SRCDIR}/${ELFUTILS}
-    patch -p1 < ../../../cross-gcc/patches/elfutils/elfutils-portability.patch
-    patch -p1 < ../../../cross-gcc/patches/elfutils/elfutils-robustify.patch
-    popd
-
-    mkdir -p ${BUILDDIR}/${ELFUTILS}
-    pushd  ${BUILDDIR}/${ELFUTILS}
-
-    #
-    # configureの設定
-    #
-    # --prefix=${BUILD_TOOLS_DIR}        
-    #          ${BUILD_TOOLS_DIR}配下にインストールする
-    # --program-prefix="${BUILD}-
-    #          システムにインストールされているbinutilsと区別するために, 
-    #          プログラムのプレフィクスに${BUILD}-をつける。
-    # --enable-cxx
-    #          gccがC++で書かれているため, c++向けのライブラリを構築する
-    # --enable-compat
-    #          互換機能を有効にする(現在のlibelfでは無視される)
-    # --enable-elf64
-    #          64bitのELFフォーマットの解析を有効にする
-    # --enable-extended-format
-    #          ELF拡張フォーマットに対応する
-    # --disable-werror
-    #         警告をエラーと見なさない
-    # --disable-shared
-    # --enable-libebl-subdir=""
-    #         CPU固有のlib_elライブラリをlib直下に配置する(LD_LIBRARY_PATHで認識するため)
-    # --enable-static
-    #         共有ライブラリを作らずgcc/glibcに対して静的リンクでlibelfをリンクさせる
-    #         (LD_LIBRARY_PATH環境変数を設定せずに使用するために必要)
-    #
-    ${SRCDIR}/${ELFUTILS}/configure       \
-	--prefix=${BUILD_TOOLS_DIR}       \
-	--program-prefix="${BUILD}-"      \
-	--enable-cxx                      \
-        --enable-compat                   \
-        --enable-elf64                    \
-        --enable-extended-format          \
-	--disable-werror                  \
-	--disable-shared                  \
-        --enable-libebl-subdir=""         \
-        --enable-static
-    
-    make ${SMP_OPT} 
-    ${SUDO} make install
-
-    echo "Remove .la files"
-    pushd ${BUILD_TOOLS_DIR}
-    find . -name '*.la'|while read file
-    do
-	echo "Remove ${file}"
-	${SUDO} rm -f ${file}
-    done
-    popd
-
-    #
-    #gccから共有ライブラリ版のlibelfがリンクされないように
-    #共有ライブラリを削除する
-    #
-    if [ -d ${BUILD_TOOLS_DIR}/lib ]; then
-	echo "Remove shared elf libraries"
-	pushd ${BUILD_TOOLS_DIR}/lib
-	rm -f libasm*.so*
-	rm -f libdw*.so*
-	rm -f libelf*.so*
-	popd
-    fi
-
-    if [ -d ${BUILD_TOOLS_DIR}/lib64 ]; then
-	echo "Remove shared elf 64bit libraries"
-	pushd ${BUILD_TOOLS_DIR}/lib64
-	rm -f libasm*.so*
-	rm -f libdw*.so*
-	rm -f libelf*.so*
-	popd
-    fi
-    popd
-}
-
-## begin note
 # 機能: ビルド環境向けのgccを生成する(binutils/gcc/glibcの構築に必要なC/C++までを生成)
 ## end note
 do_build_gcc_for_build(){
@@ -915,8 +821,6 @@ do_build_gcc_for_build(){
     #          mpcをインストールしたディレクトリを指定
     #--with-isl=${BUILD_TOOLS_DIR} 
     #          islをインストールしたディレクトリを指定
-    #--with-libelf=${BUILD_TOOLS_DIR}
-    #          libelfをインストールしたディレクトリを指定
     #--program-prefix="${BUILD}-"
     #          ターゲット用のコンパイラやシステムにインストールされている
     #          コンパイラと区別するために, プログラムのプレフィクスに
@@ -949,7 +853,6 @@ do_build_gcc_for_build(){
 	--with-mpfr=${BUILD_TOOLS_DIR}                       \
 	--with-mpc=${BUILD_TOOLS_DIR}                        \
 	--with-isl=${BUILD_TOOLS_DIR}                        \
-	--with-libelf=${BUILD_TOOLS_DIR}                     \
 	--program-prefix="${BUILD}-"                         \
 	"${LINK_STATIC_LIBSTDCXX}"                           \
 	--with-long-double-128 				     \
@@ -1329,7 +1232,6 @@ main(){
     	do_build_mpfr
     	do_build_mpc
     	do_build_isl
-    	do_build_elfutils
     	do_build_gcc_for_build
     fi
 

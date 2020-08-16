@@ -6,7 +6,6 @@ GMP=gmp-6.1.0
 MPFR=mpfr-3.1.4
 MPC=mpc-1.0.3
 ISL=isl-0.18
-ELFUTILS=elfutils-0.157
 BINUTILS=binutils-2.34
 GCC=gcc-10.2.0
 SWIG=swig-4.0.2
@@ -22,7 +21,6 @@ ftp://gcc.gnu.org/pub/gcc/infrastructure/gmp-6.1.0.tar.bz2
 ftp://gcc.gnu.org/pub/gcc/infrastructure/mpfr-3.1.4.tar.bz2
 ftp://gcc.gnu.org/pub/gcc/infrastructure/mpc-1.0.3.tar.gz
 ftp://gcc.gnu.org/pub/gcc/infrastructure/isl-0.18.tar.bz2
-ftp://sourceware.org/pub/elfutils/0.157/elfutils-0.157.tar.bz2
 https://ftp.gnu.org/gnu/binutils/binutils-2.34.tar.gz
 https://ftp.gnu.org/gnu/gcc/gcc-10.2.0/gcc-10.2.0.tar.gz
 http://prdownloads.sourceforge.net/swig/swig-4.0.2.tar.gz"
