@@ -571,8 +571,8 @@ do_build_gmp(){
     #
     # configureの設定
     #
-    # --prefix=${CROSS}        
-    #          ${CROSS}配下にインストールする
+    # --prefix=${BUILD_TOOLS_DIR}        
+    #          ${BUILD_TOOLS_DIR}配下にインストールする
     # --enable-cxx
     #          gccがC++で書かれているため, c++向けのライブラリを構築する
     # --disable-shared
@@ -580,7 +580,7 @@ do_build_gmp(){
     #         共有ライブラリを作らずgccに対して静的リンクでgmpをリンクさせる
     #         (LD_LIBRARY_PATH環境変数を設定せずに使用するために必要)
     ${SRCDIR}/${GMP}/configure            \
-	--prefix=${CROSS}                 \
+	--prefix=${BUILD_TOOLS_DIR}                 \
 	--enable-cxx                      \
 	--disable-shared                  \
 	--enable-static
@@ -589,7 +589,7 @@ do_build_gmp(){
     ${SUDO} make install
 
     echo "Remove .la files"
-    pushd ${CROSS}
+    pushd ${BUILD_TOOLS_DIR}
     find . -name '*.la'|while read file
     do
 	echo "Remove ${file}"
@@ -615,9 +615,9 @@ do_build_mpfr(){
     #
     # configureの設定
     #
-    # --prefix=${CROSS}        
-    #          ${CROSS}配下にインストールする
-    # --with-gmp=${CROSS}
+    # --prefix=${BUILD_TOOLS_DIR}        
+    #          ${BUILD_TOOLS_DIR}配下にインストールする
+    # --with-gmp=${BUILD_TOOLS_DIR}
     #          gmpのインストール先を指定する
     # --disable-shared
     # --enable-static
@@ -625,8 +625,8 @@ do_build_mpfr(){
     #         (LD_LIBRARY_PATH環境変数を設定せずに使用するために必要)
     #
     ${SRCDIR}/${MPFR}/configure           \
-	--prefix=${CROSS}                 \
-	--with-gmp=${CROSS}               \
+	--prefix=${BUILD_TOOLS_DIR}                 \
+	--with-gmp=${BUILD_TOOLS_DIR}               \
 	--disable-shared                  \
 	--enable-static
     
@@ -634,7 +634,7 @@ do_build_mpfr(){
     ${SUDO} make install
 
     echo "Remove .la files"
-    pushd ${CROSS}
+    pushd ${BUILD_TOOLS_DIR}
     find . -name '*.la'|while read file
     do
 	echo "Remove ${file}"
@@ -660,13 +660,13 @@ do_build_mpc(){
     #
     # configureの設定
     #
-    # --prefix=${CROSS}        
-    #          ${CROSS}配下にインストールする
+    # --prefix=${BUILD_TOOLS_DIR}        
+    #          ${BUILD_TOOLS_DIR}配下にインストールする
     #
-    # --with-gmp=${CROSS}
+    # --with-gmp=${BUILD_TOOLS_DIR}
     #          gmpのインストール先を指定する
     #
-    # --with-mpfr=${CROSS}
+    # --with-mpfr=${BUILD_TOOLS_DIR}
     #          mpfrのインストール先を指定する
     #
     # --disable-shared
@@ -675,9 +675,9 @@ do_build_mpc(){
     #         (LD_LIBRARY_PATH環境変数を設定せずに使用するために必要)
     #
     ${SRCDIR}/${MPC}/configure   \
-	--prefix=${CROSS}        \
-	--with-gmp=${CROSS}      \
-	--with-mpfr=${CROSS}     \
+	--prefix=${BUILD_TOOLS_DIR}        \
+	--with-gmp=${BUILD_TOOLS_DIR}      \
+	--with-mpfr=${BUILD_TOOLS_DIR}     \
 	--disable-shared         \
 	--enable-static
 
@@ -685,7 +685,7 @@ do_build_mpc(){
     ${SUDO} make install
 
     echo "Remove .la files"
-    pushd ${CROSS}
+    pushd ${BUILD_TOOLS_DIR}
     find . -name '*.la'|while read file
     do
 	echo "Remove ${file}"
@@ -711,24 +711,24 @@ do_build_isl(){
     #
     # configureの設定
     #
-    # --prefix=${CROSS}        
-    #          ${CROSS}配下にインストールする
+    # --prefix=${BUILD_TOOLS_DIR}        
+    #          ${BUILD_TOOLS_DIR}配下にインストールする
     # --disable-silent-rules
     #          コンパイル時にコマンドラインを表示する
     # --with-gmp=system
     #          インストール済みのGMPを使用する
-    # --with-gmp-prefix=${CROSS}
-    #          ${CROSS}配下のGMPを使用する
+    # --with-gmp-prefix=${BUILD_TOOLS_DIR}
+    #          ${BUILD_TOOLS_DIR}配下のGMPを使用する
     # --disable-shared
     # --enable-static
     #         共有ライブラリを作らずgccに対して静的リンクでislをリンクさせる
     #         (LD_LIBRARY_PATH環境変数を設定せずに使用するために必要)
     #
     ${SRCDIR}/${ISL}/configure           \
-	--prefix=${CROSS}                \
+	--prefix=${BUILD_TOOLS_DIR}                \
 	--disable-silent-rules           \
 	--with-gmp=system                \
-	--with-gmp-prefix=${CROSS}       \
+	--with-gmp-prefix=${BUILD_TOOLS_DIR}       \
 	--disable-shared                 \
 	--enable-static
 
@@ -736,7 +736,7 @@ do_build_isl(){
     ${SUDO} make install
 
     echo "Remove .la files"
-    pushd ${CROSS}
+    pushd ${BUILD_TOOLS_DIR}
     find . -name '*.la'|while read file
     do
 	echo "Remove ${file}"
@@ -771,11 +771,11 @@ do_build_elfutils(){
     #
     # configureの設定
     #
-    # --prefix=${CROSS}        
-    #          ${CROSS}配下にインストールする
-    # --program-prefix="${TARGET}-
+    # --prefix=${BUILD_TOOLS_DIR}        
+    #          ${BUILD_TOOLS_DIR}配下にインストールする
+    # --program-prefix="${BUILD}-
     #          システムにインストールされているbinutilsと区別するために, 
-    #          プログラムのプレフィクスに${TARGET}-をつける。
+    #          プログラムのプレフィクスに${BUILD}-をつける。
     # --enable-cxx
     #          gccがC++で書かれているため, c++向けのライブラリを構築する
     # --enable-compat
@@ -792,8 +792,8 @@ do_build_elfutils(){
     #         (LD_LIBRARY_PATH環境変数を設定せずに使用するために必要)
     #
     ${SRCDIR}/${ELFUTILS}/configure       \
-	--prefix=${CROSS}                 \
-	--program-prefix="${TARGET}-"     \
+	--prefix=${BUILD_TOOLS_DIR}       \
+	--program-prefix="${BUILD}-"      \
 	--enable-cxx                      \
         --enable-compat                   \
         --enable-elf64                    \
@@ -806,7 +806,7 @@ do_build_elfutils(){
     ${SUDO} make install
 
     echo "Remove .la files"
-    pushd ${CROSS}
+    pushd ${BUILD_TOOLS_DIR}
     find . -name '*.la'|while read file
     do
 	echo "Remove ${file}"
@@ -818,18 +818,18 @@ do_build_elfutils(){
     #gccから共有ライブラリ版のlibelfがリンクされないように
     #共有ライブラリを削除する
     #
-    if [ -d ${CROSS}/lib ]; then
+    if [ -d ${BUILD_TOOLS_DIR}/lib ]; then
 	echo "Remove shared elf libraries"
-	pushd ${CROSS}/lib
+	pushd ${BUILD_TOOLS_DIR}/lib
 	rm -f libasm*.so*
 	rm -f libdw*.so*
 	rm -f libelf*.so*
 	popd
     fi
 
-    if [ -d ${CROSS}/lib64 ]; then
+    if [ -d ${BUILD_TOOLS_DIR}/lib64 ]; then
 	echo "Remove shared elf 64bit libraries"
-	pushd ${CROSS}/lib64
+	pushd ${BUILD_TOOLS_DIR}/lib64
 	rm -f libasm*.so*
 	rm -f libdw*.so*
 	rm -f libelf*.so*
@@ -859,12 +859,12 @@ do_build_gcc_for_build(){
     #
     # configureの設定
     #
-    #--prefix=${CROSS}
-    #          ${CROSS}配下にインストールする
+    #--prefix=${BUILD_TOOLS_DIR}
+    #          ${BUILD_TOOLS_DIR}配下にインストールする
     #--target=${BUILD}
     #          ビルド環境向けのコードを生成する
-    #--with-local-prefix=${CROSS}/${BUILD}
-    #          gcc内部で使用するファイルを${CROSS}/${BUILD}に格納する
+    #--with-local-prefix=${BUILD_TOOLS_DIR}/${BUILD}
+    #          gcc内部で使用するファイルを${BUILD_TOOLS_DIR}/${BUILD}に格納する
     #--with-sysroot=/
     #          コンパイラの実行時にシステムのルートファイルシステムを優先してヘッダや
     #          ライブラリを探査する
@@ -904,15 +904,15 @@ do_build_gcc_for_build(){
     #           GNU OpenMPライブラリを生成する
     #--disable-libsanitizer
     #           libsanitizerを無効にする(gcc-4.9のlibsanitizerはバグのためコンパイルできないため)
-    #--with-gmp=${CROSS}
+    #--with-gmp=${BUILD_TOOLS_DIR}
     #          gmpをインストールしたディレクトリを指定
-    #--with-mpfr=${CROSS} 
+    #--with-mpfr=${BUILD_TOOLS_DIR} 
     #          mpfrをインストールしたディレクトリを指定
-    #--with-mpc=${CROSS}
+    #--with-mpc=${BUILD_TOOLS_DIR}
     #          mpcをインストールしたディレクトリを指定
-    #--with-isl=${CROSS} 
+    #--with-isl=${BUILD_TOOLS_DIR} 
     #          islをインストールしたディレクトリを指定
-    #--with-libelf=${CROSS}
+    #--with-libelf=${BUILD_TOOLS_DIR}
     #          libelfをインストールしたディレクトリを指定
     #--program-prefix="${BUILD}-"
     #          ターゲット用のコンパイラやシステムにインストールされている
@@ -942,11 +942,11 @@ do_build_gcc_for_build(){
 	--enable-libssp                                      \
 	--enable-libgomp                                     \
 	--disable-libsanitizer                               \
-	--with-gmp=${CROSS}                                  \
-	--with-mpfr=${CROSS}                                 \
-	--with-mpc=${CROSS}                                  \
-	--with-isl=${CROSS}                                  \
-	--with-libelf=${CROSS}                               \
+	--with-gmp=${BUILD_TOOLS_DIR}                        \
+	--with-mpfr=${BUILD_TOOLS_DIR}                       \
+	--with-mpc=${BUILD_TOOLS_DIR}                        \
+	--with-isl=${BUILD_TOOLS_DIR}                        \
+	--with-libelf=${BUILD_TOOLS_DIR}                     \
 	--program-prefix="${BUILD}-"                         \
 	"${LINK_STATIC_LIBSTDCXX}"                           \
 	--with-long-double-128 				     \
@@ -957,7 +957,7 @@ do_build_gcc_for_build(){
     popd
 
     echo "Remove .la files"
-    pushd ${CROSS}
+    pushd ${BUILD_TOOLS_DIR}
     find . -name '*.la'|while read file
     do
 	echo "Remove ${file}"
@@ -968,8 +968,8 @@ do_build_gcc_for_build(){
     #
     #ホストのgccとの混乱を避けるため以下を削除
     #
-    echo "rm cpp gcc gcc-ar gcc-nm gcc-ranlib gcov on ${CROSS}/bin"
-    pushd ${CROSS}/bin
+    echo "rm cpp gcc gcc-ar gcc-nm gcc-ranlib gcov on ${BUILD_TOOLS_DIR}/bin"
+    pushd ${BUILD_TOOLS_DIR}/bin
     rm -f cpp gcc gcc-ar gcc-nm gcc-ranlib gcov ${TARGET}-cc
     #
     # コンパイラへのリンクを張る
@@ -1334,7 +1334,7 @@ main(){
     fi
 
     if [ "x${NO_SWIG}" = 'x' ]; then    
-	do_build_swig_for_build
+    	do_build_swig_for_build
     fi
     
     if [ "x${FORCE_FETCH_LLVM}" != 'x' -o ! -d ${DOWNLOADDIR}/llvm-project ]; then    
