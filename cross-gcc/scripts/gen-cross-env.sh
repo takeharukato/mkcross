@@ -118,15 +118,20 @@ unset GDB_COMMAND
 
 TOOLCHAIN_PREFIX=\${HOME}/${cross_dir}
 
-OLD_PATH=\${PATH}
-
 if [ -f ${HOME}/env/default-path.sh ]; then
    source ${HOME}/env/default-path.sh
 else
-   if [ "x${OLD_PATH}" != "x" ]; then
-      PATH="${OLD_PATH}"
+   if [ "x\${OLD_PATH}" != "x" ]; then
+      PATH="\${OLD_PATH}"
    fi
 fi
+
+if [ "x\${OLD_LD_LIBRARY_PATH}" != "x" ]; then
+   LD_LIBRARY_PATH="\${OLD_LD_LIBRARY_PATH}"
+fi
+
+OLD_PATH=\${PATH}
+OLD_LD_LIBRARY_PATH=\${LD_LIBRARY_PATH}
 
 CPU=${cpu}
 QEMU_CPU=${qemu_cpu}
@@ -136,6 +141,7 @@ GDB_COMMAND=\${CROSS_COMPILE}gdb
 QEMU=qemu-system-${qemu_cpu}
 
 PATH=\${TOOLCHAIN_PREFIX}/bin:\${PATH}
+LD_LIBRARY_PATH=\${TOOLCHAIN_PREFIX}/lib64:\${TOOLCHAIN_PREFIX}/lib:\${LD_LIBRARY_PATH}
 
 export CPU
 export QEMU_CPU
@@ -144,7 +150,9 @@ export GDB_COMMAND
 export QEMU
 
 export OLD_PATH
+export OLD_LD_LIBRARY_PATH
 export PATH
+export LD_LIBRARY_PATH
 
 EOF
 
@@ -170,10 +178,12 @@ module-whatis   "${cpu} gcc toolchain for ${type} binary Setting"
 
 # for Tcl script only
 set ${cpu}_${type}_gcc_path "${HOME}/${cross_dir}/bin"
+set ${cpu}_${type}_gcc_ld_library_path "${HOME}/${cross_dir}/lib64:${HOME}/${cross_dir}/lib"
 
 
 # append pathes
 prepend-path    PATH    \${${cpu}_${type}_gcc_path}
+prepend-path    LD_LIBRARY_PATH \${${cpu}_${type}_gcc_ld_library_path}
 EOF
 	    
 	fi
