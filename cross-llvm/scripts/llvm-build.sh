@@ -1138,16 +1138,17 @@ do_build_llvm(){
     	-DCMAKE_BUILD_TYPE=Release                \
     	-DCMAKE_INSTALL_PREFIX=${CROSS}           \
 	-DLLVM_ENABLE_LIBCXX=ON                   \
-	-DCMAKE_C_COMPILER=${BUILD}-gcc           \
-	-DCMAKE_CXX_COMPILER=${BUILD}-g++         \
-	-DCMAKE_AS=${BUILD}-as                    \
-	-DCMAKE_LINKER=${BUILD}-ld                \
-	-DCMAKE_AR=${BUILD}-ar                    \
-	-DCMAKE_RANLIB=${BUILD}-ranlib            \
-	-DCMAKE_NM=${BUILD}-nm                    \
-	-DCMAKE_OBJCOPY=${BUILD}-objcopy          \
-	-DCMAKE_OBJDUMP=${BUILD}-objdump          \
-	-DCMAKE_STRIP=${BUILD}-strip              \
+	-DLLVM_USE_LINKER="${BUILD}-ld"           \
+	-DCMAKE_C_COMPILER="${BUILD}-gcc"         \
+	-DCMAKE_CXX_COMPILER="${BUILD}-g++"       \
+	-DCMAKE_AS="${BUILD}-as"                  \
+	-DCMAKE_LINKER="${BUILD}-ld"              \
+	-DCMAKE_AR="${BUILD}-ar"                  \
+	-DCMAKE_RANLIB="${BUILD}-ranlib"          \
+	-DCMAKE_NM="${BUILD}-nm"                  \
+	-DCMAKE_OBJCOPY="${BUILD}-objcopy"        \
+	-DCMAKE_OBJDUMP="${BUILD}-objdump"        \
+	-DCMAKE_STRIP="${BUILD}-strip"            \
 	-DLLVM_ENABLE_PROJECTS="${LLVM_PROJECTS}" \
 	${llvm_src}/llvm
 
@@ -1211,7 +1212,6 @@ do_build_llvm_with_clangxx(){
     	-DCMAKE_BUILD_TYPE=Release                     \
     	-DCMAKE_INSTALL_PREFIX="${CROSS}"              \
 	-DLLVM_ENABLE_LIBCXX=ON                        \
-	-DLLVM_ENABLE_PROJECTS="${LLVM_PROJECTS}"      \
 	-DLLVM_USE_LINKER="${CROSS}/bin/ld.lld"        \
 	-DCMAKE_C_COMPILER="${CROSS}/bin/clang"        \
 	-DCMAKE_CXX_COMPILER="${CROSS}/bin/clang++"    \
@@ -1223,6 +1223,7 @@ do_build_llvm_with_clangxx(){
 	-DCMAKE_OBJCOPY="${CROSS}/bin/llvm-objcopy"    \
 	-DCMAKE_OBJDUMP="${CROSS}/bin/llvm-objdump"    \
 	-DCMAKE_STRIP="${CROSS}/bin/llvm-strip"        \
+	-DLLVM_ENABLE_PROJECTS="${LLVM_PROJECTS}"      \
 	"${llvm_src}/llvm"
 
     if [ "x${NO_NINJA}" = "x" ]; then
