@@ -1138,17 +1138,15 @@ do_build_llvm(){
     	-DCMAKE_BUILD_TYPE=Release                \
     	-DCMAKE_INSTALL_PREFIX=${CROSS}           \
 	-DLLVM_ENABLE_LIBCXX=ON                   \
-	-DLLVM_USE_LINKER="${BUILD}-ld"           \
-	-DCMAKE_C_COMPILER="${BUILD}-gcc"         \
-	-DCMAKE_CXX_COMPILER="${BUILD}-g++"       \
-	-DCMAKE_AS="${BUILD}-as"                  \
-	-DCMAKE_LINKER="${BUILD}-ld"              \
-	-DCMAKE_AR="${BUILD}-ar"                  \
-	-DCMAKE_RANLIB="${BUILD}-ranlib"          \
-	-DCMAKE_NM="${BUILD}-nm"                  \
-	-DCMAKE_OBJCOPY="${BUILD}-objcopy"        \
-	-DCMAKE_OBJDUMP="${BUILD}-objdump"        \
-	-DCMAKE_STRIP="${BUILD}-strip"            \
+	-DCMAKE_C_COMPILER="${BUILD_TOOLS_DIR}/bin/${BUILD}-gcc"         \
+	-DCMAKE_CXX_COMPILER="${BUILD_TOOLS_DIR}/bin/${BUILD}-g++"       \
+	-DCMAKE_LINKER="${BUILD_TOOLS_DIR}/bin/${BUILD}-ld"              \
+	-DCMAKE_AR="${BUILD_TOOLS_DIR}/bin/${BUILD}-ar"                  \
+	-DCMAKE_RANLIB="${BUILD_TOOLS_DIR}/bin/${BUILD}-ranlib"          \
+	-DCMAKE_NM="${BUILD_TOOLS_DIR}/bin/${BUILD}-nm"                  \
+	-DCMAKE_OBJCOPY="${BUILD_TOOLS_DIR}/bin/${BUILD}-objcopy"        \
+	-DCMAKE_OBJDUMP="${BUILD_TOOLS_DIR}/bin/${BUILD}-objdump"        \
+	-DCMAKE_STRIP="${BUILD_TOOLS_DIR}/bin/${BUILD}-strip"            \
 	-DLLVM_ENABLE_PROJECTS="${LLVM_PROJECTS}" \
 	${llvm_src}/llvm
 
@@ -1215,7 +1213,6 @@ do_build_llvm_with_clangxx(){
 	-DLLVM_USE_LINKER="${CROSS}/bin/ld.lld"        \
 	-DCMAKE_C_COMPILER="${CROSS}/bin/clang"        \
 	-DCMAKE_CXX_COMPILER="${CROSS}/bin/clang++"    \
-	-DCMAKE_AS="${CROSS}/bin/llvm-as"              \
 	-DCMAKE_LINKER="${CROSS}/bin/ld.lld"           \
 	-DCMAKE_AR="${CROSS}/bin/llvm-ar"              \
 	-DCMAKE_RANLIB="${CROSS}/bin/llvm-ranlib"      \
@@ -1324,13 +1321,13 @@ main(){
     prepare_archives
 
     if [ "x${NO_BUILD_TOOLS}" = 'x' ]; then    
-	do_build_binutils_for_build
-	do_build_gmp
-	do_build_mpfr
-	do_build_mpc
-	do_build_isl
-	do_build_elfutils
-	do_build_gcc_for_build
+    	do_build_binutils_for_build
+    	do_build_gmp
+    	do_build_mpfr
+    	do_build_mpc
+    	do_build_isl
+    	do_build_elfutils
+    	do_build_gcc_for_build
     fi
 
     if [ "x${NO_SWIG}" = 'x' ]; then    
