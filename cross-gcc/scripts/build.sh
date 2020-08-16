@@ -451,7 +451,7 @@ prepare_devenv(){
 
 	    # LLVM/clang for bootstrap
 	    sudo ${YUM_CMD} install -y clang
-	    sudo ${YUM_CMD} install -y llvm-devel
+	    sudo ${YUM_CMD} install -y llvm-devel clang-devel
 	    
 	    # Python2 devel
 	    sudo ${YUM_CMD} install -y python-devel
@@ -460,7 +460,7 @@ prepare_devenv(){
 	    sudo ${YUM_CMD} install -y qemu-kvm libvirt virt-install
 
 	    # Xen for QEmu
-	    sudo ${YUM_CMD} -y centos-release-xen
+	    sudo ${YUM_CMD} install -y centos-release-xen
 	
 	    # Build dep	
 	    sudo ${YUM_BUILDDEP_CMD} -y binutils gcc texinfo-tex texinfo cmake qemu-kvm \
@@ -1037,7 +1037,7 @@ do_build_gcc_for_build(){
     #ホストのgccとの混乱を避けるため以下を削除
     #
     echo "rm cpp gcc gcc-ar gcc-nm gcc-ranlib gcov on ${CROSS}/bin"
-    pushd ${CROSS}/bin
+    pushd ${BUILD_TOOLS_DIR}/bin
     rm -f cpp gcc gcc-ar gcc-nm gcc-ranlib gcov ${TARGET}-cc
     #
     # クロスコンパイラへのリンクを張る

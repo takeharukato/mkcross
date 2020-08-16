@@ -453,7 +453,7 @@ prepare_devenv(){
 	    sudo ${YUM_CMD} install -y qemu-kvm libvirt virt-install
 
 	    # Xen for QEmu
-	    sudo ${YUM_CMD} -y centos-release-xen
+	    sudo ${YUM_CMD} install -y centos-release-xen
 	
 	    # Build dep	
 	    sudo ${YUM_BUILDDEP_CMD} -y binutils gcc texinfo-tex texinfo cmake qemu-kvm \
