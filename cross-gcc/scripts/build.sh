@@ -2653,43 +2653,47 @@ do_cross_uefi(){
 
     rm -fr ${CROSS}/uefi
     mkdir -p ${CROSS}/uefi
-
+    
     rm -fr ${BUILDDIR}/${EDK2}
     mkdir -p ${BUILDDIR}
 
-    cp -a  ${SRCDIR}/${EDK2} ${BUILDDIR}/${EDK2}
-    pushd ${BUILDDIR}/${EDK2}
-    gmake -C BaseTools
-    source ${BUILDDIR}/${EDK2}/edksetup.sh
-    case "${TARGET_CPU}" in
-	aarch64) 
-	    export GCC5_AARCH64_PREFIX=${TARGET}-
-	    build -a AARCH64 -t GCC5 -p ArmVirtPkg/ArmVirtQemu.dsc
-	    cp  Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/FV/*.fd ${CROSS}/uefi
-	    ;;
-	x86_64)
-	    #
-	    #See https://github.com/tianocore/tianocore.github.io/wiki/How-to-build-OVMF
-	    #
-	    export GCC5_X64_PREFIX=${TARGET}-
-	    build -a X64 -t GCC5 -p OvmfPkg/OvmfPkgX64.dsc
-	    cp Build/OvmfX64/DEBUG_GCC5/FV/*.fd ${CROSS}/uefi
-	    ;;
-	i[3456]86)
-	    #
-	    #See https://github.com/tianocore/tianocore.github.io/wiki/How-to-build-OVMF
-	    #
-	    export GCC5_IA32_PREFIX=${TARGET}-
-	    build -a IA32 -t GCC5 -p OvmfPkg/OvmfPkgIa32.dsc
-	    cp Build/OvmfIA32/DEBUG_GCC5/FV/*.fd ${CROSS}/uefi
-	    ;;
-	* ) 
-	    echo "@@@ EDK2 UEFI @@@"
-	    echo "Skip building UEFI for ${TARGET_CPU}"
-	    ;;
-    esac
+    if [ -d ${SRCDIR}/${EDK2} ]; then
 
-    popd
+	cp -a  ${SRCDIR}/${EDK2} ${BUILDDIR}/${EDK2}
+	pushd ${BUILDDIR}/${EDK2}
+	gmake -C BaseTools
+	source ${BUILDDIR}/${EDK2}/edksetup.sh
+	case "${TARGET_CPU}" in
+	    aarch64) 
+		export GCC5_AARCH64_PREFIX=${TARGET}-
+		build -a AARCH64 -t GCC5 -p ArmVirtPkg/ArmVirtQemu.dsc
+		cp  Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/FV/*.fd ${CROSS}/uefi
+		;;
+	    x86_64)
+		#
+		#See https://github.com/tianocore/tianocore.github.io/wiki/How-to-build-OVMF
+		#
+		export GCC5_X64_PREFIX=${TARGET}-
+		build -a X64 -t GCC5 -p OvmfPkg/OvmfPkgX64.dsc
+		cp Build/OvmfX64/DEBUG_GCC5/FV/*.fd ${CROSS}/uefi
+		;;
+	    i[3456]86)
+		#
+		#See https://github.com/tianocore/tianocore.github.io/wiki/How-to-build-OVMF
+		#
+		export GCC5_IA32_PREFIX=${TARGET}-
+		build -a IA32 -t GCC5 -p OvmfPkg/OvmfPkgIa32.dsc
+		cp Build/OvmfIA32/DEBUG_GCC5/FV/*.fd ${CROSS}/uefi
+		;;
+	    * ) 
+		echo "Skip building UEFI for ${TARGET_CPU}"
+		;;
+	esac
+	
+	popd
+    else
+	echo "Can not fetch edk2 source. Skip building UEFI for ${TARGET_CPU}"
+    fi
 }
 
 ## begin note
