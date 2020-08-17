@@ -181,9 +181,17 @@ set ${cpu}_${type}_gcc_path "\$env(HOME)/${cross_dir}/bin"
 set ${cpu}_${type}_gcc_ld_library_path "\$env(HOME)/${cross_dir}/lib64:\$env(HOME)/${cross_dir}/lib"
 
 
+# environmnet variables
+setenv CPU    ${cpu}
+setenv QEMU_CPU	${qemu_cpu}
+setenv CROSS_COMPILE	${tool_chain}-
+setenv GDB_COMMAND   ${tool_chain}-gdb
+setenv QEMU	   qemu-system-${qemu_cpu}
+
 # append pathes
 prepend-path    PATH    \${${cpu}_${type}_gcc_path}
 prepend-path    LD_LIBRARY_PATH \${${cpu}_${type}_gcc_ld_library_path}
+
 EOF
 	    
 	fi
