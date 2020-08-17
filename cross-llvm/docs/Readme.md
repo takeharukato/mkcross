@@ -34,7 +34,7 @@
 	に`CURRENT-LLVM`という名前でEnvironment Modules用の環境
     設定ファイルを生成します。
 
-4. data/gud.el      emacsでLLVMを使用するためのemacs lispファイルです
+5. data/gud.el      emacsでLLVMを使用するためのemacs lispファイルです
                      (Grand Unified Debugger mode)。
 					本スクリプトは, 最新版のgud.elをdownloads
 					ディレクトリにダウンロードします。
