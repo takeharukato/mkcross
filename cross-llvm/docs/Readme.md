@@ -23,6 +23,17 @@
 
 3. scripts/llvm-build.sh コンパイラや各種ツールを生成するスクリプト本体です。
 
+4. scripts/gen-llvm-env.sh LLVMコンパイラへのパスを設定するスクリプトを
+    生成します。${HOME}/env/ディレクトリが存在する場合は, ${HOME}/env/ディ
+    レクトリに, `llvm-current-env.sh`
+	という名前のシェルスクリプトを生成します。各スクリプトをBシェルの
+	sourceコマンドで読み込むことで, 環境変数`PATH`と環境変数`LD_LIBRARY_PATH`が設定
+    されます。変更前の環境変数`PATH`と環境変数`LD_LIBRARY_PATH`の設定
+    値は, それぞれ,	環境変数`OLD\_PATH`, `OLD_LD_LIBRARY_PATH`に保存されます。
+	また, `${HOME}/Modules`というディレクトリが存在する場合は, `${HOME}/Modules`
+	に`CURRENT-LLVM`という名前でEnvironment Modules用の環境
+    設定ファイルを生成します。
+
 4. data/gud.el      emacsでLLVMを使用するためのemacs lispファイルです
                      (Grand Unified Debugger mode)。
 					本スクリプトは, 最新版のgud.elをdownloads

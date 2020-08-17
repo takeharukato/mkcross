@@ -6,6 +6,7 @@
 #
 TARGETS=(riscv64 aarch64 x64 i686 armhw riscv32)
 CROSS_TOOLCHAIN_PREFIX=cross
+SCRIPT_ENV_DIR=${HOME}/env
 MODULE_ENVIRONMENT_DIR=${HOME}/Modules
 
 ##
@@ -92,17 +93,19 @@ gen_environment_script(){
 	    ;;
     esac
 
-    file="${HOME}/env/${cpu}-${type}-env.sh"
-
     if [ -d ${HOME}/${cross_dir}/bin ]; then
-	echo "${target}: cpu=${cpu} Type=${type} cross_dir=${HOME}/${cross_dir}"
-
-	echo "${cpu}-${type}-env.sh ..."
-	if [ -f "${file}" ]; then
-	    rm -f "${file}"
-	fi
 	
-	cat <<EOF > ${file}
+	echo "${target}: cpu=${cpu} Type=${type} cross_dir=${HOME}/${cross_dir}"
+	
+	if [ -d ${SCRIPT_ENV_DIR} ]; then
+	    
+	    file="${SCRIPT_ENV_DIR}/${cpu}-${type}-env.sh"
+	    echo "${cpu}-${type}-env.sh ..."
+	    if [ -f "${file}" ]; then
+		rm -f "${file}"
+	    fi
+	    
+	    cat <<EOF > ${file}
 #
 # -*- mode: bash; coding:utf-8 -*-
 # Setup environment variables
@@ -155,6 +158,7 @@ export PATH
 export LD_LIBRARY_PATH
 
 EOF
+	fi
 
 	if [ -d "${MODULE_ENVIRONMENT_DIR}" ]; then
 
@@ -180,7 +184,6 @@ module-whatis   "${cpu} gcc toolchain for ${type} binary Setting"
 set ${cpu}_${type}_gcc_path "\$env(HOME)/${cross_dir}/bin"
 set ${cpu}_${type}_gcc_ld_library_path "\$env(HOME)/${cross_dir}/lib64:\$env(HOME)/${cross_dir}/lib"
 
-
 # environmnet variables
 setenv CPU    ${cpu}
 setenv QEMU_CPU	${qemu_cpu}
@@ -193,7 +196,6 @@ prepend-path    PATH    \${${cpu}_${type}_gcc_path}
 prepend-path    LD_LIBRARY_PATH \${${cpu}_${type}_gcc_ld_library_path}
 
 EOF
-	    
 	fi
     fi
 }

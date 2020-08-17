@@ -35,13 +35,23 @@
     * do-all.sh     上記の全てのアーキテクチャ向けのクロス環境生成処理
       を順番に実行します。 
     * gen-cross-env.sh クロスコンパイラへのパスを設定するスクリプトを
-    生成します。カレントディレクトリに `CPU名-ツールチェインタイプ-env.sh`
-	という名前のシェルスクリプトが生成されます。各スクリプトをBシェルの
-	sourceコマンドで読み込むことで, 環境変数`PATH`や`CROSS_COMPILE`が設定
-    されます。変更前のパスは環境変数`OLD\_PATH`に保存されます。
+    生成します。${HOME}/env/ディレクトリが存在する場合は, ${HOME}/env/ディ
+    レクトリに, `CPU名-ツールチェインタイプ-env.sh`
+	という名前のシェルスクリプトを生成します。各スクリプトをBシェルの
+	sourceコマンドで読み込むことで, 環境変数`PATH`と環境変数`LD_LIBRARY_PATH`が設定
+    されます。変更前の環境変数`PATH`と環境変数`LD_LIBRARY_PATH`の設定
+    値は, それぞれ,	環境変数`OLD\_PATH`, `OLD_LD_LIBRARY_PATH`に保存されます。
+	さらにターゲットCPUに合わせて, 以下の環境変数を設定します。
+	* CPU gccのターゲットCPU名を設定します。
+	* QEMU_CPU QEmuのCPU名を設定します。
+	* CROSS_COMPILE Linuxなどでクロスコンパイラを指定する場合のコンパ
+    イラプレフィクス名を設定します。
+	* GDB_COMMAND クロスgdbのコマンド名を設定します。
+	* QEMU     QEmuのシステムエミュレータのコマンド名を設定します。
+	
 	また, `${HOME}/Modules`というディレクトリが存在する場合は, `${HOME}/Modules`
 	に`CPU名-ツールチェインタイプ-GCC`という名前でEnvironment Modules用の環境
-    設定ファイルが生成されます。
+    設定ファイルを生成します。
 	
 4. data/gud.el      emacsでLLVMを使用するためのemacs lispファイルです
                      (Grand Unified Debugger mode)。
