@@ -23,7 +23,6 @@ GLIBC=glibc-2.30
 NEWLIB=newlib-3.1.0
 GDB=gdb-9.2
 QEMU=qemu-5.0.0
-CMAKE=cmake-3.15.5
 EDK2=edk2-current
 DOWNLOAD_URLS="ftp://ftp.gnu.org/gnu/make/make-4.3.tar.gz
 ftp://ftp.gnu.org/gnu/tar/tar-1.32.tar.gz
@@ -37,7 +36,6 @@ https://ftp.gnu.org/gnu/gcc/gcc-10.2.0/gcc-10.2.0.tar.gz
 https://ftp.gnu.org/gnu/libc/glibc-2.30.tar.gz
 https://ftp.gnu.org/gnu/gdb/gdb-9.2.tar.gz
 https://download.qemu.org/qemu-5.0.0.tar.xz
-https://cmake.org/files/v3.15/cmake-3.15.5.tar.gz
 ftp://sourceware.org/pub/newlib/newlib-3.1.0.tar.gz"
 
 EDK2_GIT_REPO="git@github.com:tianocore/edk2.git"
