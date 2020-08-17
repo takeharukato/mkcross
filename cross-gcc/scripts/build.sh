@@ -184,8 +184,8 @@ setup_variables(){
     #パスの設定
     #
     OLD_PATH=${PATH}
-    DEFAULT_PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/bin:/sbin
-    PATH=${BUILD_TOOLS_DIR}/bin:${CROSS}/bin:${DEFAULT_PATH}
+    SAFE_PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/bin:/sbin
+    PATH=${BUILD_TOOLS_DIR}/bin:${CROSS}/bin:${SAFE_PATH}:${PATH}
     LD_LIBRARY_PATH=${CROSS}/lib64:${CROSS}/lib:${BUILD_TOOLS_DIR}/lib64:${BUILD_TOOLS_DIR}/lib
 
     export PATH
@@ -2767,7 +2767,7 @@ main(){
     show_info
 
     if [ "x${NO_DEVENV}" = 'x' ]; then
-	prepare_devenv
+    	prepare_devenv
     fi
     
     prepare_archives
