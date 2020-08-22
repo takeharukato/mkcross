@@ -312,6 +312,35 @@ fetch_edk2_src() {
 }
 
 ## begin note
+# 機能: gitからedk2のソースを取得する
+## end note 
+fetch_edk2_src() {
+
+    echo "@@@ Fetch EDK2 sources @@@"
+
+    if [ -d ${DOWNLOADDIR}/work-${EDK2} ]; then
+	rm -fr ${DOWNLOADDIR}/work-${EDK2}
+    fi
+    mkdir -p ${DOWNLOADDIR}/work-${EDK2}
+
+    pushd  ${DOWNLOADDIR}/work-${EDK2}
+
+    git clone git@github.com:tianocore/edk2.git
+
+    pushd edk2
+    git submodule update --init --recursive
+    popd
+    mv edk2 ${EDK2}
+    tar zcf ${DOWNLOADDIR}/${EDK2}.tar.gz ${EDK2}
+    rm -fr  ${EDK2}
+    popd
+
+    if [ -d ${DOWNLOADDIR}/work-${EDK2} ]; then
+     	rm -fr ${DOWNLOADDIR}/work-${EDK2}
+    fi
+}
+
+## begin note
 # 機能:開発環境をそろえる
 ## end note
 prepare_devenv(){
@@ -1273,6 +1302,64 @@ do_build_emulator(){
 }
 
 ## begin note
+# 機能: UEFI(EDKII)を構築する
+## end note
+do_cross_uefi(){
+
+    echo "@@@ EDK2 UEFI @@@"
+
+    if [ ! -e ${DOWNLOADDIR}/${EDK2}.tar.gz ]; then
+	fetch_edk2_src
+    fi
+
+    extract_archive ${EDK2}
+
+    rm -fr ${CROSS}/uefi
+    mkdir -p ${CROSS}/uefi
+    
+    rm -fr ${BUILDDIR}/${EDK2}
+    mkdir -p ${BUILDDIR}
+
+    if [ -d ${SRCDIR}/${EDK2} ]; then
+
+	cp -a  ${SRCDIR}/${EDK2} ${BUILDDIR}/${EDK2}
+	pushd ${BUILDDIR}/${EDK2}
+	gmake -C BaseTools
+	source ${BUILDDIR}/${EDK2}/edksetup.sh
+	case "${TARGET_CPU}" in
+	    aarch64) 
+		export GCC5_AARCH64_PREFIX=${TARGET}-
+		build -a AARCH64 -t GCC5 -p ArmVirtPkg/ArmVirtQemu.dsc
+		cp  Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/FV/*.fd ${CROSS}/uefi
+		;;
+	    x86_64)
+		#
+		#See https://github.com/tianocore/tianocore.github.io/wiki/How-to-build-OVMF
+		#
+		export GCC5_X64_PREFIX=${TARGET}-
+		build -a X64 -t GCC5 -p OvmfPkg/OvmfPkgX64.dsc
+		cp Build/OvmfX64/DEBUG_GCC5/FV/*.fd ${CROSS}/uefi
+		;;
+	    i[3456]86)
+		#
+		#See https://github.com/tianocore/tianocore.github.io/wiki/How-to-build-OVMF
+		#
+		export GCC5_IA32_PREFIX=${TARGET}-
+		build -a IA32 -t GCC5 -p OvmfPkg/OvmfPkgIa32.dsc
+		cp Build/OvmfIA32/DEBUG_GCC5/FV/*.fd ${CROSS}/uefi
+		;;
+	    * ) 
+		echo "Skip building UEFI for ${TARGET_CPU}"
+		;;
+	esac
+	
+	popd
+    else
+	echo "Can not fetch edk2 source. Skip building UEFI for ${TARGET_CPU}"
+    fi
+}
+
+## begin note
 # 機能: コマンドのストリップ処理
 ## end note
 do_strip_binaries(){
@@ -1372,17 +1459,17 @@ main(){
     do_cross_gdb
 
     case "${TARGET_CPU}" in
-    	aarch64|x86_64)
-    	    do_cross_uefi
-    	    ;;
-    	i[3456]86)
-    	    echo "Skip building UEFI for ${TARGET_CPU} because some distribution does not support no-PIE."
-    	    ;;
-    	* ) 
-    	    echo "Skip building UEFI for ${TARGET_CPU}"
-    	    ;;
+	aarch64|x86_64)
+	    do_cross_uefi
+	    ;;
+	i[3456]86)
+	    echo "Skip building UEFI for ${TARGET_CPU} because some distribution does not support no-PIE."
+	    ;;
+	* ) 
+	    echo "Skip building UEFI for ${TARGET_CPU}"
+	    ;;
     esac
-    
+
     do_build_emulator
 
     do_strip_binaries
