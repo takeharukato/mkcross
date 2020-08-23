@@ -1035,7 +1035,10 @@ do_build_isl_for_build(){
 # 機能: ビルド環境向けのgccを生成する(binutils/gcc/glibcの構築に必要なC/C++までを生成)
 ## end note
 do_build_gcc_for_build(){
-
+    local libgcc_file
+    local libgcc_dir
+    local libgcc_name
+    
     echo "@@@ BuildTool:gcc @@@"
 
     extract_archive ${GCC}
@@ -1061,8 +1064,8 @@ do_build_gcc_for_build(){
     #--with-sysroot=/
     #          コンパイラの実行時にシステムのルートファイルシステムを優先してヘッダや
     #          ライブラリを探査する
-    #--enable-shared
-    #          gccの共有ランタイムライブラリを生成する
+    #--disable-shared
+    #          gccの共有ランタイムライブラリを生成しない
     #--enable-languages="c,c++"
     #          binutils/gcc/glibcの構築に必要なC/C++までを生成する
     #--disable-bootstrap
@@ -1095,8 +1098,8 @@ do_build_gcc_for_build(){
     #           (Stack Smashing Protector機能を有効にする)
     #--enable-libgomp
     #           GNU OpenMPライブラリを生成する
-    #--disable-libsanitizer
-    #           libsanitizerを無効にする(gcc-4.9のlibsanitizerはバグのためコンパイルできないため)
+    #--enable-libsanitizer
+    #           libsanitizerを有効にする
     #--with-gmp=${BUILD_TOOLS_DIR}
     #          gmpをインストールしたディレクトリを指定
     #--with-mpfr=${BUILD_TOOLS_DIR} 
@@ -1112,13 +1115,23 @@ do_build_gcc_for_build(){
     #${LINK_STATIC_LIBSTDCXX} 
     #          libstdc++を静的リンクしパスに依存せず動作できるようにする
     #
-    ${SRCDIR}/${GCC}/configure                               \
+    env CC_FOR_BUILD="gcc"                                           \
+	CC_FOR_BUILD="g++"                                           \
+        LD_FOR_TARGET="${BUILD_TOOLS_DIR}/bin/${BUILD}-ld"           \
+	AR_FOR_TARGET="${BUILD_TOOLS_DIR}/bin/${BUILD}-ar"           \
+	RANLIB_FOR_TARGET="${BUILD_TOOLS_DIR}/bin/${BUILD}-ranlib"   \
+	NM_FOR_TARGET="${BUILD_TOOLS_DIR}/bin/${BUILD}-nm"           \
+	OBJCOPY_FOR_TARGET="${BUILD_TOOLS_DIR}/bin/${BUILD}-objcopy" \
+	OBJDUMP_FOR_TARGET="${BUILD_TOOLS_DIR}/bin/${BUILD}-objdump" \
+	STRIP_FOR_TARGET="${BUILD_TOOLS_DIR}/bin/${BUILD}-strip"     \
+	${SRCDIR}/${GCC}/configure                           \
 	--prefix=${BUILD_TOOLS_DIR}                          \
+	--build=${BUILD}                                     \
 	--target=${BUILD}                                    \
-	--with-local-prefix=${BUILD_TOOLS_DIR}/${BUILD}                \
+	--with-local-prefix=${BUILD_TOOLS_DIR}/${BUILD}      \
 	--with-build-sysroot=/                               \
 	--with-sysroot=/                                     \
-	--enable-shared                                      \
+	--disable-shared                                     \
 	--enable-languages="c,c++"                           \
 	--disable-bootstrap                                  \
 	--disable-werror                                     \
@@ -1132,7 +1145,7 @@ do_build_gcc_for_build(){
 	--enable-libmudflap                                  \
 	--enable-libssp                                      \
 	--enable-libgomp                                     \
-	--disable-libsanitizer                               \
+	--enable-libsanitizer                                \
 	--with-gmp=${BUILD_TOOLS_DIR}                        \
 	--with-mpfr=${BUILD_TOOLS_DIR}                       \
 	--with-mpc=${BUILD_TOOLS_DIR}                        \
@@ -1143,7 +1156,7 @@ do_build_gcc_for_build(){
 	--disable-nls
 
     make ${SMP_OPT} 
-    ${SUDO} make  install
+    ${SUDO} make install
     popd
 
     echo "Remove .la files"
@@ -1160,12 +1173,29 @@ do_build_gcc_for_build(){
     #
     echo "rm cpp gcc gcc-ar gcc-nm gcc-ranlib gcov on ${BUILD_TOOLS_DIR}/bin"
     pushd ${BUILD_TOOLS_DIR}/bin
-    rm -f cpp gcc gcc-ar gcc-nm gcc-ranlib gcov ${TARGET}-cc
+    rm -f cpp gcc gcc-ar gcc-nm gcc-ranlib gcov ${BUILD}-cc
     #
     # コンパイラへのリンクを張る
     #
-    ln -sf ${TARGET}-gcc ${TARGET}-cc
+    ln -sf ${BUILD}-gcc ${BUILD}-cc
     popd
+    
+    #
+    #--disable-shared オプションを指定すると libgcc_eh.a を生成せずインストールしない
+    #libgcc.aに含まれる関数を使用するようにシンボリックリンクを生成する
+    #
+    libgcc_file=`${BUILD_TOOLS_DIR}/bin/${BUILD}-gcc -print-libgcc-file-name`
+    libgcc_dir=`dirname ${libgcc_file}`
+    libgcc_name=`basename ${libgcc_file}`
+    echo "@@ link libgcc to libgcc_eh@@"
+    echo "libgcc_file:${libgcc_file}"
+    echo "libgcc_dir:${libgcc_dir}"
+    echo "libgcc_name:${libgcc_name}"
+    if [ -d "${libgcc_dir}" ]; then
+	rm -f libgcc_eh.*
+	ln -svf libgcc.a libgcc_eh.a
+    fi
+
 }
 
 ## begin note
