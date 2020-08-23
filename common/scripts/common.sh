@@ -1064,8 +1064,8 @@ do_build_gcc_for_build(){
     #--with-sysroot=/
     #          コンパイラの実行時にシステムのルートファイルシステムを優先してヘッダや
     #          ライブラリを探査する
-    #--disable-shared
-    #          gccの共有ランタイムライブラリを生成しない
+    #--enable-shared
+    #          gccの共有ランタイムライブラリを生成する
     #--enable-languages="c,c++"
     #          binutils/gcc/glibcの構築に必要なC/C++までを生成する
     #--disable-bootstrap
@@ -1093,13 +1093,14 @@ do_build_gcc_for_build(){
     #          mudflap( バッファオーバーフロー、メモリリーク、
     #          ポインタの誤使用等を実行時に検出するライブラリ)
     #          を構築する.
-    #--enable-libssp
-    #           -fstack-protector-all オプションを使えるようにする
-    #           (Stack Smashing Protector機能を有効にする)
-    #--enable-libgomp
+    #--disable-libssp
+    #           -fstack-protector-all オプションを無効にする
+    #           (共有ライブラリをインストールしないため)
+    #           (Stack Smashing Protector機能を無効にする)
+    #--disable-libgomp
     #           GNU OpenMPライブラリを生成する
-    #--enable-libsanitizer
-    #           libsanitizerを有効にする
+    #--disable-libsanitizer
+    #           libsanitizerを無効にする(共有ライブラリをインストールしないため)
     #--with-gmp=${BUILD_TOOLS_DIR}
     #          gmpをインストールしたディレクトリを指定
     #--with-mpfr=${BUILD_TOOLS_DIR} 
@@ -1131,7 +1132,7 @@ do_build_gcc_for_build(){
 	--with-local-prefix=${BUILD_TOOLS_DIR}/${BUILD}      \
 	--with-build-sysroot=/                               \
 	--with-sysroot=/                                     \
-	--disable-shared                                     \
+	--enable-shared                                      \
 	--enable-languages="c,c++"                           \
 	--disable-bootstrap                                  \
 	--disable-werror                                     \
@@ -1142,10 +1143,10 @@ do_build_gcc_for_build(){
 	--enable-__cxa_atexit                                \
 	--enable-c99                                         \
 	--enable-long-long                                   \
-	--enable-libmudflap                                  \
-	--enable-libssp                                      \
-	--enable-libgomp                                     \
-	--enable-libsanitizer                                \
+	--disable-libmudflap                                 \
+	--disable-libssp                                     \
+	--disable-libgomp                                    \
+	--disable-libsanitizer                               \
 	--with-gmp=${BUILD_TOOLS_DIR}                        \
 	--with-mpfr=${BUILD_TOOLS_DIR}                       \
 	--with-mpc=${BUILD_TOOLS_DIR}                        \
@@ -1179,23 +1180,6 @@ do_build_gcc_for_build(){
     #
     ln -sf ${BUILD}-gcc ${BUILD}-cc
     popd
-    
-    #
-    #--disable-shared オプションを指定すると libgcc_eh.a を生成せずインストールしない
-    #libgcc.aに含まれる関数を使用するようにシンボリックリンクを生成する
-    #
-    libgcc_file=`${BUILD_TOOLS_DIR}/bin/${BUILD}-gcc -print-libgcc-file-name`
-    libgcc_dir=`dirname ${libgcc_file}`
-    libgcc_name=`basename ${libgcc_file}`
-    echo "@@ link libgcc to libgcc_eh@@"
-    echo "libgcc_file:${libgcc_file}"
-    echo "libgcc_dir:${libgcc_dir}"
-    echo "libgcc_name:${libgcc_name}"
-    if [ -d "${libgcc_dir}" ]; then
-	rm -f libgcc_eh.*
-	ln -svf libgcc.a libgcc_eh.a
-    fi
-
 }
 
 ## begin note
