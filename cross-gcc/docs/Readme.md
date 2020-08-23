@@ -123,24 +123,6 @@ ELFターゲットの場合は以下を実行します。
 /bin/sh ./scripts/build-elf.sh ./env/aarch64-env.sh| tee build.log 2>&1
 ```
 
-対応している全アーキテクチャ向けのコンパイラを生成する場合は, 以下を実行します。
-
-```
-/bin/sh ./scripts/do-all.sh 
-```
-`CPU名-Linux-build.log` および `CPU名-ELF-build.log` にLinuxターゲット用コンパイラ, ELFターゲット用コンパイラ構築時のログが残されます。
-
-構築が終わると, 以下のディレクトリにツール・ライブラリがインストールされます。
-
-* Linux環境用 ${HOME}/cross/gcc/アーキテクチャ名/日付
-* ELF環境用 ${HOME}/cross/gcc-elf/アーキテクチャ名/日付
-
-最後に構築したコンパイル環境へのシンボリックリンクが以下のように生成されます。
-
-* Linux環境用 ${HOME}/cross/gcc/アーキテクチャ名/current
-* ELF環境用 ${HOME}/cross/gcc-elf/アーキテクチャ名/current
-
-`${HOME}/cross/gcc/アーキテクチャ名/current/bin`, `${HOME}/cross/gcc-elf/アーキテクチャ名/current/bin` を環境変数`PATH`に追加することで, クロスコンパイル環境を利用可能です。
 
 
 
