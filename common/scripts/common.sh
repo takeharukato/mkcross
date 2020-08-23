@@ -86,18 +86,20 @@ setup_variables(){
 	SMP_OPT="-j${CPUS}"
     fi
 
-    if [ "x${TARGET}" = "x" -a "x${TOOLCHAIN_TYPE}" != "xLLVM" ]; then
+    if [ "x${TOOLCHAIN_TYPE}" != "xLLVM" ]; then
 
 	if [  "x${TOOLCHAIN_TYPE}" != "xELF" ]; then
-	    TARGET=${TARGET_CPU}-unknown-linux-gnu
+
+	    if [ "x${TARGET}" = "x"  ]; then
+		TARGET=${TARGET_CPU}-unknown-linux-gnu
+	    fi
 	else
 	    if [ "x${TARGET_ELF}" != "x" ]; then
-		TARGET=${TARGET_ELF}
+		    TARGET=${TARGET_ELF}
 	    else
-		TARGET=${TARGET_CPU}-elf
+		    TARGET=${TARGET_CPU}-elf
 	    fi
 	fi
-
     fi
 
     if [ "x${BUILD}" = "x" ]; then
