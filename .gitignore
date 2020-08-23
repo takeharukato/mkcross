@@ -60,4 +60,11 @@ patches
 series
 *.log
 cross-gcc/tools
+cross-llvm/tools
+cross-gcc/downloads
+cross-llvm/downloads
 downloads
+src
+build
+
+

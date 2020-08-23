@@ -4,6 +4,7 @@
   
 1. cross-gcc  GNU Compiler Collectionを用いたクロスコンパイル環境構築スクリプトを格納したディレクトリです。
 1. cross-llvm LLVMを用いたクロスコンパイル環境構築スクリプトを格納したディレクトリです。
+1. common/scripts/do-all.sh     全てのアーキテクチャ向けのクロス環境生成処理を順番に実行します。 
 
 使用方法は, 各ディレクトリ配下のdocs/Readme.mdファイルを参照ください。
 
