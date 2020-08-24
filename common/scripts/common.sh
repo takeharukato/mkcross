@@ -1089,10 +1089,12 @@ do_build_gcc_for_build(){
     #          C99仕様を受け付ける
     #--enable-long-long
     #          long long型を有効にする
-    #--enable-libmudflap
+    #--disable-decimal-float
+    #          gccの10進浮動小数点ライブラリを生成しない
+    #--disable-libmudflap
     #          mudflap( バッファオーバーフロー、メモリリーク、
     #          ポインタの誤使用等を実行時に検出するライブラリ)
-    #          を構築する.
+    #          を無効にする
     #--disable-libssp
     #           -fstack-protector-all オプションを無効にする
     #           (共有ライブラリをインストールしないため)
@@ -1143,6 +1145,7 @@ do_build_gcc_for_build(){
 	--enable-__cxa_atexit                                \
 	--enable-c99                                         \
 	--enable-long-long                                   \
+	--disable-decimal-float                              \
 	--disable-libmudflap                                 \
 	--disable-libssp                                     \
 	--disable-libgomp                                    \
