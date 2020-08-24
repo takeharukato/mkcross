@@ -69,8 +69,14 @@ update_llvm_src(){
 do_build_llvm_for_llvm(){
     local llvm_src
     local type
-    
+    local python_path
+
     echo "@@@ Build LLVM @@@"
+
+    python_path=`which python3`
+    if [ "x${python_path}" = "x" ]; then
+	python_path=`which python`
+    fi
 
     if [ "x${FORCE_COPY_SOURCES}" != "x" ]; then
 	llvm_src=${SRCDIR}/llvm-project
@@ -101,10 +107,11 @@ do_build_llvm_for_llvm(){
     mkdir -p ${BUILDDIR}/llvm-build
 
     pushd  ${BUILDDIR}/llvm-build
-    cmake -G  "${type}"                \
-    	-DCMAKE_BUILD_TYPE=Release                \
-    	-DCMAKE_INSTALL_PREFIX=${CROSS}           \
-	-DLLVM_ENABLE_LIBCXX=ON                   \
+    cmake -G  "${type}"                                                  \
+    	-DCMAKE_BUILD_TYPE=Release                                       \
+    	-DCMAKE_INSTALL_PREFIX=${CROSS}                                  \
+	-DLLVM_ENABLE_LIBCXX=ON                                          \
+	-DPYTHON_EXECUTABLE="${python_path}"                             \
 	-DCMAKE_C_COMPILER="${BUILD_TOOLS_DIR}/bin/${BUILD}-gcc"         \
 	-DCMAKE_CXX_COMPILER="${BUILD_TOOLS_DIR}/bin/${BUILD}-g++"       \
 	-DCMAKE_LINKER="${BUILD_TOOLS_DIR}/bin/${BUILD}-ld"              \
@@ -148,8 +155,14 @@ do_build_llvm_for_llvm(){
 do_build_llvm_with_clangxx(){
     local llvm_src
     local type
+    local python_path
     
     echo "@@@ Build LLVM with clang++ @@@"
+
+    python_path=`which python3`
+    if [ "x${python_path}" = "x" ]; then
+	python_path=`which python`
+    fi
 
     if [ "x${FORCE_COPY_SOURCES}" != "x" ]; then
 	llvm_src=${SRCDIR}/llvm-project
@@ -166,8 +179,8 @@ do_build_llvm_with_clangxx(){
 	cp -a ${DOWNLOADDIR}/llvm-project ${SRCDIR}/llvm-project
     fi
 
-    if [ -d ${BUILDDIR}/llvm-build ]; then
-	rm -fr ${BUILDDIR}/llvm-build
+    if [ -d ${BUILDDIR}/llvm-build-clang ]; then
+	rm -fr ${BUILDDIR}/llvm-build-clang
     fi
 
     # 構築に使用するツールを選択
@@ -177,15 +190,16 @@ do_build_llvm_with_clangxx(){
 	type="Unix Makefiles"
     fi
 
-    mkdir -p ${BUILDDIR}/llvm-build
+    mkdir -p ${BUILDDIR}/llvm-build-clang
 
-    pushd ${BUILDDIR}/llvm-build
+    pushd ${BUILDDIR}/llvm-build-clang
 
     cmake -G  "${type}"                                \
     	-DCMAKE_BUILD_TYPE=Release                     \
     	-DCMAKE_INSTALL_PREFIX="${CROSS}"              \
 	-DLLVM_ENABLE_LIBCXX=ON                        \
 	-DLLVM_USE_LINKER="${CROSS}/bin/ld.lld"        \
+	-DPYTHON_EXECUTABLE="${python_path}"           \
 	-DCMAKE_C_COMPILER="${CROSS}/bin/clang"        \
 	-DCMAKE_CXX_COMPILER="${CROSS}/bin/clang++"    \
 	-DCMAKE_LINKER="${CROSS}/bin/ld.lld"           \
