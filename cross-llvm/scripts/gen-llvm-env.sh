@@ -61,7 +61,7 @@ OLD_LD_LIBRARY_PATH=\${LD_LIBRARY_PATH}
 
 PATH=\${TOOLCHAIN_PREFIX}/bin:\${PATH}
 LD_LIBRARY_PATH=\${TOOLCHAIN_PREFIX}/lib64:\${TOOLCHAIN_PREFIX}/lib:\${LD_LIBRARY_PATH}
-
+CMAKE_PREFIX_PATH="\${TOOLCHAIN_PREFIX}/lib/cmake;\${TOOLCHAIN_PREFIX}/lib/cmake/llvm;\${TOOLCHAIN_PREFIX}/lib/cmake/clang;\${TOOLCHAIN_PREFIX}/lib/cmake/polly;\${TOOLCHAIN_PREFIX}/lib/cmake/ParallelSTL;\${TOOLCHAIN_PREFIX}/lib/cmake/lld;\${TOOLCHAIN_PREFIX}/lib/cmake/mlir;\${TOOLCHAIN_PREFIX}/lib/cmake/flang;\${CMAKE_PREFIX_PATH}"
 export OLD_PATH
 export OLD_LD_LIBRARY_PATH
 export PATH
@@ -90,13 +90,14 @@ proc ModulesHelp { } {
 module-whatis   "Up-to-date edition of LLVM toolchain Setting"
 
 # for Tcl script only
-set llvm_path "\$env(HOME)/${cross_dir}/bin"
+set llvm_dir "\$env(HOME)/${cross_dir}"
+set llvm_path "${llvm_dir}/bin"
 set llvm_ld_library_path "\$env(HOME)/${cross_dir}/lib64:\$env(HOME)/${cross_dir}/lib"
-
+set llvm_cmake_path "\${llvm_dir}/lib/cmake;\${llvm_dir}/lib/cmake/llvm;\${llvm_dir}/lib/cmake/clang;\${llvm_dir}/lib/cmake/polly;\${llvm_dir}/lib/cmake/ParallelSTL;\${llvm_dir}/lib/cmake/lld;\${llvm_dir}/lib/cmake/mlir;\${llvm_dir}/lib/cmake/flang"
 # append pathes
 prepend-path    PATH    \${llvm_path}
 prepend-path    LD_LIBRARY_PATH \${llvm_ld_library_path}
-
+prepend-path    CMAKE_PREFIX_PATH \${llvm_cmake_path}
 EOF
 	    
 	fi
