@@ -12,7 +12,7 @@ if [ ! -f "${SCRIPT_DIR}/common.sh" ]; then
 fi
 source "${SCRIPT_DIR}/common.sh"
 
-TARGETS=(riscv64 aarch64 x64 i686 armhw riscv32)
+TARGETS=(riscv64 aarch64 x64 i686 armhw riscv32 mips mipsel mips64 mips64el)
 
 if [ "x${TARGET_CPUS}" != "x" ]; then
     TARGETS=(`echo ${TARGET_CPUS}`)
@@ -74,10 +74,10 @@ do_one_linux_build(){
 
     name=$1
     case "${name}" in
-	riscv32) 
+	riscv32)
 	    echo "${name} does not supports linux environment ..."
 	    ;;
-	* ) 
+	* )
 	    OSNAME=`uname`
 	    if [ "x${OSNAME}" = "xLinux" ]; then
 
@@ -153,7 +153,7 @@ main(){
     if [ "x${NO_DEVENV}" = 'x' ]; then
     	prepare_devenv
     fi
-    
+
     if [ $# -eq 0 ]; then
 	echo "Do all build"
 	do_all_gcc_build
@@ -172,7 +172,7 @@ main(){
     fi
 
     do_one_llvm_build
-    
+
     if [ "x${SKIP_BUILD_TOOLS}" != "x" ]; then
 	echo "do-all.sh: keep tools directory."
     else
@@ -181,8 +181,7 @@ main(){
 	    rm -fr "${BUILD_TOOLS_DIR}"
 	fi
     fi
-	
+
 }
 
 main $@
-
