@@ -10,18 +10,13 @@ if [ ! -f "${SCRIPT_DIR}/common.sh" ]; then
     echo "Error: ${SCRIPT_DIR}/common.sh not found"
     exit 1
 fi
+
 source "${SCRIPT_DIR}/common.sh"
 
-TARGETS=(riscv64 aarch64 x64 i686 armhw riscv32 mips mipsel mips64 mips64el)
-
-if [ "x${TARGET_CPUS}" != "x" ]; then
-    TARGETS=(`echo ${TARGET_CPUS}`)
-fi
-
 # スクリプト配置先ディレクトリ
-SCRIPT_DIR=$(cd $(dirname $0);pwd)
 CROSS_GCC_DIR=${SCRIPT_DIR}/../../cross-gcc
 CROSS_LLVM_DIR=${SCRIPT_DIR}/../../cross-llvm
+ENV_DIR=${CROSS_GCC_DIR}/env
 ##
 # 機能: ELFバイナリターゲットのgccクロスコンパイラを構築する
 ##
@@ -129,11 +124,20 @@ do_one_llvm_build(){
 ##
 do_all_gcc_build(){
     local name
+    local targets
+
+    if [ "x${TARGET_CPUS}" != "x" ]; then
+	targets=(`echo ${TARGET_CPUS}`)
+    else
+	pushd ${ENV_DIR}
+	targets=($(ls -1 *-env.sh|sed -e 's|-env.sh||g'))
+	popd
+    fi
 
     #
     # ELF tool chain
     #
-    for name in ${TARGETS[@]}
+    for name in ${targets[@]}
     do
 	do_one_elf_build ${name}
     done
@@ -141,7 +145,7 @@ do_all_gcc_build(){
     #
     # Linux tool chain
     #
-    for name in ${TARGETS[@]}
+    for name in ${targets[@]}
     do
 	do_one_linux_build ${name}
     done
@@ -161,8 +165,8 @@ main(){
 	while [ $# -gt 0 ];
 	do
 	    name=$1
-	    if [ ! -f ./env/${name}-env.sh ]; then
-		echo "env/${name}-env.sh not found, skipped"
+	    if [ ! -f ${ENV_DIR}/${name}-env.sh ]; then
+		echo "${ENV_DIR}/${name}-env.sh not found, skipped"
 	    else
 		do_one_elf_build ${name}
 		do_one_linux_build ${name}
