@@ -36,7 +36,7 @@ https://ftp.gnu.org/gnu/libc/glibc-2.30.tar.gz
 https://ftp.gnu.org/gnu/gdb/gdb-10.1.tar.gz
 https://download.qemu.org/qemu-5.1.0.tar.xz
 ftp://sourceware.org/pub/newlib/newlib-3.1.0.tar.gz
-https://github.com/Kitware/CMake/releases/download/v3.18.1/cmake-3.18.4.tar.gz
+https://github.com/Kitware/CMake/releases/download/v3.18.4/cmake-3.18.4.tar.gz
 https://github.com/Z3Prover/z3/archive/z3-4.8.9.tar.gz
 https://opensource.apple.com/source/lldb/lldb-69/utils/emacs/gud.el
 http://prdownloads.sourceforge.net/swig/swig-4.0.2.tar.gz"
