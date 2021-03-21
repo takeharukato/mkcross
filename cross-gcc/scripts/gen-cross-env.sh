@@ -4,10 +4,15 @@
 # 環境変数セットアップ用スクリプト
 #
 #
-TARGETS=(riscv64 aarch64 x64 i686 armhw riscv32 mips mipsel mips64 mips64el)
 CROSS_TOOLCHAIN_PREFIX=cross
 SCRIPT_ENV_DIR=${HOME}/env
 MODULE_ENVIRONMENT_DIR=${HOME}/Modules
+
+SCRIPT_DIR=$(cd $(dirname $0);pwd)
+CROSS_GCC_DIR=${SCRIPT_DIR}/../../cross-gcc
+CROSS_LLVM_DIR=${SCRIPT_DIR}/../../cross-llvm
+
+ENV_DIR=${CROSS_GCC_DIR}/env
 
 ##
 # 環境設定スクリプトを生成する
@@ -203,8 +208,17 @@ EOF
 main(){
     local cpu
     local qemu_cpu
+    local targets
 
-    for target in ${TARGETS[@]}
+    if [ "x${TARGET_CPUS}" != "x" ]; then
+	targets=(`echo ${TARGET_CPUS}`)
+    else
+	pushd ${ENV_DIR}
+	targets=($(ls -1 *-env.sh|sed -e 's|-env.sh||g'))
+	popd
+    fi
+
+    for target in ${targets[@]}
     do
 
 	#ELF

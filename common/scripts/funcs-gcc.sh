@@ -21,7 +21,7 @@ do_build_gmp(){
     #
     # configureの設定
     #
-    # --prefix=${CROSS}        
+    # --prefix=${CROSS}
     #          ${CROSS}配下にインストールする
     # --enable-cxx
     #          gccがC++で書かれているため, c++向けのライブラリを構築する
@@ -34,8 +34,8 @@ do_build_gmp(){
 	--enable-cxx                      \
 	--disable-shared                  \
 	--enable-static
-    
-    make ${SMP_OPT} 
+
+    make ${SMP_OPT}
     ${SUDO} make install
 
     echo "Remove .la files"
@@ -65,7 +65,7 @@ do_build_mpfr(){
     #
     # configureの設定
     #
-    # --prefix=${CROSS}        
+    # --prefix=${CROSS}
     #          ${CROSS}配下にインストールする
     # --with-gmp=${CROSS}
     #          gmpのインストール先を指定する
@@ -79,8 +79,8 @@ do_build_mpfr(){
 	--with-gmp=${CROSS}               \
 	--disable-shared                  \
 	--enable-static
-    
-    make ${SMP_OPT} 
+
+    make ${SMP_OPT}
     ${SUDO} make install
 
     echo "Remove .la files"
@@ -110,7 +110,7 @@ do_build_mpc(){
     #
     # configureの設定
     #
-    # --prefix=${CROSS}        
+    # --prefix=${CROSS}
     #          ${CROSS}配下にインストールする
     #
     # --with-gmp=${CROSS}
@@ -131,7 +131,7 @@ do_build_mpc(){
 	--disable-shared         \
 	--enable-static
 
-    make ${SMP_OPT} 
+    make ${SMP_OPT}
     ${SUDO} make install
 
     echo "Remove .la files"
@@ -161,7 +161,7 @@ do_build_isl(){
     #
     # configureの設定
     #
-    # --prefix=${CROSS}        
+    # --prefix=${CROSS}
     #          ${CROSS}配下にインストールする
     # --disable-silent-rules
     #          コンパイル時にコマンドラインを表示する
@@ -182,7 +182,7 @@ do_build_isl(){
 	--disable-shared                 \
 	--enable-static
 
-    make ${SMP_OPT} 
+    make ${SMP_OPT}
     ${SUDO} make install
 
     echo "Remove .la files"
@@ -221,14 +221,14 @@ do_cross_binutils(){
     # CXX_FOR_BUILD="${BUILD}-g++"
     #   構築時に使用するC++コンパイラを指定
     # AR_FOR_BUILD="${BUILD}-ar"
-    #   構築時に使用するarを指定    
+    #   構築時に使用するarを指定
     # LD_FOR_BUILD="${BUILD}-ld"
-    #   構築時に使用するranlibを指定    
+    #   構築時に使用するranlibを指定
     # RANLIB_FOR_BUILD="${BUILD}-ranlib"
     #
-    # --prefix=${CROSS}        
+    # --prefix=${CROSS}
     #          ${CROSS}配下にインストールする
-    # --build=${BUILD} 
+    # --build=${BUILD}
     #        ${BUILD}で指定されたマシン上でコンパイルする
     #        (${BUILD}-プレフィクス付きのツールを明に使用する)
     # --host=${HOST}
@@ -236,12 +236,12 @@ do_cross_binutils(){
     # --target=${TARGET}
     #          TARGET指定された環境向けのバイナリを扱うbinutilsを作成する
     # ${PROGRAM_PREFIX}
-    #         ターゲットシステムとホストシステムが同一の場合, 
-    #         システムにインストールされているコンパイラと区別するために, 
+    #         ターゲットシステムとホストシステムが同一の場合,
+    #         システムにインストールされているコンパイラと区別するために,
     #         プログラムのプレフィクスに${TARGET}-をつける。
     # --with-local-prefix=${CROSS}/${TARGET}
     #        ${CROSS}/${TARGET}にbinutils内部で使用するファイルを配置する
-    # --disable-shared                     
+    # --disable-shared
     #         共有ライブラリでBFDを作らずbintuils内にBFDライブラリを静的リンクする
     # --disable-werror
     #         警告をエラーと見なさない
@@ -267,8 +267,8 @@ do_cross_binutils(){
 	--disable-werror                       \
 	--disable-nls                          \
 	"${WITH_SYSROOT}"
-    
-    make ${SMP_OPT} 
+
+    make ${SMP_OPT}
     ${SUDO} make install
 
     echo "Remove .la files"
@@ -315,9 +315,9 @@ do_cross_gcc_core1(){
     #CXX_FOR_BUILD="${BUILD}-g++"
     #   構築時に使用するC++コンパイラを指定
     #AR_FOR_BUILD="${BUILD}-ar"
-    #   構築時に使用するarを指定    
+    #   構築時に使用するarを指定
     #LD_FOR_BUILD="${BUILD}-ld"
-    #   構築時に使用するranlibを指定    
+    #   構築時に使用するranlibを指定
     #RANLIB_FOR_BUILD="${BUILD}-ranlib"
     #
     #--prefix=${CROSS}
@@ -359,7 +359,7 @@ do_cross_gcc_core1(){
     #          ポインタの誤使用等を実行時に検出するライブラリ)
     #          を構築しない.
     #--disable-libatomic
-    #          アトミック処理用ライブラリを生成しない 
+    #          アトミック処理用ライブラリを生成しない
     #--disable-libitm
     #          トランザクショナルメモリ操作ライブラリを生成しない
     #--disable-libquadmath
@@ -381,11 +381,11 @@ do_cross_gcc_core1(){
     #           バグのためコンパイルできないため)
     #--with-gmp=${CROSS}
     #          gmpをインストールしたディレクトリを指定
-    #--with-mpfr=${CROSS} 
+    #--with-mpfr=${CROSS}
     #          mpfrをインストールしたディレクトリを指定
     #--with-mpc=${CROSS}
     #          mpcをインストールしたディレクトリを指定
-    #--with-isl=${CROSS} 
+    #--with-isl=${CROSS}
     #          islをインストールしたディレクトリを指定
     #--disable-nls
     #         コンパイル時間を短縮するためNative Language Supportを無効化する
@@ -427,7 +427,7 @@ do_cross_gcc_core1(){
 	--with-mpc=${CROSS}                                  \
 	--with-isl=${CROSS}                                  \
 	--disable-nls
-    
+
     #
     #make allを実行できるだけのヘッダやC標準ライブラリがないため部分的に
     #コンパイラの構築を行う
@@ -465,7 +465,7 @@ do_cross_gcc_core1(){
 	${SUDO} rm -f ${file}
     done
     popd
-    
+
     #
     #ホストのgccとの混乱を避けるため以下を削除
     #
@@ -493,7 +493,11 @@ do_kernel_headers(){
     pushd  ${BUILDDIR}/${KERNEL}
 
     #カーネルのコンフィグレーションを設定
-    make ARCH="${KERN_ARCH}" HOSTCC="${BUILD}-gcc" V=1 defconfig
+    if [ "x${KERN_CONFIG}" != "x" ]; then
+	make ARCH="${KERN_ARCH}" HOSTCC="${BUILD}-gcc" ${KERN_CONFIG}
+    else
+	make ARCH="${KERN_ARCH}" HOSTCC="${BUILD}-gcc" V=1 defconfig
+    fi
 
     #カーネルヘッダのチェック
     make ARCH="${KERN_ARCH}" HOSTCC="${BUILD}-gcc" V=1 headers_check
@@ -502,7 +506,7 @@ do_kernel_headers(){
     make ARCH=${KERN_ARCH} HOSTCC="${BUILD}-gcc" \
 	INSTALL_HDR_PATH=${SYSROOT}/usr V=1 headers_install
 
-    popd    
+    popd
 }
 
 ## begin note
@@ -517,7 +521,7 @@ do_glibc_headers(){
     rm -fr ${BUILDDIR}/${GLIBC}
     mkdir ${BUILDDIR}/${GLIBC}
     pushd ${BUILDDIR}/${GLIBC}
-    
+
     #
     # configureの設定
     #
@@ -527,7 +531,7 @@ do_glibc_headers(){
     #   書かれているため, -Oを指定した場合、 -finline-functionsがないと
     #   コンパイルできない). -O3を指定した場合のライブラリを使用すると
     #   プログラムが動作しないことがあったため, -Oでコンパイルする。
-    # --prefix=${CROSS}        
+    # --prefix=${CROSS}
     #          ${CROSS}配下にインストールする
     # --build=${BUILD}
     #        ${BUILD}で指定されたマシン上でコンパイルする
@@ -549,7 +553,7 @@ do_glibc_headers(){
     #          デバッグオプションを指定しない
     #  --with-headers=${SYSROOT}/usr/include
     #          ${SYSROOT}/usr/include配下のヘッダを参照する
-    #  --enable-add-ons=nptl,libidn             
+    #  --enable-add-ons=nptl,libidn
     #          NPTLをスレッドライブラリに, libidn国際ドメイン名ライブラリ
     #          を構築する(実際にはスタートアップルーチンのみ構築)
     #  --enable-kernel=${GLIBC_ENABLE_KERNEL}
@@ -559,7 +563,7 @@ do_glibc_headers(){
     #          ヘッダの生成のみを行うため, ncsdのコンパイルをしない
     #  --disable-obsolete-rpc
     #          ヘッダの生成のみを行うため, 廃止されたrpcライブラリを生成しない
-    #  --without-selinux                      
+    #  --without-selinux
     #          ターゲット用のlibselinuxがないため, selinux対応無しでコンパイルする
     #  --disable-mathvec
     #          mathvecを作成しない(libmが必要となるため)
@@ -581,7 +585,7 @@ do_glibc_headers(){
 	  --disable-werror                       \
 	  --disable-nscd                         \
           --disable-obsolete-rpc                 \
-          --without-selinux                      
+          --without-selinux
 
     #
     #以下のconfigparmsは, make-3.82対応のために必要
@@ -589,7 +593,7 @@ do_glibc_headers(){
     #configparmに設定を記載.
     #
     #http://sourceware.org/bugzilla/show_bug.cgi?id=13810
-    #Christer Solskogen 2012-03-06 14:18:58 UTC 
+    #Christer Solskogen 2012-03-06 14:18:58 UTC
     #の記事参照
     #
     #install-bootstrap-headers=yes
@@ -631,7 +635,7 @@ EOF
     AR=${TARGET}-ar                        \
     LD=${TARGET}-ld                        \
     RANLIB=${TARGET}-ranlib                \
-    ${SUDO} make install-bootstrap-headers=yes install-headers	   
+    ${SUDO} make install-bootstrap-headers=yes install-headers
 
     #
     #glibcの仕様により生成されないヘッダファイルをコピーする
@@ -643,10 +647,10 @@ EOF
     #32bit版のstabsを仮生成する
     #
     if [ ! -f ${SYSROOT}/usr/include/gnu/stubs-32.h ]; then
-	touch ${SYSROOT}/usr/include/gnu/stubs-32.h 
+	touch ${SYSROOT}/usr/include/gnu/stubs-32.h
     fi
 
-    popd    
+    popd
 }
 
 ## begin note
@@ -658,10 +662,10 @@ do_glibc_startup(){
 
     extract_archive ${GLIBC}
 
-    rm -fr ${BUILDDIR}/${GLIBC}    
+    rm -fr ${BUILDDIR}/${GLIBC}
     mkdir ${BUILDDIR}/${GLIBC}
     pushd ${BUILDDIR}/${GLIBC}
-    
+
     #
     # configureの設定
     #
@@ -671,7 +675,7 @@ do_glibc_startup(){
     #   書かれているため, -Oを指定した場合、 -finline-functionsがないと
     #   コンパイルできない). -O3を指定した場合のライブラリを使用すると
     #   プログラムが動作しないことがあったため, -Oでコンパイルする。
-    # --prefix=${CROSS}        
+    # --prefix=${CROSS}
     #          ${CROSS}配下にインストールする
     # --build=${BUILD}
     #        ${BUILD}で指定されたマシン上でコンパイルする
@@ -693,7 +697,7 @@ do_glibc_startup(){
     #          デバッグオプションを指定しない
     #  --with-headers=${SYSROOT}/usr/include
     #          ${SYSROOT}/usr/include配下のヘッダを参照する
-    #  --enable-add-ons=nptl,libidn             
+    #  --enable-add-ons=nptl,libidn
     #          NPTLをスレッドライブラリに, libidn国際ドメイン名ライブラリ
     #          を構築する(実際にはスタートアップルーチンのみ構築)
     #  --enable-kernel=${GLIBC_ENABLE_KERNEL}
@@ -705,7 +709,7 @@ do_glibc_startup(){
     #          ターゲット用のsystemtapがないため, systemtap対応無しでコンパイルする
     #  --disable-obsolete-rpc
     #          スタートアップルーチン生成のみを行うため, 廃止されたrpcライブラリを生成しない
-    #  --without-selinux                      
+    #  --without-selinux
     #          ターゲット用のlibselinuxがないため, selinux対応無しでコンパイルする
     #  --disable-mathvec
     #          mathvecを作成しない(libmが必要となるため)
@@ -728,7 +732,7 @@ do_glibc_startup(){
 	  --disable-werror                       \
 	  --disable-nscd                         \
 	  --disable-systemtap                    \
-          --without-selinux                      
+          --without-selinux
 
     #
     #以下のconfigparmsは, make-3.82対応のために必要
@@ -736,7 +740,7 @@ do_glibc_startup(){
     #configparmに設定を記載.
     #
     #http://sourceware.org/bugzilla/show_bug.cgi?id=13810
-    #Christer Solskogen 2012-03-06 14:18:58 UTC 
+    #Christer Solskogen 2012-03-06 14:18:58 UTC
     #の記事参照
     #
     #cross-compiling=yes
@@ -751,7 +755,7 @@ cross-compiling=yes
 install_root=${SYSROOT}
 EOF
 
-    
+
     #
     # BUILD_CC="${BUILD}-gcc"
     #   ホストのgccをglibc内の構築支援ツールのコンパイル時に使用する
@@ -793,7 +797,7 @@ EOF
     mkdir -pv ${SYSROOT}/usr/${_LIB}
     cp -pv csu/crt[1in].o ${SYSROOT}/usr/${_LIB}
 
-    #libc.soを作るためには, libc.soのリンクオプション(-lc)を付けて, 
+    #libc.soを作るためには, libc.soのリンクオプション(-lc)を付けて,
     #コンパイルを通す必要がある（実際にlibc.soの関数は呼ばないので
     #空のlibc.soでよい)
     #そこで、libgcc_s.soを作るために, ダミーのlibc.soを作る
@@ -825,7 +829,7 @@ EOF
     popd
 
     #
-    #バイアーキ版のコンパイラ生成にも対応できるように, 
+    #バイアーキ版のコンパイラ生成にも対応できるように,
     #libgcc_so生成時にインストール先の/lib64配下にもスタートアップを
     #見に行けるように以下の処理を実施
     #
@@ -847,7 +851,7 @@ EOF
 do_cross_gcc_core2(){
 
     echo "@@@ Cross:gcc-core-stage2 @@@"
-    
+
     extract_archive ${GCC}
 
     pushd ${CROSS}/bin
@@ -870,9 +874,9 @@ do_cross_gcc_core2(){
     #CXX_FOR_BUILD="${BUILD}-g++"
     #   構築時に使用するC++コンパイラを指定
     #AR_FOR_BUILD="${BUILD}-ar"
-    #   構築時に使用するarを指定    
+    #   構築時に使用するarを指定
     #LD_FOR_BUILD="${BUILD}-ld"
-    #   構築時に使用するranlibを指定    
+    #   構築時に使用するranlibを指定
     #RANLIB_FOR_BUILD="${BUILD}-ranlib"
     #
     #--prefix=${CROSS}
@@ -906,7 +910,7 @@ do_cross_gcc_core2(){
     #          ポインタの誤使用等を実行時に検出するライブラリ)
     #          を構築しない.
     #--disable-libatomic
-    #          アトミック処理用ライブラリを生成しない 
+    #          アトミック処理用ライブラリを生成しない
     #--disable-libitm
     #          トランザクショナルメモリ操作ライブラリを生成しない
     #--disable-libquadmath
@@ -928,11 +932,11 @@ do_cross_gcc_core2(){
     #           バグのためコンパイルできないため)
     #--with-gmp=${CROSS}
     #          gmpをインストールしたディレクトリを指定
-    #--with-mpfr=${CROSS} 
+    #--with-mpfr=${CROSS}
     #          mpfrをインストールしたディレクトリを指定
     #--with-mpc=${CROSS}
     #          mpcをインストールしたディレクトリを指定
-    #--with-isl=${CROSS} 
+    #--with-isl=${CROSS}
     #          islをインストールしたディレクトリを指定
     #--disable-nls
     #         コンパイル時間を短縮するためNative Language Supportを無効化する
@@ -999,7 +1003,7 @@ do_cross_gcc_core2(){
     #
     make ${SMP_OPT} all-gcc all-target-libgcc
     ${SUDO} make install-gcc install-target-libgcc
-    
+
     popd
 
     echo "Remove .la files"
@@ -1041,19 +1045,19 @@ do_glibc_core(){
     pushd  ${SRCDIR}/${GLIBC}
     patch -p1 < ${PATCHDIR}/cross/glibc/install-lib-all.patch
     popd
-    
+
     rm -fr ${BUILDDIR}/${GLIBC}
     mkdir ${BUILDDIR}/${GLIBC}
     pushd ${BUILDDIR}/${GLIBC}
 
-    
+
     # CFLAGS="-O -finline-functions"
     #   コンパイルオプションに -finline-functions
     #   を指定する(インライン関数が使用できることを前提にglibcが
     #   書かれているため, -Oを指定した場合、 -finline-functionsがないと
     #   コンパイルできない). -O3を指定した場合のライブラリを使用すると
     #   プログラムが動作しないことがあったため, -Oでコンパイルする。
-    # --prefix=${CROSS}        
+    # --prefix=${CROSS}
     #          ${CROSS}配下にインストールする
     # --build=${BUILD}
     #        ${BUILD}で指定されたマシン上でコンパイルする
@@ -1076,7 +1080,7 @@ do_glibc_core(){
     #          デバッグオプションを指定しない
     #  --with-headers=${SYSROOT}/usr/include
     #          ${SYSROOT}/usr/include配下のヘッダを参照する
-    #  --enable-add-ons=nptl,libidn             
+    #  --enable-add-ons=nptl,libidn
     #          NPTLをスレッドライブラリに, libidn国際ドメイン名ライブラリ
     #          を構築する(実際にはスタートアップルーチンのみ構築)
     #  --enable-kernel=${GLIBC_ENABLE_KERNEL}
@@ -1092,7 +1096,7 @@ do_glibc_core(){
     #  --disable-obsolete-rpc
     #          ライブラリ生成のみを行うため, 廃止されたrpcライブラリを
     #          生成しない
-    #  --without-selinux                      
+    #  --without-selinux
     #          ターゲット用のlibselinuxがないため, selinux対応無しで
     #          コンパイルする
     #  --disable-mathvec
@@ -1124,7 +1128,7 @@ do_glibc_core(){
     #configparmに設定を記載.
     #
     #http://sourceware.org/bugzilla/show_bug.cgi?id=13810
-    #Christer Solskogen 2012-03-06 14:18:58 UTC 
+    #Christer Solskogen 2012-03-06 14:18:58 UTC
     #の記事参照
     #
     #cross-compiling=yes
@@ -1202,7 +1206,7 @@ EOF
 	popd
     fi
 
-    popd    
+    popd
 }
 
 ## begin note
@@ -1211,7 +1215,7 @@ EOF
 do_cross_gcc_core3(){
 
     echo "@@@ Cross:gcc-core-stage3 @@@"
-    
+
     extract_archive ${GCC}
 
     pushd ${CROSS}/bin
@@ -1226,7 +1230,7 @@ do_cross_gcc_core3(){
     #
     # configureの設定
     #
-    # --prefix=${CROSS}        
+    # --prefix=${CROSS}
     #          ${CROSS}配下にインストールする
     # --with-local-prefix=${CROSS}/${TARGET}
     #        ${CROSS}/${TARGET}にgcc内部で使用するファイルを配置する
@@ -1261,7 +1265,7 @@ do_cross_gcc_core3(){
     #          ポインタの誤使用等を実行時に検出するライブラリ)
     #          を構築しない.
     #--disable-libatomic
-    #          アトミック処理用ライブラリを生成しない 
+    #          アトミック処理用ライブラリを生成しない
     #--disable-libitm
     #          トランザクショナルメモリ操作ライブラリを生成しない
     #--disable-libquadmath
@@ -1281,11 +1285,11 @@ do_cross_gcc_core3(){
     #--disable-libsanitizer
     #           libsanitizerを無効にする(gcc-4.9のlibsanitizerは
     #           バグのためコンパイルできないため)
-    # --with-gmp=${CROSS} 
+    # --with-gmp=${CROSS}
     #          gmpをインストールしたディレクトリを指定
-    # --with-mpfr=${CROSS} 
+    # --with-mpfr=${CROSS}
     #          mpfrをインストールしたディレクトリを指定
-    # --with-isl=${CROSS} 
+    # --with-isl=${CROSS}
     #          islをインストールしたディレクトリを指定
     # --disable-libsanitizer
     #           libsanitizerを無効にする
@@ -1293,7 +1297,7 @@ do_cross_gcc_core3(){
     # ${WITH_SYSROOT}
     #          コンパイラの実行時にターゲット用のルートファイルシステムを優先してヘッダや
     #          ライブラリを探査する
-    # ${LINK_STATIC_LIBSTDCXX} 
+    # ${LINK_STATIC_LIBSTDCXX}
     #          libstdc++を静的リンクしパスに依存せず動作できるようにする
     # --disable-nls
     #         コンパイル時間を短縮するためNative Language Supportを無効化する
@@ -1340,7 +1344,7 @@ do_cross_gcc_core3(){
 	--with-long-double-128                               \
 	--disable-nls
 
-    make ${SMP_OPT} 
+    make ${SMP_OPT}
     ${SUDO} make  install
     popd
 
@@ -1385,18 +1389,18 @@ do_cross_glibc(){
     echo "@@@ Cross:glibc @@@"
 
     extract_archive ${GLIBC}
-    
+
     rm -fr ${BUILDDIR}/${GLIBC}
     mkdir ${BUILDDIR}/${GLIBC}
     pushd ${BUILDDIR}/${GLIBC}
- 
+
     # CFLAGS="-O -finline-functions"
     #   コンパイルオプションに -finline-functions
     #   を指定する(インライン関数が使用できることを前提にglibcが
     #   書かれているため, -Oを指定した場合、 -finline-functionsがないと
     #   コンパイルできない). -O3を指定した場合のライブラリを使用すると
     #   プログラムが動作しないことがあったため, -Oでコンパイルする。
-    # --prefix=${CROSS}        
+    # --prefix=${CROSS}
     #          ${CROSS}配下にインストールする
     # --build=${BUILD}
     #        ${BUILD}で指定されたマシン上でコンパイルする
@@ -1419,7 +1423,7 @@ do_cross_glibc(){
     #          デバッグオプションを指定しない
     #  --with-headers=${SYSROOT}/usr/include
     #          ${SYSROOT}/usr/include配下のヘッダを参照する
-    #  --enable-add-ons=nptl,libidn             
+    #  --enable-add-ons=nptl,libidn
     #          NPTLをスレッドライブラリに, libidn国際ドメイン名ライブラリ
     #          を構築する(実際にはスタートアップルーチンのみ構築)
     #  --enable-kernel=${GLIBC_ENABLE_KERNEL}
@@ -1429,7 +1433,7 @@ do_cross_glibc(){
     #          警告をエラーと見なさない
     #  --disable-systemtap
     #          ターゲット用のsystemtapがないため, systemtap対応無しでコンパイルする
-    #  --without-selinux                      
+    #  --without-selinux
     #          ターゲット用のlibselinuxがないため, selinux対応無しでコンパイルする
     #
     BUILD_CC="${BUILD}-gcc"                      \
@@ -1464,7 +1468,7 @@ do_cross_glibc(){
     #configparmに設定を記載.
     #
     #http://sourceware.org/bugzilla/show_bug.cgi?id=13810
-    #Christer Solskogen 2012-03-06 14:18:58 UTC 
+    #Christer Solskogen 2012-03-06 14:18:58 UTC
     #の記事参照
     #
     #cross-compiling=yes
@@ -1509,7 +1513,7 @@ EOF
       RANLIB=${TARGET}-ranlib         \
       ${SUDO} make install_root=${SYSROOT} install
 
-      popd    
+      popd
 
     #
     #multilib非対応のコンパイラはsysrootのlibにcrtを見に行くので以下の処理を追加。
@@ -1548,7 +1552,7 @@ do_cross_gcc_linux_final(){
     #
     # configureの設定
     #
-    # --prefix=${CROSS}        
+    # --prefix=${CROSS}
     #          ${CROSS}配下にインストールする
     # --with-local-prefix=${CROSS}/${TARGET}
     #        ${CROSS}/${TARGET}にgcc内部で使用するファイルを配置する
@@ -1587,11 +1591,11 @@ do_cross_gcc_linux_final(){
     #           (Stack Smashing Protector機能を有効にする)
     # --enable-libgomp
     #           GNU OpenMP ライブラリを生成する
-    # --with-gmp=${CROSS} 
+    # --with-gmp=${CROSS}
     #          gmpをインストールしたディレクトリを指定
-    # --with-mpfr=${CROSS} 
+    # --with-mpfr=${CROSS}
     #          mpfrをインストールしたディレクトリを指定
-    # --with-isl=${CROSS} 
+    # --with-isl=${CROSS}
     #          islをインストールしたディレクトリを指定
     # --disable-libsanitizer
     #           libsanitizerを無効にする
@@ -1599,7 +1603,7 @@ do_cross_gcc_linux_final(){
     # ${WITH_SYSROOT}
     #          コンパイラの実行時にターゲット用のルートファイルシステムを優先してヘッダや
     #          ライブラリを探査する
-    # ${LINK_STATIC_LIBSTDCXX} 
+    # ${LINK_STATIC_LIBSTDCXX}
     #          libstdc++を静的リンクしパスに依存せず動作できるようにする
     # --disable-nls
     #         コンパイル時間を短縮するためNative Language Supportを無効化する
@@ -1638,7 +1642,7 @@ do_cross_gcc_linux_final(){
 	--with-long-double-128                               \
 	--disable-nls
 
-    make ${SMP_OPT} 
+    make ${SMP_OPT}
     ${SUDO} make  install
     popd
 
@@ -1702,7 +1706,7 @@ do_cross_newlib(){
     ${SRCDIR}/${NEWLIB}/configure              \
 	--prefix=/usr                          \
 	--target=${TARGET}
-    
+
     gmake ${SMP_OPT}
     gmake DESTDIR=${SYSROOT} install
 
@@ -1748,7 +1752,7 @@ do_cross_gcc_elf_final(){
     #          ライブラリを探査する
     #--enable-languages=c
     #          カーネルヘッダの生成からCスタートアップルーチン(crt*.o)
-    #          の生成までに必要なCコンパイラのみを生成 
+    #          の生成までに必要なCコンパイラのみを生成
     #--disable-bootstrap
     #          ビルド環境もgccを使用することから, 時間削減のためビルド環境とホスト環境が
     #          同一CPUの場合でも, 3stageコンパイルを無効にする
@@ -1781,14 +1785,14 @@ do_cross_gcc_elf_final(){
     #           GNU OpenMPライブラリを生成しない
     #--disable-libsanitizer
     #           libsanitizerを無効にする(gcc-4.9のlibsanitizerはバグの
-    #           ためコンパイルできないため) 
+    #           ためコンパイルできないため)
     #--with-gmp=${CROSS}
     #          gmpをインストールしたディレクトリを指定
-    #--with-mpfr=${CROSS} 
+    #--with-mpfr=${CROSS}
     #          mpfrをインストールしたディレクトリを指定
     #--with-mpc=${CROSS}
     #          mpcをインストールしたディレクトリを指定
-    #--with-isl=${CROSS} 
+    #--with-isl=${CROSS}
     #          islをインストールしたディレクトリを指定
     #--disable-nls
     #         コンパイル時間を短縮するためNative Language Supportを無効化する
@@ -1829,7 +1833,7 @@ do_cross_gcc_elf_final(){
 	--enable-libssp                                      \
 	--enable-tls                                         \
 	--disable-nls
-    
+
     gmake ${SMP_OPT}
     gmake install
     popd
@@ -1843,7 +1847,7 @@ do_cross_gcc_elf_final(){
     #
     # クロスコンパイラへのリンクを張る
     #
-    ln -sf ${TARGET}-gcc ${TARGET}-cc   
+    ln -sf ${TARGET}-gcc ${TARGET}-cc
     popd
 }
 
@@ -1867,7 +1871,7 @@ do_cross_gdb(){
     #
     # configureの設定
     #
-    # --prefix=${CROSS}        
+    # --prefix=${CROSS}
     #          ${CROSS}配下にインストールする
     # --with-local-prefix=${CROSS}/${TARGET}
     #        ${CROSS}/${TARGET}にgcc内部で使用するファイルを配置する
@@ -1890,7 +1894,7 @@ do_cross_gdb(){
 	--disable-werror                                     \
 	--disable-nls
 
-    make ${SMP_OPT} 
+    make ${SMP_OPT}
     ${SUDO} make install
 
     echo "Remove .la files"
