@@ -125,6 +125,12 @@ do_one_llvm_build(){
 do_all_gcc_build(){
     local name
     local targets
+    local no_elf_targets
+    local no_linux_targets
+    local check
+
+    no_elf_targets=(`echo ${NO_ELF_TARGETS}`)
+    no_linux_targets=(`echo ${NO_LINUX_TARGETS}`)
 
     if [ "x${TARGET_CPUS}" != "x" ]; then
 	targets=(`echo ${TARGET_CPUS}`)
@@ -139,7 +145,11 @@ do_all_gcc_build(){
     #
     for name in ${targets[@]}
     do
-	do_one_elf_build ${name}
+	if [[ $(printf '%s\n' "${no_elf_targets[@]}" | grep -qx "${name}"; echo -n ${?} ) -eq 0 ]]; then
+	    echo "Skip building ELF tool chain for ${name}."
+	else
+	    do_one_elf_build ${name}
+	fi
     done
 
     #
@@ -147,7 +157,11 @@ do_all_gcc_build(){
     #
     for name in ${targets[@]}
     do
-	do_one_linux_build ${name}
+	if [[ $(printf '%s\n' "${no_linux_targets[@]}" | grep -qx "${name}"; echo -n ${?} ) -eq 0 ]]; then
+	    echo "Skip building Linux tool chain for ${name}."
+	else
+	    do_one_linux_build ${name}
+	fi
     done
 }
 

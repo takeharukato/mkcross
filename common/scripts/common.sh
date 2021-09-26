@@ -34,21 +34,21 @@ fi
 
 ## begin
 #  環境変数の設定を行う
-## end 
+## end
 setup_variables(){
 
     echo "@@@ Setup variables @@@"
     TODAY=`date "+%F"`
 
     RTLD=/lib64/ld-2.17.so
-    
+
     OSNAME=`uname`
 
     if [ "x${SCRIPT_DIR}" = "x" ]; then
 	echo "Error: SCRIPT_DIR is not set"
 	exit 1
     fi
-    
+
     if [ "x${_LIB}" = "x" ]; then
 
 	echo "@@@ _LIB is not set, we assume _LIB is lib64. "
@@ -71,7 +71,7 @@ setup_variables(){
     if [ "${TOOLCHAIN_TYPE}" = "LLVM" ]; then
 	CROSS_SUBDIR="llvm"
     fi
-    
+
     if [ "x${CPUS}" = "x" ]; then
 	if [ "x${OSNAME}" = "xLinux" ]; then
 	    CPUS=`nproc`
@@ -117,13 +117,13 @@ setup_variables(){
     fi
 
     BUILD_CPU=`echo "${BUILD}"|cut -d'-' -f1`
-    
+
     if [ "x${TARGET_CPU}" != "x${BUILD_CPU}" ]; then
 	PROGRAM_PREFIX=""
     else
 	PROGRAM_PREFIX="--program-prefix=${TARGET}-"
     fi
-  
+
     if [ "x${QEMU_SOFTMMU_TARGETS}" = "x" -a "x${TOOLCHAIN_TYPE}" != "xLLVM" ]; then
 	QEMU_SOFTMMU_TARGETS="${QEMU_CPU}-softmmu"
     fi
@@ -131,13 +131,13 @@ setup_variables(){
     if [ "x${TOOLCHAIN_TYPE}" != "xLLVM" ]; then
 
 	if [ "x${OSNAME}" = "xLinux" ]; then
-	    
+
 	    KERN_MAJOR=`uname -r|awk -F'-' '{print $1;}'|awk -F '.' '{print $1}'`
 	    KERN_MINOR=`uname -r|awk -F'-' '{print $1;}'|awk -F '.' '{print $2}'`
 	    KERN_REV=`uname -r|awk -F'-' '{print $1;}'|awk -F '.' '{print $3}'`
-	    
+
 	    echo "Host Linux kernel ${KERN_MAJOR}.${KERN_MINOR}.${KERN_REV}"
-	    
+
 	    if [ ${KERN_MAJOR} -ge 4 -a ${KERN_MINOR} -ge 3 ]; then
 		QEMU_CONFIG_MEMBARRIER="--enable-membarrier"
 	    else
@@ -166,17 +166,17 @@ setup_variables(){
     else
 	QEMU_CONFIG_TARGETS=""
     fi
-    
+
 
     #パッチ格納先ディレクトリ
     PATCHDIR=${SCRIPT_DIR}/../patches
 
     #テストプログラム格納ディレクトリ
     TESTDIR=${SCRIPT_DIR}/../../tests
-    
+
     #カレントディレクトリ配下で構築作業を進める
     WORKDIR=`pwd`
-    
+
     #カレントディレクトリ直下のディレクトリのリスト
     SUBDIRS="downloads build src cross tools"
 
@@ -194,7 +194,7 @@ setup_variables(){
 
     #ビルドツールディレクトリ
     BUILD_TOOLS_DIR=${WORKDIR}/tools
-    
+
     #クロスコンパイラやクロス環境向けのヘッダ・ライブラリを格納するディレクトリ
     if [ "x${CROSS_PREFIX}" = "x" ]; then
 	if [ "${TOOLCHAIN_TYPE}" = "LLVM" ]; then
@@ -209,13 +209,13 @@ setup_variables(){
     #QEmu動作に必要なライブラリを格納するディレクトリ
     #
     QEMU_BUILD_RFS=${CROSS}/${BUILD}
-    
+
     #構築済みのヘッダやライブラリを格納するディレクトリ
     #クロスコンパイラは, 本ディレクトリをルートディレクトリと見なして,
     #このディレクトリ配下の/usr/includeのヘッダ,/lib64, /usr/lib64配下のライブラリ
     #を参照するように, binutils, gccのconfigureの--with-sysrootオプションで
     #本ディレクトリを設定する.
-    #ビルド用のコンパイラ(binutils/gcc)は, 
+    #ビルド用のコンパイラ(binutils/gcc)は,
     #--with-sysrootオプションで/を設定する。
     #この設定を忘れると, ホストのヘッダやライブラリを見に行けなくなり、
     #ビルド用のコンパイラとして動作しない。
@@ -240,7 +240,7 @@ setup_variables(){
 
     export PATH
     export LD_LIBRARY_PATH
-}    
+}
 
 ## begin
 # 環境情報を表示する
@@ -282,7 +282,7 @@ cleanup_temporary_directories(){
 
     for dname in build src
     do
-	if [ -d "${WORKDIR}" -a -d "${WORKDIR}/${dname}" ]; then 
+	if [ -d "${WORKDIR}" -a -d "${WORKDIR}/${dname}" ]; then
 	    echo "Cleanup ${dname}"
 	    rm -fr "${WORKDIR}/${dname}"
 	fi
@@ -298,7 +298,7 @@ cleanup_directories() {
 
     echo "@@@ Preparation:CLEANUP-directories @@@"
     cleanup_temporary_directories
-    
+
     pname=`dirname ${CROSS}`
     linkname=`readlink ${CROSS}`
     if [ -L "${CROSS}" ]; then
@@ -313,7 +313,7 @@ cleanup_directories() {
 	    echo "Cleanup ${linkname}"
 	    rm -fr "${linkname}"
 	fi
-	
+
     fi
 
     if [ -d "${CROSS}" ]; then
@@ -324,12 +324,12 @@ cleanup_directories() {
 
 ## begin note
 # 機能:アーカイブを展開する
-## end note 
+## end note
 extract_archive() {
     local basename
 
     basename=$1
-    
+
     if [ -d ${SRCDIR}/${basename} ]; then
 	rm -fr  ${SRCDIR}/${basename}
     fi
@@ -351,7 +351,7 @@ extract_archive() {
 
 ## begin note
 # 機能: gitからedk2のソースを取得する
-## end note 
+## end note
 fetch_edk2_src() {
 
     echo "@@@ Fetch EDK2 sources @@@"
@@ -389,7 +389,7 @@ fetch_llvm_src(){
 	rm -fr ${DOWNLOADDIR}/llvm-project
     fi
     pushd  ${DOWNLOADDIR}
-    git clone https://github.com/llvm/llvm-project.git    
+    git clone https://github.com/llvm/llvm-project.git
     popd
 }
 
@@ -402,7 +402,7 @@ fetch_ninja_src(){
 
     mkdir -p ${DOWNLOADDIR}
 
-    if [ "x${FETCH_NINJA}" != 'x' -o ! -d ${DOWNLOADDIR}/ninja ]; then    
+    if [ "x${FETCH_NINJA}" != 'x' -o ! -d ${DOWNLOADDIR}/ninja ]; then
 	pushd ${DOWNLOADDIR}
 	git clone ${NINJA_GIT_REPO}
 	pushd ninja
@@ -420,19 +420,22 @@ prepare_devenv(){
     local YUM_CMD=/bin/yum
     local YUM_BUILDDEP_CMD=yum-builddep
     local osname
-    
+
     echo "@@@ Prepare development environment @@@"
 
     osname=`uname`
     if [ "x${osname}" = "xLinux" ]; then
 
 	if [ -e /bin/dnf ]; then
-    
-	    sudo ${DNF_CMD} config-manager --set-enabled BaseOS
+
+	    sudo ${DNF_CMD} config-manager --set-enabled baseos
 	    # clang needs AppStream
-	    sudo ${DNF_CMD} config-manager --set-enabled AppStream
-	    sudo ${DNF_CMD} config-manager --set-enabled PowerTools
+	    sudo ${DNF_CMD} config-manager --set-enabled appstream
+	    sudo ${DNF_CMD} config-manager --set-enabled powertools
+
 	    sudo ${DNF_CMD} config-manager --set-enabled extras
+	    sudo ${DNF_CMD} config-manager --set-enabled plus
+	    sudo ${DNF_CMD} config-manager --set-enabled plus-source
 
             sudo ${DNF_CMD} install -y epel-release
 	    sudo ${DNF_CMD} config-manager --set-enabled epel
@@ -441,14 +444,17 @@ prepare_devenv(){
 	    sudo ${DNF_CMD} install -y dnf-plugins-core \
 		 dnf-plugins-extras-repoclosure dnf-plugins-extras-repograph \
 		 dnf-plugins-extras-repomanage dnf-plugins-extras-debug \
-		 dnf-plugins-extras-debug 
+		 dnf-plugins-extras-debug
 	else
 	    DNF_CMD=/bin/yum
-	    sudo ${YUM_CMD} install -y yum-priorities epel-release yum-utils	    	    
+	    sudo ${YUM_CMD} install -y yum-priorities epel-release yum-utils
 	fi
 
 	# Basic commands
 	sudo ${DNF_CMD} install -y sudo passwd bzip2 patch nano which tar xz wget
+
+	# linux kernel headers require rsync.
+	sudo ${DNF_CMD} install -y rsync
 
 	# Prerequisites header/commands for GCC
 	sudo ${DNF_CMD} install -y glibc-devel binutils gcc bash gawk \
@@ -468,7 +474,7 @@ prepare_devenv(){
 
 	# Prerequisites CMake
 	sudo ${DNF_CMD} install -y openssl-devel
-	
+
 	# Prerequisites for LLVM
 	sudo ${DNF_CMD} install -y libedit-devel libxml2-devel cmake
 
@@ -477,17 +483,17 @@ prepare_devenv(){
 
 	# Python
 	sudo ${DNF_CMD} install -y python3-devel swig
-	
+
 	# Version manager
-	sudo ${DNF_CMD} install -y git subversion 
+	sudo ${DNF_CMD} install -y git subversion
 
 	# Document commands
 	sudo ${DNF_CMD} install -y re2c graphviz doxygen
-	sudo ${DNF_CMD} install -y docbook-utils docbook-style-xsl 
+	sudo ${DNF_CMD} install -y docbook-utils docbook-style-xsl
 
 	# patchelf
 	sudo ${DNF_CMD} install -y patchelf
-	
+
         # For UEFI
 	sudo ${DNF_CMD} install -y nasm iasl acpica-tools
 
@@ -514,8 +520,8 @@ prepare_devenv(){
 	sudo ${DNF_CMD} install -y freeglut-devel guile-devel lua-devel \
 	     gtk3-devel lasi-devel poppler-devel librsvg2-devel gd-devel libwebp-devel \
 	     libXaw-devel tcl-devel ruby-devel R ocaml php-devel qt5-devel
-	
-	if [  -e /bin/dnf ]; then	
+
+	if [  -e /bin/dnf ]; then
 
 	    #
 	    # For CentOS8
@@ -527,7 +533,7 @@ prepare_devenv(){
 	    # LLVM/clang for bootstrap
 	    sudo ${DNF_CMD} module -y install llvm-toolset:rhel8
 	    sudo ${DNF_CMD} install -y llvm-devel clang-devel
-	    
+
 	    # Python2 devel
 	    sudo ${DNF_CMD} install -y python2-devel
 
@@ -546,14 +552,14 @@ prepare_devenv(){
 	    #
 	    # For CentOS7
 	    #
-	    
+
 	    # Go for LLVM bindings for Go lang
 	    sudo ${YUM_CMD} install -y golang
 
 	    # LLVM/clang for bootstrap
 	    sudo ${YUM_CMD} install -y clang
 	    sudo ${YUM_CMD} install -y llvm-devel clang-devel
-	    
+
 	    # Python2 devel
 	    sudo ${YUM_CMD} install -y python-devel
 
@@ -565,8 +571,8 @@ prepare_devenv(){
 
 	    # for graphviz
 	    sudo ${YUM_CMD} install -y --skip-broken libgs-devel
-	
-	    # Build dep	
+
+	    # Build dep
 	    sudo ${YUM_BUILDDEP_CMD} -y binutils gcc texinfo-tex texinfo cmake qemu-kvm \
 		 graphviz
 	fi
@@ -603,7 +609,7 @@ prepare_archives(){
 create_directories(){
 
     echo "@@@ Preparation:create-directories @@@"
-    
+
     pushd ${WORKDIR}
     for dir in ${SUBDIRS}
     do
@@ -677,7 +683,7 @@ do_strip_binaries(){
 #      RHEL7環境に合わせて, tar-1.26を導入。
 ## end note
 do_build_gtar_for_build(){
-    
+
     echo "@@@ BuildTool:gtar @@@"
 
     extract_archive ${GTAR}
@@ -689,9 +695,9 @@ do_build_gtar_for_build(){
     #
     # configureの設定
     #
-    # --prefix=${BUILD_TOOLS_DIR}        
+    # --prefix=${BUILD_TOOLS_DIR}
     #          ${BUILD_TOOLS_DIR}配下にインストールする
-    # --disable-silent-rules 
+    # --disable-silent-rules
     #          コンパイル時のコマンドラインを表示する
     # --program-prefix="${BUILD}-"
     #          ターゲット用のコンパイラやシステムにインストールされている
@@ -703,7 +709,7 @@ do_build_gtar_for_build(){
 	--disable-silent-rules                \
 	--program-prefix="${BUILD}-"
 
-    make ${SMP_OPT} 
+    make ${SMP_OPT}
     ${SUDO} make install
     popd
 
@@ -730,7 +736,7 @@ do_build_gtar_for_build(){
 ## end note
 do_build_gmake_for_build(){
 
-    
+
     echo "@@@ BuildTool:gmake @@@"
 
     extract_archive ${GMAKE}
@@ -742,7 +748,7 @@ do_build_gmake_for_build(){
     #
     # configureの設定
     #
-    # --prefix=${BUILD_TOOLS_DIR}        
+    # --prefix=${BUILD_TOOLS_DIR}
     #          ${BUILD_TOOLS_DIR}配下にインストールする
     # --program-prefix="${BUILD}-"
     #          ターゲット用のコンパイラやシステムにインストールされている
@@ -753,7 +759,7 @@ do_build_gmake_for_build(){
 	--prefix=${BUILD_TOOLS_DIR}            \
 	--program-prefix="${BUILD}-"
 
-    make ${SMP_OPT} 
+    make ${SMP_OPT}
     ${SUDO} make install
     popd
 
@@ -786,7 +792,7 @@ do_build_binutils_for_build(){
     #
     # configureの設定
     #
-    # --prefix=${BUILD_TOOLS_DIR}        
+    # --prefix=${BUILD_TOOLS_DIR}
     #          ${BUILD_TOOLS_DIR}配下にインストールする
     # --target=${BUILD}
     #          ビルド環境向けのコードを扱うbinutilsを生成する
@@ -798,7 +804,7 @@ do_build_binutils_for_build(){
     #        ${BUILD_TOOLS_DIR}/${TARGET}にbinutils内部で使用するファイルを配置する
     # --with-sysroot=/
     #         システム標準のヘッダやライブラリを参照して生成したbinutilsを動作させる
-    # --disable-shared                     
+    # --disable-shared
     #         共有ライブラリでBFDを作らず, binutils内に内蔵する
     #         (LD_LIBRARY_PATH環境変数を設定せずに使用するために必要)
     # --disable-werror
@@ -817,7 +823,7 @@ do_build_binutils_for_build(){
 	--disable-nls
 
 
-    make ${SMP_OPT} 
+    make ${SMP_OPT}
     ${SUDO} make install
 
     echo "Remove .la files"
@@ -855,7 +861,7 @@ do_build_gmp_for_build(){
     #
     # configureの設定
     #
-    # --prefix=${BUILD_TOOLS_DIR}        
+    # --prefix=${BUILD_TOOLS_DIR}
     #          ${BUILD_TOOLS_DIR}配下にインストールする
     # --enable-cxx
     #          gccがC++で書かれているため, c++向けのライブラリを構築する
@@ -868,8 +874,8 @@ do_build_gmp_for_build(){
 	--enable-cxx                      \
 	--disable-shared                  \
 	--enable-static
-    
-    make ${SMP_OPT} 
+
+    make ${SMP_OPT}
     ${SUDO} make install
 
     echo "Remove .la files"
@@ -899,7 +905,7 @@ do_build_mpfr_for_build(){
     #
     # configureの設定
     #
-    # --prefix=${BUILD_TOOLS_DIR}        
+    # --prefix=${BUILD_TOOLS_DIR}
     #          ${BUILD_TOOLS_DIR}配下にインストールする
     # --with-gmp=${BUILD_TOOLS_DIR}
     #          gmpのインストール先を指定する
@@ -913,8 +919,8 @@ do_build_mpfr_for_build(){
 	--with-gmp=${BUILD_TOOLS_DIR}               \
 	--disable-shared                  \
 	--enable-static
-    
-    make ${SMP_OPT} 
+
+    make ${SMP_OPT}
     ${SUDO} make install
 
     echo "Remove .la files"
@@ -944,7 +950,7 @@ do_build_mpc_for_build(){
     #
     # configureの設定
     #
-    # --prefix=${BUILD_TOOLS_DIR}        
+    # --prefix=${BUILD_TOOLS_DIR}
     #          ${BUILD_TOOLS_DIR}配下にインストールする
     #
     # --with-gmp=${BUILD_TOOLS_DIR}
@@ -965,7 +971,7 @@ do_build_mpc_for_build(){
 	--disable-shared         \
 	--enable-static
 
-    make ${SMP_OPT} 
+    make ${SMP_OPT}
     ${SUDO} make install
 
     echo "Remove .la files"
@@ -995,7 +1001,7 @@ do_build_isl_for_build(){
     #
     # configureの設定
     #
-    # --prefix=${BUILD_TOOLS_DIR}        
+    # --prefix=${BUILD_TOOLS_DIR}
     #          ${BUILD_TOOLS_DIR}配下にインストールする
     # --disable-silent-rules
     #          コンパイル時にコマンドラインを表示する
@@ -1016,7 +1022,7 @@ do_build_isl_for_build(){
 	--disable-shared                 \
 	--enable-static
 
-    make ${SMP_OPT} 
+    make ${SMP_OPT}
     ${SUDO} make install
 
     echo "Remove .la files"
@@ -1038,7 +1044,7 @@ do_build_gcc_for_build(){
     local libgcc_file
     local libgcc_dir
     local libgcc_name
-    
+
     echo "@@@ BuildTool:gcc @@@"
 
     extract_archive ${GCC}
@@ -1105,17 +1111,17 @@ do_build_gcc_for_build(){
     #           libsanitizerを無効にする(共有ライブラリをインストールしないため)
     #--with-gmp=${BUILD_TOOLS_DIR}
     #          gmpをインストールしたディレクトリを指定
-    #--with-mpfr=${BUILD_TOOLS_DIR} 
+    #--with-mpfr=${BUILD_TOOLS_DIR}
     #          mpfrをインストールしたディレクトリを指定
     #--with-mpc=${BUILD_TOOLS_DIR}
     #          mpcをインストールしたディレクトリを指定
-    #--with-isl=${BUILD_TOOLS_DIR} 
+    #--with-isl=${BUILD_TOOLS_DIR}
     #          islをインストールしたディレクトリを指定
     #--program-prefix="${BUILD}-"
     #          ターゲット用のコンパイラやシステムにインストールされている
     #          コンパイラと区別するために, プログラムのプレフィクスに
     #          ${BUILD}-をつける。
-    #${LINK_STATIC_LIBSTDCXX} 
+    #${LINK_STATIC_LIBSTDCXX}
     #          libstdc++を静的リンクしパスに依存せず動作できるようにする
     #
     env CC_FOR_BUILD="gcc"                                           \
@@ -1159,7 +1165,7 @@ do_build_gcc_for_build(){
 	--with-long-double-128 				     \
 	--disable-nls
 
-    make ${SMP_OPT} 
+    make ${SMP_OPT}
     ${SUDO} make install
     popd
 
@@ -1191,7 +1197,7 @@ do_build_gcc_for_build(){
 do_build_swig_for_build(){
 
     echo "@@@ BuildTool:swig @@@"
-    
+
     extract_archive ${SWIG}
 
     rm -fr ${BUILDDIR}/${SWIG}
@@ -1208,7 +1214,7 @@ do_build_swig_for_build(){
 # 機能:ツールチェイン構築環境を用意する
 ## end note
 prepare_buildtools(){
-   
+
     if [ "x${SKIP_BUILD_TOOLS}" != 'x' -a -d "${BUILD_TOOLS_DIR}" ]; then
 	echo "Skip building toolchains to build"
     else
@@ -1220,13 +1226,13 @@ prepare_buildtools(){
 	else
 	    do_build_gmake_for_build
 	fi
-    
+
 	if [ "x${NO_GTAR}" != 'x' ]; then
 	    echo "Skip building GNU tar to build"
 	else
 	    do_build_gtar_for_build
 	fi
-	
+
 	do_build_binutils_for_build
 	do_build_gmp_for_build
 	do_build_mpfr_for_build
@@ -1254,7 +1260,7 @@ do_prepare(){
     setup_variables
 
     show_info
-    
+
     prepare_archives
 
     if [ "x${NO_CLEAN_DIR}" = 'x' ]; then
@@ -1307,7 +1313,7 @@ do_cross_compile_test(){
 	   ${CROSS}/bin/qemu-${QEMU_CPU} himenoM
        fi
     fi
-       
+
     rm -f hello himenoM
 }
 
@@ -1323,7 +1329,7 @@ do_finalize(){
     if [ "x${NO_SYMLINK}" = 'x' ]; then
 	create_symlink
     fi
-    
+
     if [ "x${NO_CLEAN_DIR}" = 'x' ]; then
     	cleanup_temporary_directories
     fi
@@ -1361,7 +1367,7 @@ do_cross_uefi(){
     gmake -C BaseTools
     source ${BUILDDIR}/${EDK2}/edksetup.sh
     case "${TARGET_CPU}" in
-	aarch64) 
+	aarch64)
 	    export GCC5_AARCH64_PREFIX=${TARGET}-
 	    build -a AARCH64 -t GCC5 -p ArmVirtPkg/ArmVirtQemu.dsc
 	    cp  Build/ArmVirtQemu-AARCH64/DEBUG_GCC5/FV/*.fd ${CROSS}/uefi
@@ -1382,7 +1388,7 @@ do_cross_uefi(){
 	    build -a IA32 -t GCC5 -p OvmfPkg/OvmfPkgIa32.dsc
 	    cp Build/OvmfIa32/DEBUG_GCC5/FV/*.fd ${CROSS}/uefi
 	    ;;
-	* ) 
+	* )
 	    echo "@@@ EDK2 UEFI @@@"
 	    echo "Skip building UEFI for ${TARGET_CPU}"
 	    ;;
@@ -1430,8 +1436,8 @@ do_build_emulator(){
 	OBJDUMP_FOR_QEMU_BUILD="${CROSS}/bin/llvm-objdump"
 	STRIP_FOR_QEMU_BUILD="${CROSS}/bin/llvm-strip"
     fi
-      
-    
+
+
     CC="${CC_FOR_QEMU_BUILD}"            \
     CXX="${CXX_FOR_QEMU_BUILD}"          \
     LD="${LD_FOR_QEMU_BUILD}"            \
@@ -1455,7 +1461,7 @@ do_build_emulator(){
      --enable-profiler                   \
      --disable-pie                       \
      --disable-werror
-    
+
     make ${SMP_OPT} V=1
     ${SUDO} make V=1 install
 
@@ -1507,7 +1513,7 @@ do_build_ninja(){
 
     mkdir -p ${DOWNLOADDIR}
 
-    if [ "x${FETCH_NINJA}" != 'x' -o ! -d ${DOWNLOADDIR}/ninja ]; then    
+    if [ "x${FETCH_NINJA}" != 'x' -o ! -d ${DOWNLOADDIR}/ninja ]; then
 	pushd ${DOWNLOADDIR}
 	git clone ${NINJA_GIT_REPO}
 	pushd ninja
@@ -1559,9 +1565,8 @@ do_build_z3(){
     python3 scripts/mk_make.py \
 	--prefix=${CROSS}
     pushd build
-    gmake ${SMP_OPT} 
+    gmake ${SMP_OPT}
     ${SUDO} gmake install
     popd
     popd
 }
-
