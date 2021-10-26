@@ -1702,10 +1702,13 @@ do_cross_newlib(){
     #          ${CROSS}配下にインストールする
     #--target=${TARGET}
     #         ${TARGET}向けのライブラリを作成する
+    #--host=${TARGET}
+    #         ${TARGET}向けのライブラリを作成する
     #
     ${SRCDIR}/${NEWLIB}/configure              \
 	--prefix=/usr                          \
-	--target=${TARGET}
+	--target=${TARGET}                     \
+	--host=${TARGET}
 
     gmake ${SMP_OPT}
     gmake DESTDIR=${SYSROOT} install
