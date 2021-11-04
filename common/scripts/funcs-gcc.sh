@@ -796,7 +796,8 @@ EOF
     #
     mkdir -pv ${SYSROOT}/usr/${_LIB}
     cp -pv csu/crt[1in].o ${SYSROOT}/usr/${_LIB}
-
+    # Cのスタートアップルーチンをgccのローカルプレフィックスにコピーする
+    cp -pv csu/crt[1in].o ${CROSS}/${TARGET}/${_LIB}
     #libc.soを作るためには, libc.soのリンクオプション(-lc)を付けて,
     #コンパイルを通す必要がある（実際にlibc.soの関数は呼ばないので
     #空のlibc.soでよい)
@@ -1179,6 +1180,8 @@ EOF
     mkdir -pv ${SYSROOT}/usr/${_LIB}
     rm -f     ${SYSROOT}/usr/${_LIB}/crt[1in].o
     rm -f     ${SYSROOT}/usr/${_LIB}/libc.so
+    rm -f     ${CROSS}/${TARGET}/${_LIB}/crt[1in].o
+
     #
     # スタートアップファイルをコピーする
     #
@@ -1855,8 +1858,25 @@ do_cross_gcc_elf_final(){
 # 機能:クロスデバッガを生成する
 ## end note
 do_cross_gdb(){
+    local python_path
+    local python_arg
 
     echo "@@@ Cross:gdb @@@"
+
+    python_path=`which python3`
+    if [ "none${python_path}" = "none" ]; then
+	python_path=`which python2`
+	if [ "none${python_path}" = "none" ]; then
+	    python_path=`none`
+	fi
+    fi
+
+    if [ "${python_path}" != "none" ]; then
+	echo "Python is installed on ${python_path}"
+	python_arg="--with-python=${python_path}"
+    else
+	python_arg=""
+    fi
 
     extract_archive ${GDB}
 
@@ -1892,6 +1912,7 @@ do_cross_gdb(){
 	--target=${TARGET}                                   \
 	--with-local-prefix=${CROSS}/${TARGET}               \
 	--disable-werror                                     \
+	${python_arg}                                        \
 	--disable-nls
 
     make ${SMP_OPT}
