@@ -1712,7 +1712,7 @@ do_cross_newlib(){
 
 
     gmake ${SMP_OPT}
-    gmake DESTDIR=${SYSROOT} install
+    gmake DESTDIR=${SYSROOT} prefix=/usr install
 
     #
     #includeとlibの位置を補正する
