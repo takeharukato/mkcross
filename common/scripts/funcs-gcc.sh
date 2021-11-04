@@ -1864,12 +1864,16 @@ do_cross_gdb(){
 
     echo "@@@ Cross:gdb @@@"
 
-    python_path=`which python3`
+    python_path=`which python`
     if [ "none${python_path}" = "none" ]; then
-	python_path=`which python2`
+	python_path=`which python3`
 	if [ "none${python_path}" = "none" ]; then
-	    python_path=`none`
+	    python_path=`which python2`
 	fi
+    fi
+
+    if [ "none${python_path}" = "none" ]; then
+	python_path='none'
     fi
 
     if [ "${python_path}" != "none" ]; then
