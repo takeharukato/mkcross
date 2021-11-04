@@ -1707,8 +1707,9 @@ do_cross_newlib(){
     #         ${TARGET}向けのライブラリを作成する
     #
     ${SRCDIR}/${NEWLIB}/configure              \
-	--prefix=/usr                          \
+	--prefix=${CROSS}                      \
 	--target=${TARGET}
+
 
     gmake ${SMP_OPT}
     gmake DESTDIR=${SYSROOT} install
