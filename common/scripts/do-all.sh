@@ -140,6 +140,8 @@ do_all_gcc_build(){
 	popd
     fi
 
+    echo "Target CPUS:${targets[@]}"
+
     #
     # ELF tool chain
     #
