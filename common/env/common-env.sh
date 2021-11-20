@@ -41,4 +41,9 @@ https://sourceware.org/pub/newlib/newlib-4.1.0.tar.gz
 https://github.com/Kitware/CMake/releases/download/v3.21.3/cmake-3.21.3.tar.gz
 https://github.com/Z3Prover/z3/archive/z3-4.8.12.tar.gz
 https://opensource.apple.com/source/lldb/lldb-69/utils/emacs/gud.el
-http://prdownloads.sourceforge.net/swig/swig-4.0.2.tar.gz"
+http://prdownloads.sourceforge.net/swig/swig-4.0.2.tar.gz
+https://ftp.gnu.org/gnu/binutils/binutils-2.24.tar.gz
+https://ftp.gnu.org/gnu/gcc/gcc-8.4.0/gcc-8.4.0.tar.gz
+https://sourceware.org/pub/newlib/newlib-2.5.0.tar.gz
+https://ftp.gnu.org/gnu/gdb/gdb-7.12.tar.gz
+"

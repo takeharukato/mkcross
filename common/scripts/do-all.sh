@@ -72,6 +72,12 @@ do_one_linux_build(){
 	riscv32)
 	    echo "${name} does not supports linux environment ..."
 	    ;;
+	sh2)
+	    echo "${name} does not supports linux environment ..."
+	    ;;
+	h8300)
+	    echo "${name} does not supports linux environment ..."
+	    ;;
 	* )
 	    OSNAME=`uname`
 	    if [ "x${OSNAME}" = "xLinux" ]; then
