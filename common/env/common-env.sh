@@ -46,4 +46,9 @@ https://ftp.gnu.org/gnu/binutils/binutils-2.24.tar.gz
 https://ftp.gnu.org/gnu/gcc/gcc-8.4.0/gcc-8.4.0.tar.gz
 https://sourceware.org/pub/newlib/newlib-2.5.0.tar.gz
 https://ftp.gnu.org/gnu/gdb/gdb-7.12.tar.gz
+https://gcc.gnu.org/pub/gcc/infrastructure/isl-0.12.2.tar.bz2
+https://llvm-gcc-renesas.com/downloads/d.php?f=v850/binutils/14.01/binutils-2.24_v850_v14.01.tar.bz2
+https://llvm-gcc-renesas.com/downloads/d.php?f=v850/newlib/14.01/newlib-2.1.0_v850_v14.01.tar.bz2
+https://llvm-gcc-renesas.com/downloads/d.php?f=v850/gcc/14.01/gcc-4.9.2_v850_v14.01.tar.bz2
+https://llvm-gcc-renesas.com/downloads/d.php?f=v850/gdb/14.01/gdb-7.8.1_v850_v14.01.tar.bz2
 "

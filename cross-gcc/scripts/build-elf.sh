@@ -55,24 +55,30 @@ main(){
     prepare_buildtools
 
     do_cross_gcc_elf
-    
+
     case "${TARGET_CPU}" in
 	aarch64|x86_64|i[3456]86)
 	    do_cross_uefi
 	    ;;
-	* ) 
+	* )
 	    echo "Skip building UEFI for ${TARGET_CPU}"
 	    ;;
     esac
 
     if [ "x${NO_SIM}" = 'x' ]; then
-	do_build_emulator
+	case "${TARGET_CPU}" in
+	    h8300|sh2|v850)
+		echo "Skip building QEmu for ${TARGET_CPU}"
+		;;
+	    *)
+		do_build_emulator
+		;;
+	esac
     fi
 
     do_cross_compile_test
-    
+
     do_finalize
 }
 
 main $@
-

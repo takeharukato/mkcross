@@ -2,9 +2,9 @@
 ###############################################################################
 #
 ###############################################################################
-KERN_ARCH=sh
-TARGET_CPU=sh2
-TARGET_ELF=sh-elf
-QEMU_CPU=sh2
+KERN_ARCH=arm
+TARGET_CPU=arm
+TARGET=arm-linux-gnueabi
+TARGET_ELF=arm-none-eabi
+QEMU_CPU=arm
 _LIB=lib
-NEWLIB=newlib-2.5.0

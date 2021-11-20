@@ -2,9 +2,8 @@
 ###############################################################################
 #
 ###############################################################################
-KERN_ARCH=sh
-TARGET_CPU=sh2
-TARGET_ELF=sh-elf
-QEMU_CPU=sh2
+KERN_ARCH=microblaze
+TARGET_CPU=microblaze
+TARGET_ELF=microblaze-xilinx-elf
+QEMU_CPU=microblaze
 _LIB=lib
-NEWLIB=newlib-2.5.0

@@ -1723,6 +1723,24 @@ do_cross_newlib(){
     rmdir usr/${TARGET}
     popd
 
+    #
+    # sh2などsysrootに対応していないコンパイラのために
+    # includeとlibをローカルプレフィクスから参照可能にする
+    #
+    pushd ${CROSS}/${TARGET}
+
+    pushd include
+    ln -sf ../../rfs/usr/include/* .
+    popd
+
+    pushd lib
+    ln -sf ../../rfs/usr/lib/* .
+    popd
+
+
+    popd
+
+
     popd
 }
 
@@ -1883,6 +1901,12 @@ do_cross_gdb(){
 	python_arg=""
     fi
 
+    case ${TARGET_CPU} in
+	h8300|v850)
+	    python_arg=""
+	    ;;
+    esac
+
     extract_archive ${GDB}
 
     pushd  ${SRCDIR}/${GDB}
@@ -1972,5 +1996,13 @@ do_cross_gcc_elf(){
     do_cross_gcc_core1
     do_cross_newlib
     do_cross_gcc_elf_final
-    do_cross_gdb
+    case "${TARGET_CPU}" in
+	h8300)
+		echo "Skip building GDB for ${TARGET_CPU}"
+		;;
+	*)
+	    do_cross_gdb
+	    ;;
+	esac
+
 }

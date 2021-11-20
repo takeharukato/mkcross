@@ -2,7 +2,7 @@
 
 ## はじめに
   gcc開発環境をX86-64で動作するRHEL7環境上に構築するためのシェルスクリプトです。
-      
+
 1. docs/Readme.md    本ファイルです。
 
 2. env/              コンパイラを構築するための定義ファイルです。
@@ -17,21 +17,29 @@
      * ダウンロード元URL(DOWNLOAD_URLS)
 
      各CPUごとに以下のファイルを読み込みます。
-		     
+
      * aarch64-env.sh  AArch64用
      * armhw-env.sh    ハードウエア浮動小数点演算器搭載 32bit Arm用
      * i686-env.sh     IA32用
      * riscv32-env.sh  RISC-V 32bit用
      * riscv64-env.sh  RISC-V 64bit用
      * x64-env.sh      X64用
-                     
+     * h8300-env.sh    H8 用
+     * sh2-env.sh      SH2 用
+     * sh4-env.sh      SH4 用
+	 * mips-env.sh     MIPS32 ビッグエンディアン用
+	 * mipsel-env.sh   MIPS32 リトルエンディアン用
+	 * mips64-env.sh   MIPS64 ビッグエンディアン用
+	 * mips64el-env.sh MIPS64 リトルエンディアン用
+	 * powerpc-env.sh  PowerPC ビッグエンディアン用
+	 * sparc64-env.sh  Sparc64 用
 
 3. scripts/     クロスコンパイラや各種ツールを生成するスクリプト本体を
                 格納するディレクトリです。
 
     * build.sh      Linux環境向けのクロスコンパイラや各種ツールを生成します。
     * build-elf.sh  ベアメタル開発向けELFバイナリ向けのクロスコンパイ
-      ラや各種ツールを生成します。 
+      ラや各種ツールを生成します。
     * gen-cross-env.sh クロスコンパイラへのパスを設定するスクリプトを
     生成します。${HOME}/env/ディレクトリが存在する場合は, ${HOME}/env/ディ
     レクトリに, `CPU名-ツールチェインタイプ-env.sh`
@@ -46,11 +54,11 @@
     イラプレフィクス名を設定します。
 	* GDB_COMMAND クロスgdbのコマンド名を設定します。
 	* QEMU     QEmuのシステムエミュレータのコマンド名を設定します。
-	
+
 	また, `${HOME}/Modules`というディレクトリが存在する場合は, `${HOME}/Modules`
 	に`CPU名-ツールチェインタイプ-GCC`という名前でEnvironment Modules用の環境
     設定ファイルを生成します。
-	
+
 4. data/gud.el      emacsでLLVMを使用するためのemacs lispファイルです
                      (Grand Unified Debugger mode)。
                      load-path内にあるディレクトリに配置し, .emacs
@@ -62,8 +70,8 @@
 
 5. patches/           クロスコンパイル環境構築に必要なパッチを格納しています.
 
-   * patches/cross/glibc/install-lib-all.patch 
-       クロスコンパイラ作成のために一時的にglibcのライブラリのみを構築し, 
+   * patches/cross/glibc/install-lib-all.patch
+       クロスコンパイラ作成のために一時的にglibcのライブラリのみを構築し,
       glibc付属のコマンドの構築とインストールを行わないようにする必要が
       あります。
         install-lib-all.patchは, glibcのライブラリのみを構築とインストール
@@ -94,12 +102,12 @@
    * C標準ライブラリ
     * GNU libc ( Linux用クロスコンパイラの場合 )
     * Newlib   ( ELF用クロスコンパイラの場合 )
-   * GNU Debugger 
-   * QEMU エミュレータ (ユーザランド, システムシミュレータ) 
+   * GNU Debugger
+   * QEMU エミュレータ (ユーザランド, システムシミュレータ)
    * EDK2 UEFI ファームウエア (X64, AArch64ターゲットの場合)
 
 ## 構築手順
-cross-gccディレクトリ(本ファイルのあるディレクトリの一つ上のディレクトリ)に移り, 
+cross-gccディレクトリ(本ファイルのあるディレクトリの一つ上のディレクトリ)に移り,
 以下のコマンドを実行すると, Linux用のクロス環境が構築できます
 (B shellでの実行の場合を想定しています)。
 
@@ -122,9 +130,3 @@ ELFターゲットの場合は以下を実行します。
 ```
 /bin/sh ./scripts/build-elf.sh ./env/aarch64-env.sh| tee build.log 2>&1
 ```
-
-
-
-
-
-
