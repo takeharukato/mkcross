@@ -61,8 +61,10 @@ do_symlink_binaries(){
 
 	    ls -1 ${TARGET_ELF}-* |while read line
 	    do
-		name=`echo ${line}|sed -e 's|${TARGET_ELF}-|${SYMLINK_BINARY}-|'`
-		rm -f ${name}
+		name=`echo ${line}|sed -e "s|${TARGET_ELF}-|${SYMLINK_BINARY}-|"`
+		if [ -L ${name} ]; then
+		    rm -f ${name}
+		fi
 		ln -sv ${line} ${name}
 	    done
 
