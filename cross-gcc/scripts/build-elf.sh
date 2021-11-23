@@ -46,6 +46,33 @@ if [ "x${ENV_FILE}" != "x" -a -f "${ENV_FILE}" ]; then
 fi
 
 ## begin note
+# 機能:コマンドのシンボリックリンク名を設定
+## end note
+do_symlink_binaries(){
+    local line
+    local name
+
+    echo "@@@ make links for commands @@@"
+    if [ "x${SYMLINK_BINARY}" != "x" ]; then
+
+	if [ -d "${CROSS_PREFIX}/${TODAY}/bin" ]; then
+
+	    pushd "${CROSS_PREFIX}/${TODAY}/bin"
+
+	    ls -1 ${TARGET_ELF}-* |while read line
+	    do
+		name=`echo ${line}|sed -e 's|${TARGET_ELF}-|${SYMLINK_BINARY}-|'`
+		rm -f ${name}
+		ln -sv ${line} ${name}
+	    done
+
+	    popd
+	fi
+
+    fi
+}
+
+## begin note
 # 機能:クロスコンパイル環境一式を生成する
 ## end note
 main(){
@@ -75,6 +102,8 @@ main(){
 		;;
 	esac
     fi
+
+    do_symlink_binaries
 
     do_cross_compile_test
 

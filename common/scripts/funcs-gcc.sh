@@ -1728,11 +1728,12 @@ do_cross_newlib(){
     # includeとlibをローカルプレフィクスから参照可能にする
     #
     pushd ${CROSS}/${TARGET}
-
+    mkdir -p include
     pushd include
     ln -sf ../../rfs/usr/include/* .
     popd
 
+    mkdir -p lib
     pushd lib
     ln -sf ../../rfs/usr/lib/* .
     popd
