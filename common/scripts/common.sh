@@ -413,6 +413,130 @@ fetch_ninja_src(){
 }
 
 ## begin note
+# 機能: Ubuntu上で開発環境をそろえる
+## end note
+prepare_ubuntu_devenv(){
+    local APT_GET_CMD=apt-get
+
+    # Emacs/Zsh/Ksh/Utils
+    sudo ${APT_GET_CMD} install -y ksh zsh screen emacs aspell aspell-en patchutils curl
+
+    # chsh
+    sudo ${APT_GET_CMD} install -y util-linux
+
+    # Basic commands
+    sudo ${APT_GET_CMD} install -y sudo passwd bzip2 nano tar xz-utils wget
+
+    # Basic devel
+    sudo ${APT_GET_CMD}  install -y build-essential
+    # Prerequisites header/commands for GCC/GDB
+    sudo ${APT_GET_CMD} install -y gdb bash gawk \
+	 gzip bzip2 make tar perl libmpc-dev
+    sudo ${APT_GET_CMD} install -y gcc-multilib
+    # Linux kernel headers require rsync
+    sudo ${APT_GET_CMD} install -y m4 automake autoconf gettext libtool \
+	 libltdl-dev gperf autogen guile-3.0 texinfo texlive  \
+         python3-sphinx git openssh-server diffutils patch rsync
+
+    # Prerequisites library for GCC
+    sudo ${APT_GET_CMD} install -y elfutils \
+	          libgmp-dev libmpfr-dev binutils zstd
+
+    # Prerequisites CMake
+    sudo ${APT_GET_CMD} install -y openssl
+
+    # Prerequisites for LLVM
+    sudo ${APT_GET_CMD} install -y libedit-dev libxml2 cmake
+
+    # Prerequisites for SWIG
+    sudo ${APT_GET_CMD} install -y libboost-all-dev
+
+    # Perl modules for cloc
+    sudo ${APT_GET_CMD} install -y libalgorithm-diff-perl libregexp-common-perl perl
+
+    # Python
+    sudo ${APT_GET_CMD} install -y python3 python3-dev swig
+
+    # Version manager
+    sudo ${APT_GET_CMD} install -y git subversion
+
+    # Document commands (flex/bison is installed to build doxygen)
+    sudo ${APT_GET_CMD} install -y flex bison
+    sudo ${APT_GET_CMD} install -y re2c graphviz doxygen
+    sudo ${APT_GET_CMD} install -y docbook-utils docbook-xsl
+
+    # Valrind
+    sudo ${APT_GET_CMD} install -y valgrind
+
+    # patchelf
+    sudo ${APT_GET_CMD} install -y patchelf
+
+    # For UEFI
+    sudo ${APT_GET_CMD} install -y nasm acpica-tools
+
+    # QEmu
+    sudo ${APT_GET_CMD} install -y giflib-tools libpng-dev libtiff-dev libgtk-3-dev \
+	 libncursesw6 libncurses5-dev libncursesw5-dev libgnutls30 nettle-dev \
+	 libgcrypt20-dev libsdl2-dev libguestfs-tools python3-brlapi \
+	 bluez-tools bluez-hcidump bluez libusb-dev libcap-dev libcap-ng-dev \
+	 libiscsi-dev  libnfs-dev libguestfs-dev libcacard-dev liblzo2-dev \
+	 liblzma-dev libseccomp-dev libssh-dev libssh2-1-dev libglu1-mesa-dev \
+	 mesa-common-dev freeglut3-dev ngspice-dev libattr1-dev libaio-dev \
+	 libtasn1-dev google-perftools libvirglrenderer-dev multipath-tools \
+	 libsasl2-dev libpmem-dev libudev-dev libcapstone-dev librdmacm-dev \
+	 libibverbs-dev libibumad-dev libvirt-dev libffi-dev libbpfcc-dev libdaxctl-dev
+
+    # Ceph for QEmu
+    sudo ${APT_GET_CMD} install -y libcephfs-dev librbd-dev librados-dev
+
+    # Fuse
+    sudo ${APT_GET_CMD} install -y fuse3 libfuse3-dev
+
+    # for graphviz
+    sudo ${APT_GET_CMD} install -y libglu1-mesa-dev mesa-common-dev freeglut3-dev guile-3.0 lua5.3  liblasi-dev poppler-utils librsvg2-bin librsvg2-dev libgd-dev libwebp-dev \
+	          libxaw7-dev tcl ruby r-base ocaml php qt5-default
+
+    # for iso image operation
+    sudo ${APT_GET_CMD} install -y xorriso
+
+    # for ghostscript
+    sudo ${APT_GET_CMD} install -y liblcms2-dev libjpeg-dev libfreetype6-dev \
+	 libpng-dev libpaper-dev
+
+    #
+    #True Type Font
+    #
+    sudo ${APT_GET_CMD} install -y fonts-noto-cjk
+
+    # Go for LLVM bindings for Go lang
+    sudo ${APT_GET_CMD} install -y golang
+    # LLVM/clang for bootstrap
+    sudo ${APT_GET_CMD} install -y llvm-12 clang-12
+
+    # Ruby
+    sudo ${APT_GET_CMD} install -y ruby
+
+    # Java
+    sudo ${APT_GET_CMD} install -y default-jdk default-jre
+
+    # Scala
+    sudo ${APT_GET_CMD} install -y scala
+
+    # mercurial
+    sudo ${APT_GET_CMD} install -y mercurial
+
+    # Rust
+    sudo ${APT_GET_CMD} install -y rustc cargo
+
+    # Python2 devel
+    sudo ${APT_GET_CMD} install -y python2
+
+    # KVM for QEmu
+    sudo ${APT_GET_CMD}  install -y virt-manager
+
+}
+
+## begin note
 # 機能:開発環境をそろえる
 ## end note
 prepare_devenv(){
@@ -420,161 +544,170 @@ prepare_devenv(){
     local YUM_CMD=/bin/yum
     local YUM_BUILDDEP_CMD=yum-builddep
     local osname
+    local is_ubuntu
 
     echo "@@@ Prepare development environment @@@"
 
     osname=`uname`
     if [ "x${osname}" = "xLinux" ]; then
 
-	if [ -e /bin/dnf ]; then
+	grep -i Ubuntu /etc/issue > /dev/null
+	is_ubuntu=$?
 
-	    sudo ${DNF_CMD} config-manager --set-enabled baseos
-	    # clang needs AppStream
-	    sudo ${DNF_CMD} config-manager --set-enabled appstream
-	    sudo ${DNF_CMD} config-manager --set-enabled powertools
-
-	    sudo ${DNF_CMD} config-manager --set-enabled extras
-	    sudo ${DNF_CMD} config-manager --set-enabled plus
-	    sudo ${DNF_CMD} config-manager --set-enabled plus-source
-
-            sudo ${DNF_CMD} install -y epel-release
-	    sudo ${DNF_CMD} config-manager --set-enabled epel
-	    sudo ${DNF_CMD} config-manager --set-enabled epel-modular
-
-	    sudo ${DNF_CMD} install -y dnf-plugins-core \
-		 dnf-plugins-extras-repoclosure dnf-plugins-extras-repograph \
-		 dnf-plugins-extras-repomanage dnf-plugins-extras-debug \
-		 dnf-plugins-extras-debug
+	if [ ${is_ubuntu} -eq 0 ]; then
+	    echo "Set up developer's environment for Ubuntu"
+	    prepare_ubuntu_devenv
 	else
-	    DNF_CMD=/bin/yum
-	    sudo ${YUM_CMD} install -y yum-priorities epel-release yum-utils
-	fi
+	    if [ -e /bin/dnf ]; then
 
-	# Basic commands
-	sudo ${DNF_CMD} install -y sudo passwd bzip2 patch nano which tar xz wget
+		sudo ${DNF_CMD} config-manager --set-enabled baseos
+		# clang needs AppStream
+		sudo ${DNF_CMD} config-manager --set-enabled appstream
+		sudo ${DNF_CMD} config-manager --set-enabled powertools
 
-	# linux kernel headers require rsync.
-	sudo ${DNF_CMD} install -y rsync
+		sudo ${DNF_CMD} config-manager --set-enabled extras
+		sudo ${DNF_CMD} config-manager --set-enabled plus
+		sudo ${DNF_CMD} config-manager --set-enabled plus-source
 
-	# Prerequisites header/commands for GCC
-	sudo ${DNF_CMD} install -y glibc-devel binutils gcc bash gawk \
-	     gzip bzip2-devel make tar perl libmpc-devel
-	sudo ${DNF_CMD} install -y m4 automake autoconf gettext-devel libtool \
-	     libtool-ltdl-devel gperf autogen guile texinfo texinfo-tex texlive texlive* \
-	     python3-sphinx git openssh diffutils patch
+		sudo ${DNF_CMD} install -y epel-release
+		sudo ${DNF_CMD} config-manager --set-enabled epel
+		sudo ${DNF_CMD} config-manager --set-enabled epel-modular
 
-	# Prerequisites library for GCC
-	sudo ${DNF_CMD} install -y glibc-devel zlib-devel elfutils-devel \
-	     gmp-devel mpfr-devel libstdc++-devel binutils-devel libzstd-devel
+		sudo ${DNF_CMD} install -y dnf-plugins-core \
+		     dnf-plugins-extras-repoclosure dnf-plugins-extras-repograph \
+		     dnf-plugins-extras-repomanage dnf-plugins-extras-debug \
+		     dnf-plugins-extras-debug
+	    else
+		DNF_CMD=/bin/yum
+		sudo ${YUM_CMD} install -y yum-priorities epel-release yum-utils
+	    fi
 
-	# Multilib
-	sudo ${DNF_CMD} install -y glibc-devel.i686 zlib-devel.i686 elfutils-devel.i686 \
-	     gmp-devel.i686 mpfr-devel.i686 libstdc++-devel.i686 binutils-devel.i686 \
-	     libzstd-devel.i686
+	    # Basic commands
+	    sudo ${DNF_CMD} install -y sudo passwd bzip2 patch nano which tar xz wget
 
-	# Prerequisites CMake
-	sudo ${DNF_CMD} install -y openssl-devel
+	    # linux kernel headers require rsync.
+	    sudo ${DNF_CMD} install -y rsync
 
-	# Prerequisites for LLVM
-	sudo ${DNF_CMD} install -y libedit-devel libxml2-devel cmake
+	    # Prerequisites header/commands for GCC
+	    sudo ${DNF_CMD} install -y glibc-devel binutils gcc bash gawk \
+		 gzip bzip2-devel make tar perl libmpc-devel
+	    sudo ${DNF_CMD} install -y m4 automake autoconf gettext-devel libtool \
+		 libtool-ltdl-devel gperf autogen guile texinfo texinfo-tex texlive texlive* \
+		 python3-sphinx git openssh diffutils patch
 
-	# Prerequisites for SWIG
-	sudo ${DNF_CMD} install -y boost-devel
+	    # Prerequisites library for GCC
+	    sudo ${DNF_CMD} install -y glibc-devel zlib-devel elfutils-devel \
+		 gmp-devel mpfr-devel libstdc++-devel binutils-devel libzstd-devel
 
-	# Python
-	sudo ${DNF_CMD} install -y python3-devel swig
+	    # Multilib
+	    sudo ${DNF_CMD} install -y glibc-devel.i686 zlib-devel.i686 elfutils-devel.i686 \
+		 gmp-devel.i686 mpfr-devel.i686 libstdc++-devel.i686 binutils-devel.i686 \
+		 libzstd-devel.i686
 
-	# Version manager
-	sudo ${DNF_CMD} install -y git subversion
+	    # Prerequisites CMake
+	    sudo ${DNF_CMD} install -y openssl-devel
 
-	# Document commands
-	sudo ${DNF_CMD} install -y re2c graphviz doxygen
-	sudo ${DNF_CMD} install -y docbook-utils docbook-style-xsl
+	    # Prerequisites for LLVM
+	    sudo ${DNF_CMD} install -y libedit-devel libxml2-devel cmake
 
-	# patchelf
-	sudo ${DNF_CMD} install -y patchelf
+	    # Prerequisites for SWIG
+	    sudo ${DNF_CMD} install -y boost-devel
 
-        # For UEFI
-	sudo ${DNF_CMD} install -y nasm iasl acpica-tools
+	    # Python
+	    sudo ${DNF_CMD} install -y python3-devel swig
 
-	# QEmu
-	sudo ${DNF_CMD} install -y giflib-devel libpng-devel libtiff-devel gtk3-devel \
-	     ncurses-devel gnutls-devel nettle-devel libgcrypt-devel SDL2-devel \
-	     libguestfs-devel curl-devel brlapi-devel bluez-libs-devel \
-	     libusb-devel libcap-devel libcap-ng-devel libiscsi-devel libnfs-devel \
-	     libcacard-devel lzo-devel snappy-devel bzip2-devel libseccomp-devel \
-	     libxml2-devel libssh-devel libssh2-devel xfsprogs-devel mesa-libGL-devel \
-	     mesa-libGLES-devel mesa-libGLU-devel mesa-libGLw-devel spice-server-devel \
-	     libattr-devel libaio-devel libtasn1-devel \
-	     gperftools-devel virglrenderer device-mapper-multipath-devel \
-	     cyrus-sasl-devel libjpeg-turbo-devel glusterfs-api-devel \
-	     libpmem-devel libudev-devel capstone-devel numactl-devel \
-	     librdmacm-devel  libibverbs-devel libibumad-devel libvirt-devel \
-	     iasl
+	    # Version manager
+	    sudo ${DNF_CMD} install -y git subversion
 
-	# Ceph for QEmu
-	sudo ${DNF_CMD} install -y libcephfs-devel librbd-devel \
-	     librados2-devel libradosstriper1-devel librbd1-devel
+	    # Document commands
+	    sudo ${DNF_CMD} install -y re2c graphviz doxygen
+	    sudo ${DNF_CMD} install -y docbook-utils docbook-style-xsl
 
-	# for graphviz
-	sudo ${DNF_CMD} install -y freeglut-devel guile-devel lua-devel \
-	     gtk3-devel lasi-devel poppler-devel librsvg2-devel gd-devel libwebp-devel \
-	     libXaw-devel tcl-devel ruby-devel R ocaml php-devel qt5-devel
+	    # patchelf
+	    sudo ${DNF_CMD} install -y patchelf
 
-	if [  -e /bin/dnf ]; then
+            # For UEFI
+	    sudo ${DNF_CMD} install -y nasm iasl acpica-tools
 
-	    #
-	    # For CentOS8
-	    #
+	    # QEmu
+	    sudo ${DNF_CMD} install -y giflib-devel libpng-devel libtiff-devel gtk3-devel \
+		 ncurses-devel gnutls-devel nettle-devel libgcrypt-devel SDL2-devel \
+		 libguestfs-devel curl-devel brlapi-devel bluez-libs-devel \
+		 libusb-devel libcap-devel libcap-ng-devel libiscsi-devel libnfs-devel \
+		 libcacard-devel lzo-devel snappy-devel bzip2-devel libseccomp-devel \
+		 libxml2-devel libssh-devel libssh2-devel xfsprogs-devel mesa-libGL-devel \
+		 mesa-libGLES-devel mesa-libGLU-devel mesa-libGLw-devel spice-server-devel \
+		 libattr-devel libaio-devel libtasn1-devel \
+		 gperftools-devel virglrenderer device-mapper-multipath-devel \
+		 cyrus-sasl-devel libjpeg-turbo-devel glusterfs-api-devel \
+		 libpmem-devel libudev-devel capstone-devel numactl-devel \
+		 librdmacm-devel  libibverbs-devel libibumad-devel libvirt-devel \
+		 iasl
 
-	    # Go for LLVM bindings for Go lang
-	    sudo ${DNF_CMD} module -y install go-toolset:rhel8
-
-	    # LLVM/clang for bootstrap
-	    sudo ${DNF_CMD} module -y install llvm-toolset:rhel8
-	    sudo ${DNF_CMD} install -y llvm-devel clang-devel
-
-	    # Python2 devel
-	    sudo ${DNF_CMD} install -y python2-devel
-
-	    # KVM for QEmu
-	    sudo ${DNF_CMD} module -y install virt
+	    # Ceph for QEmu
+	    sudo ${DNF_CMD} install -y libcephfs-devel librbd-devel \
+		 librados2-devel libradosstriper1-devel librbd1-devel
 
 	    # for graphviz
-	    sudo ${DNF_CMD} install -y libgs-devel
+	    sudo ${DNF_CMD} install -y freeglut-devel guile-devel lua-devel \
+		 gtk3-devel lasi-devel poppler-devel librsvg2-devel gd-devel libwebp-devel \
+		 libXaw-devel tcl-devel ruby-devel R ocaml php-devel qt5-devel
 
-	    # Build dep
-	    sudo ${DNF_CMD} builddep -y binutils gcc texinfo-tex texinfo cmake \
-		 qemu-kvm-common graphviz
+	    if [  -e /bin/dnf ]; then
 
-	else
+		#
+		# For CentOS8
+		#
 
-	    #
-	    # For CentOS7
-	    #
+		# Go for LLVM bindings for Go lang
+		sudo ${DNF_CMD} module -y install go-toolset:rhel8
 
-	    # Go for LLVM bindings for Go lang
-	    sudo ${YUM_CMD} install -y golang
+		# LLVM/clang for bootstrap
+		sudo ${DNF_CMD} module -y install llvm-toolset:rhel8
+		sudo ${DNF_CMD} install -y llvm-devel clang-devel
 
-	    # LLVM/clang for bootstrap
-	    sudo ${YUM_CMD} install -y clang
-	    sudo ${YUM_CMD} install -y llvm-devel clang-devel
+		# Python2 devel
+		sudo ${DNF_CMD} install -y python2-devel
 
-	    # Python2 devel
-	    sudo ${YUM_CMD} install -y python-devel
+		# KVM for QEmu
+		sudo ${DNF_CMD} module -y install virt
 
-	    # KVM for QEmu
-	    sudo ${YUM_CMD} install -y qemu-kvm libvirt virt-install
+		# for graphviz
+		sudo ${DNF_CMD} install -y libgs-devel
 
-	    # Xen for QEmu
-	    sudo ${YUM_CMD} -y centos-release-xen
+		# Build dep
+		sudo ${DNF_CMD} builddep -y binutils gcc texinfo-tex texinfo cmake \
+		     qemu-kvm-common graphviz
 
-	    # for graphviz
-	    sudo ${YUM_CMD} install -y --skip-broken libgs-devel
+	    else
 
-	    # Build dep
-	    sudo ${YUM_BUILDDEP_CMD} -y binutils gcc texinfo-tex texinfo cmake qemu-kvm \
-		 graphviz
+		#
+		# For CentOS7
+		#
+
+		# Go for LLVM bindings for Go lang
+		sudo ${YUM_CMD} install -y golang
+
+		# LLVM/clang for bootstrap
+		sudo ${YUM_CMD} install -y clang
+		sudo ${YUM_CMD} install -y llvm-devel clang-devel
+
+		# Python2 devel
+		sudo ${YUM_CMD} install -y python-devel
+
+		# KVM for QEmu
+		sudo ${YUM_CMD} install -y qemu-kvm libvirt virt-install
+
+		# Xen for QEmu
+		sudo ${YUM_CMD} -y centos-release-xen
+
+		# for graphviz
+		sudo ${YUM_CMD} install -y --skip-broken libgs-devel
+
+		# Build dep
+		sudo ${YUM_BUILDDEP_CMD} -y binutils gcc texinfo-tex texinfo cmake qemu-kvm \
+		     graphviz
+	    fi
 	fi
     fi
 }
