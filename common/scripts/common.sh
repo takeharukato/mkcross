@@ -416,66 +416,69 @@ fetch_ninja_src(){
 # 機能: Ubuntu上で開発環境をそろえる
 ## end note
 prepare_ubuntu_devenv(){
-    local APT_GET_CMD=apt-get
+    local APT_CMD=apt
+
+    # Update
+    sudo ${APT_CMD} update
 
     # Emacs/Zsh/Ksh/Utils
-    sudo ${APT_GET_CMD} install -y ksh zsh screen emacs aspell aspell-en patchutils curl
+    sudo ${APT_CMD} install -y ksh zsh screen emacs aspell aspell-en patchutils curl
 
     # chsh
-    sudo ${APT_GET_CMD} install -y util-linux
+    sudo ${APT_CMD} install -y util-linux
 
     # Basic commands
-    sudo ${APT_GET_CMD} install -y sudo passwd bzip2 nano tar xz-utils wget
+    sudo ${APT_CMD} install -y sudo passwd bzip2 nano tar xz-utils wget
 
     # Basic devel
-    sudo ${APT_GET_CMD}  install -y build-essential
+    sudo ${APT_CMD}  install -y build-essential
     # Prerequisites header/commands for GCC/GDB
-    sudo ${APT_GET_CMD} install -y gdb bash gawk \
+    sudo ${APT_CMD} install -y gdb bash gawk \
 	 gzip bzip2 make tar perl libmpc-dev
-    sudo ${APT_GET_CMD} install -y gcc-multilib
+    sudo ${APT_CMD} install -y gcc-multilib
     # Linux kernel headers require rsync
-    sudo ${APT_GET_CMD} install -y m4 automake autoconf gettext libtool \
+    sudo ${APT_CMD} install -y m4 automake autoconf gettext libtool \
 	 libltdl-dev gperf autogen guile-3.0 texinfo texlive  \
          python3-sphinx git openssh-server diffutils patch rsync
 
     # Prerequisites library for GCC
-    sudo ${APT_GET_CMD} install -y elfutils \
+    sudo ${APT_CMD} install -y elfutils \
 	          libgmp-dev libmpfr-dev binutils zstd
 
     # Prerequisites CMake
-    sudo ${APT_GET_CMD} install -y openssl
+    sudo ${APT_CMD} install -y openssl
 
     # Prerequisites for LLVM
-    sudo ${APT_GET_CMD} install -y libedit-dev libxml2 cmake
+    sudo ${APT_CMD} install -y libedit-dev libxml2 cmake
 
     # Prerequisites for SWIG
-    sudo ${APT_GET_CMD} install -y libboost-all-dev
+    sudo ${APT_CMD} install -y libboost-all-dev
 
     # Perl modules for cloc
-    sudo ${APT_GET_CMD} install -y libalgorithm-diff-perl libregexp-common-perl perl
+    sudo ${APT_CMD} install -y libalgorithm-diff-perl libregexp-common-perl perl
 
     # Python
-    sudo ${APT_GET_CMD} install -y python3 python3-dev swig
+    sudo ${APT_CMD} install -y python3 python3-dev swig
 
     # Version manager
-    sudo ${APT_GET_CMD} install -y git subversion
+    sudo ${APT_CMD} install -y git subversion
 
     # Document commands (flex/bison is installed to build doxygen)
-    sudo ${APT_GET_CMD} install -y flex bison
-    sudo ${APT_GET_CMD} install -y re2c graphviz doxygen
-    sudo ${APT_GET_CMD} install -y docbook-utils docbook-xsl
+    sudo ${APT_CMD} install -y flex bison
+    sudo ${APT_CMD} install -y re2c graphviz doxygen
+    sudo ${APT_CMD} install -y docbook-utils docbook-xsl
 
     # Valrind
-    sudo ${APT_GET_CMD} install -y valgrind
+    sudo ${APT_CMD} install -y valgrind
 
     # patchelf
-    sudo ${APT_GET_CMD} install -y patchelf
+    sudo ${APT_CMD} install -y patchelf
 
     # For UEFI
-    sudo ${APT_GET_CMD} install -y nasm acpica-tools
+    sudo ${APT_CMD} install -y nasm acpica-tools
 
     # QEmu
-    sudo ${APT_GET_CMD} install -y giflib-tools libpng-dev libtiff-dev libgtk-3-dev \
+    sudo ${APT_CMD} install -y giflib-tools libpng-dev libtiff-dev libgtk-3-dev \
 	 libncursesw6 libncurses5-dev libncursesw5-dev libgnutls30 nettle-dev \
 	 libgcrypt20-dev libsdl2-dev libguestfs-tools python3-brlapi \
 	 bluez-tools bluez-hcidump bluez libusb-dev libcap-dev libcap-ng-dev \
@@ -487,52 +490,52 @@ prepare_ubuntu_devenv(){
 	 libibverbs-dev libibumad-dev libvirt-dev libffi-dev libbpfcc-dev libdaxctl-dev
 
     # Ceph for QEmu
-    sudo ${APT_GET_CMD} install -y libcephfs-dev librbd-dev librados-dev
+    sudo ${APT_CMD} install -y libcephfs-dev librbd-dev librados-dev
 
     # Fuse
-    sudo ${APT_GET_CMD} install -y fuse3 libfuse3-dev
+    sudo ${APT_CMD} install -y fuse3 libfuse3-dev
 
     # for graphviz
-    sudo ${APT_GET_CMD} install -y libglu1-mesa-dev mesa-common-dev freeglut3-dev guile-3.0 lua5.3  liblasi-dev poppler-utils librsvg2-bin librsvg2-dev libgd-dev libwebp-dev \
+    sudo ${APT_CMD} install -y libglu1-mesa-dev mesa-common-dev freeglut3-dev guile-3.0 lua5.3  liblasi-dev poppler-utils librsvg2-bin librsvg2-dev libgd-dev libwebp-dev \
 	          libxaw7-dev tcl ruby r-base ocaml php qt5-default
 
     # for iso image operation
-    sudo ${APT_GET_CMD} install -y xorriso
+    sudo ${APT_CMD} install -y xorriso
 
     # for ghostscript
-    sudo ${APT_GET_CMD} install -y liblcms2-dev libjpeg-dev libfreetype6-dev \
+    sudo ${APT_CMD} install -y liblcms2-dev libjpeg-dev libfreetype6-dev \
 	 libpng-dev libpaper-dev
 
     #
     #True Type Font
     #
-    sudo ${APT_GET_CMD} install -y fonts-noto-cjk
+    sudo ${APT_CMD} install -y fonts-noto-cjk
 
     # Go for LLVM bindings for Go lang
-    sudo ${APT_GET_CMD} install -y golang
+    sudo ${APT_CMD} install -y golang
     # LLVM/clang for bootstrap
-    sudo ${APT_GET_CMD} install -y llvm-12 clang-12
+    sudo ${APT_CMD} install -y llvm-12 clang-12
 
     # Ruby
-    sudo ${APT_GET_CMD} install -y ruby
+    sudo ${APT_CMD} install -y ruby
 
     # Java
-    sudo ${APT_GET_CMD} install -y default-jdk default-jre
+    sudo ${APT_CMD} install -y default-jdk default-jre
 
     # Scala
-    sudo ${APT_GET_CMD} install -y scala
+    sudo ${APT_CMD} install -y scala
 
     # mercurial
-    sudo ${APT_GET_CMD} install -y mercurial
+    sudo ${APT_CMD} install -y mercurial
 
     # Rust
-    sudo ${APT_GET_CMD} install -y rustc cargo
+    sudo ${APT_CMD} install -y rustc cargo
 
     # Python2 devel
-    sudo ${APT_GET_CMD} install -y python2
+    sudo ${APT_CMD} install -y python2
 
     # KVM for QEmu
-    sudo ${APT_GET_CMD}  install -y virt-manager
+    sudo ${APT_CMD}  install -y virt-manager
 
 }
 
