@@ -422,13 +422,16 @@ prepare_ubuntu_devenv(){
     sudo ${APT_CMD} update
 
     # Emacs/Zsh/Ksh/Utils
-    sudo ${APT_CMD} install -y ksh zsh screen emacs aspell aspell-en patchutils curl
+    sudo ${APT_CMD} install -y curl
 
     # chsh
     sudo ${APT_CMD} install -y util-linux
 
     # Basic commands
     sudo ${APT_CMD} install -y sudo passwd bzip2 nano tar xz-utils wget
+
+    # ninja
+    sudo ${APT_CMD} install -y ninja-build
 
     # Basic devel
     sudo ${APT_CMD}  install -y build-essential
@@ -454,22 +457,11 @@ prepare_ubuntu_devenv(){
     # Prerequisites for SWIG
     sudo ${APT_CMD} install -y libboost-all-dev
 
-    # Perl modules for cloc
-    sudo ${APT_CMD} install -y libalgorithm-diff-perl libregexp-common-perl perl
-
     # Python
     sudo ${APT_CMD} install -y python3 python3-dev swig
 
     # Version manager
-    sudo ${APT_CMD} install -y git subversion
-
-    # Document commands (flex/bison is installed to build doxygen)
-    sudo ${APT_CMD} install -y flex bison
-    sudo ${APT_CMD} install -y re2c graphviz doxygen
-    sudo ${APT_CMD} install -y docbook-utils docbook-xsl
-
-    # Valrind
-    sudo ${APT_CMD} install -y valgrind
+    sudo ${APT_CMD} install -y git
 
     # patchelf
     sudo ${APT_CMD} install -y patchelf
@@ -651,11 +643,6 @@ prepare_devenv(){
 	    sudo ${DNF_CMD} install -y libcephfs-devel librbd-devel \
 		 librados2-devel libradosstriper1-devel librbd1-devel
 
-	    # for graphviz
-	    sudo ${DNF_CMD} install -y freeglut-devel guile-devel lua-devel \
-		 gtk3-devel lasi-devel poppler-devel librsvg2-devel gd-devel libwebp-devel \
-		 libXaw-devel tcl-devel ruby-devel R ocaml php-devel qt5-devel
-
 	    if [  -e /bin/dnf ]; then
 
 		#
@@ -671,12 +658,6 @@ prepare_devenv(){
 
 		# Python2 devel
 		sudo ${DNF_CMD} install -y python2-devel
-
-		# KVM for QEmu
-		sudo ${DNF_CMD} module -y install virt
-
-		# for graphviz
-		sudo ${DNF_CMD} install -y libgs-devel
 
 		# Build dep
 		sudo ${DNF_CMD} builddep -y binutils gcc texinfo-tex texinfo cmake \
@@ -697,15 +678,6 @@ prepare_devenv(){
 
 		# Python2 devel
 		sudo ${YUM_CMD} install -y python-devel
-
-		# KVM for QEmu
-		sudo ${YUM_CMD} install -y qemu-kvm libvirt virt-install
-
-		# Xen for QEmu
-		sudo ${YUM_CMD} -y centos-release-xen
-
-		# for graphviz
-		sudo ${YUM_CMD} install -y --skip-broken libgs-devel
 
 		# Build dep
 		sudo ${YUM_BUILDDEP_CMD} -y binutils gcc texinfo-tex texinfo cmake qemu-kvm \
@@ -1361,6 +1333,12 @@ prepare_buildtools(){
 	    echo "Skip building GNU make to build"
 	else
 	    do_build_gmake_for_build
+	fi
+
+	if [ "x${NO_NINJA}" = "x" ]; then
+	    do_build_ninja
+	else
+	    echo "Skip build ninja"
 	fi
 
 	if [ "x${NO_GTAR}" != 'x' ]; then
