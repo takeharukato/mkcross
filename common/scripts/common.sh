@@ -485,7 +485,7 @@ prepare_ubuntu_devenv(){
     sudo ${APT_CMD} install -y libcephfs-dev librbd-dev librados-dev
 
     # Fuse
-    sudo ${APT_CMD} install -y fuse3 libfuse3-dev
+    sudo ${APT_CMD} install -y fuse libfuse-dev
 
     # for graphviz
     sudo ${APT_CMD} install -y libglu1-mesa-dev mesa-common-dev freeglut3-dev guile-3.0 lua5.3  liblasi-dev poppler-utils librsvg2-bin librsvg2-dev libgd-dev libwebp-dev \
