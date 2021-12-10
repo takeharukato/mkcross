@@ -446,7 +446,7 @@ prepare_ubuntu_devenv(){
 
     # Prerequisites library for GCC
     sudo ${APT_CMD} install -y elfutils \
-	          libgmp-dev libmpfr-dev binutils zstd
+	          libgmp-dev libmpfr-dev binutils libzstd-dev
 
     # Prerequisites CMake
     sudo ${APT_CMD} install -y openssl
